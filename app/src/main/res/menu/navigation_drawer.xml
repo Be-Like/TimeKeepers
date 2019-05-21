@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+        <item
+            android:id="@+id/nav_dashboard"
+            android:title="Test1"
+            />
+        <!--android:icon="@drawable/ic_navigation_dashboard"-->
+            <!--android:title="@string/title_activity_dashboard"-->
+        <item
+            android:id="@+id/nav_management"
+            android:title="Test2"
+            />
+        <!--android:icon="@drawable/ic_navigation_management"-->
+            <!--android:title="@string/title_activity_management"-->
+        <item
+            android:id="@+id/nav_accounting"
+            android:title="Test3"
+            />
+        <!--android:icon="@drawable/ic_navigation_accounting"-->
+            <!--android:title="@string/title_activity_accounting"-->
+        <item
+            android:id="@+id/nav_budgeting"
+            android:title="Test4"
+            />
+        <!--android:icon="@drawable/ic_navigation_budgeting"-->
+            <!--android:title="@string/title_activity_expenses"-->
+        <item
+            android:id="@+id/nav_calendar"
+            android:title="Test5"
+            />
+        <!--android:icon="@drawable/ic_navigation_calendar"-->
+            <!--android:title="@string/title_activity_calendar"-->
+        <item
+            android:id="@+id/nav_settings"
+            android:title="Test6"
+            />
+        <!--android:icon="@drawable/ic_navigation_settings"-->
+            <!--android:title="@string/title_activity_settings"-->
+    </group>
+
+</menu>
