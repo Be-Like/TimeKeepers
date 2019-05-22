@@ -24,11 +24,13 @@ public class MainActivity extends AppCompatActivity
         Accounting.OnFragmentInteractionListener, Expenses.OnFragmentInteractionListener,
         Calendar.OnFragmentInteractionListener {
 
+    public Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Fragment fragment = null;
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_job_management:
                 fragmentClass = JobManagement.class;
+
                 break;
             case R.id.nav_accounting:
                 fragmentClass = Accounting.class;

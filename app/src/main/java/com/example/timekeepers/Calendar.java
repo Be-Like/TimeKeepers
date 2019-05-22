@@ -26,6 +26,7 @@ public class Calendar extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String calendarTitle = "Calendar";
 
     private OnFragmentInteractionListener mListener;
 
@@ -63,6 +64,9 @@ public class Calendar extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Set Toolbar Title
+        ((MainActivity) getActivity()).toolbar.setTitle(calendarTitle);
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_calendar, container, false);
     }
