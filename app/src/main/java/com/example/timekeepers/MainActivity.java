@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
+
+import com.example.timekeepers.JobManagement.AddJob;
 import com.google.android.material.navigation.NavigationView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         Dashboard.OnFragmentInteractionListener, JobManagement.OnFragmentInteractionListener,
         Accounting.OnFragmentInteractionListener, Expenses.OnFragmentInteractionListener,
-        Calendar.OnFragmentInteractionListener {
+        Calendar.OnFragmentInteractionListener, AddJob.OnFragmentInteractionListener {
 
     public Toolbar toolbar;
 
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
+        assert fragment != null;
         fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).commit();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
