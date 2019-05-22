@@ -1,12 +1,20 @@
-package com.example.timekeepers;
+package com.example.timekeepers.JobManagement;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.timekeepers.MainActivity;
+import com.example.timekeepers.R;
 
 
 /**
@@ -17,16 +25,22 @@ import android.view.ViewGroup;
  * Use the {@link JobManagement#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class JobManagement extends Fragment {
+public class JobManagement extends Fragment
+        implements View.OnClickListener {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private View fragmentView;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private String jobManagementTitle = "Job Management";
+
+    private FloatingActionButton addJob;
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,11 +78,17 @@ public class JobManagement extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Initialize View
+        fragmentView = inflater.inflate(R.layout.fragment_job_management, container, false);
+
         // Set Toolbar Title
         ((MainActivity) getActivity()).toolbar.setTitle(jobManagementTitle);
 
+        // Initializers
+        initButton();
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_job_management, container, false);
+        return fragmentView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -108,5 +128,30 @@ public class JobManagement extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void onClick(View view) {
+        if (view == addJob) {
+            selectJobTypeDialog();
+        }
+    }
+
+    private void initButton() {
+        addJob = fragmentView.findViewById(R.id.add_job);
+        addJob.setOnClickListener(this);
+    }
+
+    private void selectJobTypeDialog() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialogTag");
+
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        DialogFragment dialogFragment = new JobTypeSelector();
+        dialogFragment.setTargetFragment(this, 0);
+        dialogFragment.show(ft, "dialogTag");
     }
 }
