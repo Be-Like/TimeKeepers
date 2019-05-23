@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.timekeepers.R;
 import com.google.android.material.navigation.NavigationView;
@@ -75,7 +76,10 @@ public class JobTypeSelector extends DialogFragment
         FragmentManager fragmentManager =
                 Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         assert fragment != null;
-        fragmentManager.beginTransaction().add(R.id.main_fragment, fragment).commit();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.add(R.id.main_fragment, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
         return true;
     }

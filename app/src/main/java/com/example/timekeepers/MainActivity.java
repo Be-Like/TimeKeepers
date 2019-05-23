@@ -27,6 +27,13 @@ public class MainActivity extends AppCompatActivity
 
     public Toolbar toolbar;
 
+    // Fragment Tags
+    public String dashboardTag = "DashboardTag";
+    public String jobManagementTag = "JobManagementTag";
+    public String accountingTag = "AccountingTag";
+    public String expensesTag = "ExpensesTag";
+    public String calendarTag = "CalendarTag";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,23 +101,28 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         Fragment fragment = null;
         Class fragmentClass = null;
+        String fragmentTag = null;
 
         switch (id) {
             case R.id.nav_dashboard:
                 fragmentClass = Dashboard.class;
+                fragmentTag = dashboardTag;
                 break;
             case R.id.nav_job_management:
                 fragmentClass = JobManagement.class;
-
+                fragmentTag = jobManagementTag;
                 break;
             case R.id.nav_accounting:
                 fragmentClass = Accounting.class;
+                fragmentTag = accountingTag;
                 break;
             case R.id.nav_expenses:
                 fragmentClass = Expenses.class;
+                fragmentTag = expensesTag;
                 break;
             case R.id.nav_calendar:
                 fragmentClass = Calendar.class;
+                fragmentTag = calendarTag;
                 break;
             default:
                 break;
@@ -125,7 +137,9 @@ public class MainActivity extends AppCompatActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         assert fragment != null;
-        fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.main_fragment, fragment, fragmentTag)
+                .commit();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
