@@ -9,12 +9,15 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -38,7 +41,7 @@ public class JobManagement extends Fragment
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private String jobManagementTitle = "Job Management";
+    private final String jobManagementTitle = "Job Management";
 
     private FloatingActionButton addJob;
 
@@ -89,6 +92,12 @@ public class JobManagement extends Fragment
 
         // Inflate the layout for this fragment
         return fragmentView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: is called");
     }
 
     // TODO: Rename method, update argument and hook method into UI event

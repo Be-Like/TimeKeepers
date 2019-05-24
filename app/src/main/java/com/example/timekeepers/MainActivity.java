@@ -28,11 +28,11 @@ public class MainActivity extends AppCompatActivity
     public Toolbar toolbar;
 
     // Fragment Tags
-    public String dashboardTag = "DashboardTag";
-    public String jobManagementTag = "JobManagementTag";
-    public String accountingTag = "AccountingTag";
-    public String expensesTag = "ExpensesTag";
-    public String calendarTag = "CalendarTag";
+    public final String dashboardTag = "DashboardTag";
+    public final String jobManagementTag = "JobManagementTag";
+    public final String accountingTag = "AccountingTag";
+    public final String expensesTag = "ExpensesTag";
+    public final String calendarTag = "CalendarTag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

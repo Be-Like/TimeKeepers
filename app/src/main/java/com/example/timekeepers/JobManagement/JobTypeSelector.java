@@ -76,10 +76,9 @@ public class JobTypeSelector extends DialogFragment
         FragmentManager fragmentManager =
                 Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         assert fragment != null;
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.main_fragment, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.main_fragment, fragment)
+                .addToBackStack(null).commit();
 
         return true;
     }

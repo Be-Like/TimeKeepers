@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 
 import java.util.Objects;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +38,7 @@ public class AddJob extends Fragment
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private final String addJobTitle = "Add Job";
 
     // View Declarations
     private View fragmentView;
@@ -83,16 +87,7 @@ public class AddJob extends Fragment
         // Initialize fragment view
         fragmentView = inflater.inflate(R.layout.fragment_add_job, container, false);
         // Set Toolbar Title
-        ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(jobType);
-
-        Button button = fragmentView.findViewById(R.id.back_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "Back button pressed", Toast.LENGTH_SHORT).show();
-                Objects.requireNonNull(getActivity()).onBackPressed();
-            }
-        });
+        ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(addJobTitle);
 
         // Inflate the layout for this fragment
         return fragmentView;
