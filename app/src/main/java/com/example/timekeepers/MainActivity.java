@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity
     public final String expensesTag = "ExpensesTag";
     public final String calendarTag = "CalendarTag";
 
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,10 +56,10 @@ public class MainActivity extends AppCompatActivity
         assert fragment != null;
         fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).commit();
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_dashboard);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
@@ -150,4 +153,42 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+    public void lockNavigationDrawer(boolean isLocked) {
+        if (isLocked) {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            toggle.setDrawerIndicatorEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } else {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            toggle.setDrawerIndicatorEnabled(true);
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
+    }
+
+    // Switch between navigation drawer and back button
+//    public void enableNavBar(boolean enabled) {
+//
+//        if (enabled) {
+//            if (!navListenerIsRegistered) {
+//                toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        onBackPressed();
+//                    }
+//                });
+//                navListenerIsRegistered = true;
+//            }
+//            // Calls the onPrepareOptionsMenu method which disables menu items
+//            invalidateOptionsMenu();
+//
+//        }
+//        else {
+//            // sets the back button to null
+//            toggle.setToolbarNavigationClickListener(null);
+//            navListenerIsRegistered = false;
+//            // Calls the onPrepareOptionsMenu method which enables menu items
+//            invalidateOptionsMenu();
+//        }
+//    }
 }

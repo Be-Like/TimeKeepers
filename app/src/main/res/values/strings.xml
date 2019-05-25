@@ -45,4 +45,8 @@
     <string name="medicare">Medicare %</string>
     <string name="retirement">Individual Retirement %</string>
     <string name="other_withholdings">Other Withholding\'s %</string>
+
+    <!--Save and Cancel Buttons-->
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
 </resources>

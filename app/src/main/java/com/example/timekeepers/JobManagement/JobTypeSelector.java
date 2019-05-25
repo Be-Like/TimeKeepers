@@ -45,39 +45,30 @@ public class JobTypeSelector extends DialogFragment
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        Fragment fragment = null;
-        try {
-            fragment = (AddJob.class).newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Fragment addJob = null;
 
         switch (id) {
             case R.id.hourly_option:
                 Toast.makeText(getContext(), "Hourly Option Selected", Toast.LENGTH_SHORT).show();
-                assert fragment != null;
-                ((JobTypeInterface) fragment).jobType("Hourly");
+                addJob = AddJob.newInstance("Hourly");
                 dismiss();
                 break;
             case R.id.salary_option:
                 Toast.makeText(getContext(), "Salary Option Selected", Toast.LENGTH_SHORT).show();
-                assert fragment != null;
-                ((JobTypeInterface) fragment).jobType("Salary");
+                addJob = AddJob.newInstance("Salary");
                 dismiss();
                 break;
             case R.id.project_option:
                 Toast.makeText(getContext(), "Project Option Selected", Toast.LENGTH_SHORT).show();
-                assert fragment != null;
-                ((JobTypeInterface) fragment).jobType("Project");
+                addJob = AddJob.newInstance("Project");
                 dismiss();
                 break;
         }
 
         FragmentManager fragmentManager =
                 Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-        assert fragment != null;
         fragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, fragment)
+                .replace(R.id.main_fragment, addJob)
                 .addToBackStack(null).commit();
 
         return true;

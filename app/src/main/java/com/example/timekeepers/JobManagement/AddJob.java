@@ -33,11 +33,10 @@ import static android.content.ContentValues.TAG;
  * create an instance of this fragment.
  */
 public class AddJob extends Fragment
-        implements JobTypeInterface {
+        implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private final String addJobTitle = "Add Job";
 
     // View Declarations
@@ -47,6 +46,10 @@ public class AddJob extends Fragment
     private String mParam1;
     private String mParam2;
     private String jobType;
+
+    // Button Declarations
+    private Button saveButton;
+    private Button cancelButton;
 
     private OnFragmentInteractionListener mListener;
 
@@ -58,16 +61,14 @@ public class AddJob extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param jobType Parameter 1.
      * @return A new instance of fragment AddJob.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddJob newInstance(String param1, String param2) {
+    public static AddJob newInstance(String jobType) {
         AddJob fragment = new AddJob();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, jobType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,7 +78,6 @@ public class AddJob extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -86,8 +86,16 @@ public class AddJob extends Fragment
                              Bundle savedInstanceState) {
         // Initialize fragment view
         fragmentView = inflater.inflate(R.layout.fragment_add_job, container, false);
-        // Set Toolbar Title
-        ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(addJobTitle);
+
+        // Set Toolbar Title and Lock Navigation Drawer
+        ((MainActivity) Objects.requireNonNull(getActivity()))
+                .toolbar.setTitle(addJobTitle + " (" + mParam1 + ")");
+
+        // Button Initializers
+        saveButton = fragmentView.findViewById(R.id.save_button);
+        cancelButton = fragmentView.findViewById(R.id.cancel_button);
+        saveButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
 
         // Inflate the layout for this fragment
         return fragmentView;
@@ -132,7 +140,12 @@ public class AddJob extends Fragment
         void onFragmentInteraction(Uri uri);
     }
 
-    public void jobType(String jobType) {
-        this.jobType = jobType;
+    public void onClick(View view) {
+        if (view == saveButton) {
+            getActivity().onBackPressed();
+        }
+        if (view == cancelButton) {
+            getActivity().onBackPressed();
+        }
     }
 }

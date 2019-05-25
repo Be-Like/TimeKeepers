@@ -355,7 +355,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/cancel_button"
-            android:text="Cancel"
+            android:text="@string/cancel_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/taxes_layout"
@@ -364,7 +364,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/save_button"
-            android:text="Save"
+            android:text="@string/save_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/taxes_layout"
