@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -16,6 +17,8 @@ import android.view.ViewGroup;
 
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
+
+import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
@@ -79,13 +82,15 @@ public class JobManagement extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Initialize View
         fragmentView = inflater.inflate(R.layout.fragment_job_management, container, false);
 
         // Set Toolbar Title
-        ((MainActivity) getActivity()).toolbar.setTitle(jobManagementTitle);
+        ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(jobManagementTitle);
+        // TODO: Modify this to be solely in the Add Job fragment... I think.
+        ((MainActivity) getActivity()).lockNavigationDrawer(false);
 
         // Initializers
         initButton();

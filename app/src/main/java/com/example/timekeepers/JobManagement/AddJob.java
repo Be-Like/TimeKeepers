@@ -90,6 +90,7 @@ public class AddJob extends Fragment
         // Set Toolbar Title and Lock Navigation Drawer
         ((MainActivity) Objects.requireNonNull(getActivity()))
                 .toolbar.setTitle(addJobTitle + " (" + mParam1 + ")");
+        ((MainActivity) getActivity()).lockNavigationDrawer(true);
 
         // Button Initializers
         saveButton = fragmentView.findViewById(R.id.save_button);
@@ -142,10 +143,10 @@ public class AddJob extends Fragment
 
     public void onClick(View view) {
         if (view == saveButton) {
-            getActivity().onBackPressed();
+            Objects.requireNonNull(getActivity()).onBackPressed();
         }
         if (view == cancelButton) {
-            getActivity().onBackPressed();
+            Objects.requireNonNull(getActivity()).onBackPressed();
         }
     }
 }

@@ -165,30 +165,4 @@ public class MainActivity extends AppCompatActivity
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
     }
-
-    // Switch between navigation drawer and back button
-//    public void enableNavBar(boolean enabled) {
-//
-//        if (enabled) {
-//            if (!navListenerIsRegistered) {
-//                toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        onBackPressed();
-//                    }
-//                });
-//                navListenerIsRegistered = true;
-//            }
-//            // Calls the onPrepareOptionsMenu method which disables menu items
-//            invalidateOptionsMenu();
-//
-//        }
-//        else {
-//            // sets the back button to null
-//            toggle.setToolbarNavigationClickListener(null);
-//            navListenerIsRegistered = false;
-//            // Calls the onPrepareOptionsMenu method which enables menu items
-//            invalidateOptionsMenu();
-//        }
-//    }
 }
