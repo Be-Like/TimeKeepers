@@ -4,11 +4,22 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.Objects;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 /**
@@ -19,17 +30,23 @@ import android.view.ViewGroup;
  * Use the {@link Registration#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Registration extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class Registration extends Fragment
+        implements View.OnClickListener {
+    // the fragment initialization parameters
+    private static final String EMAIL_PARAM = "emailParam";
+    private static final String PASSWORD_PARAM= "passwordParam";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // Passed Parameters
+    private String email;
+    private String password;
 
+    // Fragment Listener
     private OnFragmentInteractionListener mListener;
+
+    // View Declarations
+    private View fragmentView;
+    private MaterialButton registerButton;
+    private MaterialButton cancelButton;
 
     public Registration() {
         // Required empty public constructor
@@ -39,16 +56,15 @@ public class Registration extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param emailParam Parameter 1.
+     * @param passwordParam Parameter 2.
      * @return A new instance of fragment Registration.
      */
-    // TODO: Rename and change types and number of parameters
-    public static Registration newInstance(String param1, String param2) {
+    public static Registration newInstance(String emailParam, String passwordParam) {
         Registration fragment = new Registration();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(EMAIL_PARAM, emailParam);
+        args.putString(PASSWORD_PARAM, passwordParam);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,16 +73,37 @@ public class Registration extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            email = getArguments().getString(EMAIL_PARAM);
+            password = getArguments().getString(PASSWORD_PARAM);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Initialize Fragment View
+        fragmentView = inflater.inflate(R.layout.fragment_registration, container, false);
+
+        // Text Field Initializers
+        TextInputEditText firstNameField = fragmentView.findViewById(R.id.first_name);
+        TextInputEditText lastNameField = fragmentView.findViewById(R.id.last_name);
+        TextInputEditText emailField = fragmentView.findViewById(R.id.email);
+        TextInputEditText passwordField = fragmentView.findViewById(R.id.password);
+        TextInputEditText passwordConfirmationField =
+                fragmentView.findViewById(R.id.password_confirmation);
+
+        // Set Text Fields that were passed in
+        emailField.setText(email);
+        passwordField.setText(password);
+
+        // Button Initializers
+        registerButton = fragmentView.findViewById(R.id.register_button);
+        cancelButton = fragmentView.findViewById(R.id.cancel_button);
+        registerButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_registration, container, false);
+        return fragmentView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -106,5 +143,13 @@ public class Registration extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void onClick(View v) {
+        if (v == registerButton) {
+            Objects.requireNonNull(getActivity()).onBackPressed();
+        } else if (v == cancelButton) {
+            Objects.requireNonNull(getActivity()).onBackPressed();
+        }
     }
 }

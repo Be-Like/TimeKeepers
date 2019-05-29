@@ -4,20 +4,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
-import android.widget.FrameLayout;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity
         implements View.OnClickListener,
         Registration.OnFragmentInteractionListener {
 
-    private AutoCompleteTextView emailField;
-    private AutoCompleteTextView passwordField;
+    private TextInputEditText emailField;
+    private TextInputEditText passwordField;
     private MaterialButton emailSignIn;
     private MaterialButton emailRegister;
 
@@ -51,21 +56,18 @@ public class LoginActivity extends AppCompatActivity
         if (view == emailSignIn) {
 
         } else if (view == emailRegister) {
+            InputMethodManager imm =
+                    (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(emailField.getWindowToken(), 0);
             openRegistrationPage();
         }
     }
 
     private void openRegistrationPage() {
-        Fragment fragment = null;
-        try {
-            fragment = (Registration.class).newInstance();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
+        Fragment fragment = Registration.newInstance(Objects.requireNonNull(emailField.getText()).toString(),
+                Objects.requireNonNull(passwordField.getText()).toString());
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-        assert fragment != null;
         fragmentManager.beginTransaction()
                 .replace(R.id.registration_fragment, fragment)
                 .commit();
@@ -75,5 +77,33 @@ public class LoginActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        View v = getCurrentFocus();
+
+        if (v != null &&
+                (event.getAction() == MotionEvent.ACTION_UP
+                        || event.getAction() == MotionEvent.ACTION_MOVE) &&
+                v instanceof TextInputEditText &&
+                !v.getClass().getName().startsWith("android.webkit.")) {
+            int[] scrcoords = new int[2];
+            v.getLocationOnScreen(scrcoords);
+            float x = event.getRawX() + v.getLeft() - scrcoords[0];
+            float y = event.getRawY() + v.getTop() - scrcoords[1];
+
+            if (x < v.getLeft() || x > v.getRight() || y < v.getTop() || y > v.getBottom())
+                hideKeyboard(this);
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        if (activity != null && activity.getWindow() != null) {
+            InputMethodManager imm =
+                    (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+        }
     }
 }
