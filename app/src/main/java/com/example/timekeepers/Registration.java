@@ -13,11 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
+import java.util.concurrent.Executor;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -36,6 +44,10 @@ public class Registration extends Fragment
     private static final String EMAIL_PARAM = "emailParam";
     private static final String PASSWORD_PARAM= "passwordParam";
 
+    // [START]Firebase Declaration
+    private FirebaseAuth userAuth;
+    // [END]Firebase Declaration
+
     // Passed Parameters
     private String email;
     private String password;
@@ -45,6 +57,11 @@ public class Registration extends Fragment
 
     // View Declarations
     private View fragmentView;
+    private TextInputEditText firstNameField;
+    private TextInputEditText lastNameField;
+    private TextInputEditText emailField;
+    private TextInputEditText passwordField;
+    private TextInputEditText passwordConfirmationField;
     private MaterialButton registerButton;
     private MaterialButton cancelButton;
 
@@ -76,6 +93,8 @@ public class Registration extends Fragment
             email = getArguments().getString(EMAIL_PARAM);
             password = getArguments().getString(PASSWORD_PARAM);
         }
+
+        userAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -85,11 +104,11 @@ public class Registration extends Fragment
         fragmentView = inflater.inflate(R.layout.fragment_registration, container, false);
 
         // Text Field Initializers
-        TextInputEditText firstNameField = fragmentView.findViewById(R.id.first_name);
-        TextInputEditText lastNameField = fragmentView.findViewById(R.id.last_name);
-        TextInputEditText emailField = fragmentView.findViewById(R.id.email);
-        TextInputEditText passwordField = fragmentView.findViewById(R.id.password);
-        TextInputEditText passwordConfirmationField =
+        firstNameField = fragmentView.findViewById(R.id.first_name);
+        lastNameField = fragmentView.findViewById(R.id.last_name);
+        emailField = fragmentView.findViewById(R.id.email);
+        passwordField = fragmentView.findViewById(R.id.password);
+        passwordConfirmationField =
                 fragmentView.findViewById(R.id.password_confirmation);
 
         // Set Text Fields that were passed in
@@ -147,9 +166,28 @@ public class Registration extends Fragment
 
     public void onClick(View v) {
         if (v == registerButton) {
-            Objects.requireNonNull(getActivity()).onBackPressed();
+            registerUser();
         } else if (v == cancelButton) {
             Objects.requireNonNull(getActivity()).onBackPressed();
         }
+    }
+
+    private void registerUser() {
+        email = emailField.getText().toString().trim();
+        password = passwordField.getText().toString().trim();
+        userAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(Objects.requireNonNull(getActivity()),
+                        new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getContext(), R.string.valid_registration,
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), R.string.invalid_registration,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 }

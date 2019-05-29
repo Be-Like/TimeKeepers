@@ -77,5 +77,7 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="password_requirements">Password Must Contain: \n \u2022 1 Uppercase \n \u2022
         1 Lowercase \n \u2022 1 Number</string>
+    <string name="valid_registration">Registration Successful</string>
+    <string name="invalid_registration">Failed to Register</string>
 
 </resources>
