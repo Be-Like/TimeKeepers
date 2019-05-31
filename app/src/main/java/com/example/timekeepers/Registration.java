@@ -1,6 +1,7 @@
 package com.example.timekeepers;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -11,7 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.widget.AutoCompleteTextView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -173,8 +177,19 @@ public class Registration extends Fragment
     }
 
     private void registerUser() {
+        if (!((LoginActivity) Objects.requireNonNull(getActivity())).validateEmailField(emailField)) {
+            return;
+        }
+
+        if (!((LoginActivity) getActivity()).validatePasswordField(passwordField)) {
+            return;
+        }
+
+        ((LoginActivity) getActivity()).showProgress(true);
+
         email = emailField.getText().toString().trim();
         password = passwordField.getText().toString().trim();
+
         userAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(Objects.requireNonNull(getActivity()),
                         new OnCompleteListener<AuthResult>() {
@@ -183,9 +198,16 @@ public class Registration extends Fragment
                         if (task.isSuccessful()) {
                             Toast.makeText(getContext(), R.string.valid_registration,
                                     Toast.LENGTH_SHORT).show();
+                            startActivity(
+                                    ((LoginActivity) Objects.requireNonNull(getActivity()))
+                                            .startMainActivity()
+                            );
+                            ((LoginActivity) getActivity()).showProgress(false);
                         } else {
-                            Toast.makeText(getContext(), R.string.invalid_registration,
-                                    Toast.LENGTH_SHORT).show();
+                            ((LoginActivity) getActivity()).showProgress(false);
+                            Toast.makeText(getContext(),
+                                    "Failed to Register: " + task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
                 });

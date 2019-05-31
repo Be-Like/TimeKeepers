@@ -54,13 +54,13 @@
     <string name="logo_image_description">TimeKeepers Logo</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_email">Invalid email address</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="login_attempt_error">Email or Password Invalid... Try Again.</string>
+    <string name="login_attempt_error">Email or Password Invalid… Try Again.</string>
     <string name="google_login_error">Google Authentication Failed</string>
-    <string name="password_too_short">Password to short... Must be 6 characters.</string>
+    <string name="password_too_short">Password to short… Must be 6 characters.</string>
     <string name="password_contains">Passwords contain 1 uppercase, 1 lowercase,
         and 1 number</string>
     <string name="password_must_contain">Must contain 1 uppercase, 1 lowercase,

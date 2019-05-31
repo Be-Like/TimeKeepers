@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+    <!--Loading Background-->
+    <color name="loading_background">#000000</color>
+
     <!--Temp Colors for the Content Background of fragments-->
     <color name="content_background">#FFFFFF</color>
 </resources>

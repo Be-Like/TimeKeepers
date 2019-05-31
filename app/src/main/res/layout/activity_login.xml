@@ -98,4 +98,9 @@
         android:layout_marginEnd="-16dp"
         android:visibility="gone"/>
 
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/loading_screen"
+        android:visibility="gone"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

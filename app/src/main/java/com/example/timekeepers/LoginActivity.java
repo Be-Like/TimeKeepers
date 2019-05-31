@@ -7,12 +7,17 @@ import androidx.fragment.app.FragmentManager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +28,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity
         implements View.OnClickListener,
@@ -41,6 +48,8 @@ public class LoginActivity extends AppCompatActivity
     public void onStart() {
         super.onStart();
         userAuth.signOut();
+        // TODO: Get rid of these ^^^vvv
+        Log.d(TAG, "onStart: Logged Out");
     }
 
     @Override
@@ -83,6 +92,16 @@ public class LoginActivity extends AppCompatActivity
     }
 private String TAG = "Sign In - ";
     private void emailSignIn(){
+        // Validate the email and password
+        if (!validateEmailField(emailField)) {
+            return;
+        }
+        if (!validatePasswordField(passwordField)) {
+            return;
+        }
+
+        showProgress(true);
+
         String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
 
@@ -92,7 +111,10 @@ private String TAG = "Sign In - ";
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "onComplete: success");
+                            startActivity(startMainActivity());
+                            showProgress(false);
                         } else {
+                            showProgress(false);
                             Log.d(TAG, "onComplete: failure");
                         }
                     }
@@ -100,14 +122,90 @@ private String TAG = "Sign In - ";
     }
 
     private void openRegistrationPage() {
-        Fragment fragment = Registration.newInstance(Objects.requireNonNull(emailField.getText()).toString(),
-                Objects.requireNonNull(passwordField.getText()).toString());
+        String email = Objects.requireNonNull(emailField.getText()).toString();
+        String password = Objects.requireNonNull(passwordField.getText()).toString();
+
+        Fragment fragment = Registration
+                .newInstance(email, password);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.registration_fragment, fragment)
                 .commit();
         findViewById(R.id.registration_fragment).setVisibility(View.VISIBLE);
+    }
+
+    // Validate text fields
+    public boolean validateEmailField(TextInputEditText field) {
+        String email = Objects.requireNonNull(field.getText()).toString().trim();
+        // checks if email text field is empty
+        if (TextUtils.isEmpty(email)) {
+            field.setError(getString(R.string.error_field_required));
+            return false;
+        }
+        if (!isValidEmailAddress(email)) {
+            field.setError(getString(R.string.error_invalid_email));
+            return false;
+        }
+        return true;
+    }
+    private boolean isValidEmailAddress(String emailAddress) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(emailAddress);
+        return matcher.matches();
+    }
+    public boolean validatePasswordField(TextInputEditText field) {
+        String password = Objects.requireNonNull(field.getText()).toString().trim();
+        if (TextUtils.isEmpty(password)) {
+            field.setError(getString(R.string.error_field_required));
+            return false;
+        }
+        if (password.length() < 6) {
+            field.setError(getString(R.string.password_too_short));
+            return false;
+        }
+        if (!passwordContentValidation(password)) {
+            field.setError(getString(R.string.password_contains));
+            return false;
+        }
+        return true;
+    }
+    private boolean passwordContentValidation(final String password) {
+        Pattern pattern;
+        Matcher matcher;
+        final String password_pattern =
+                "^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).*";
+        pattern = Pattern.compile(password_pattern);
+        matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
+
+    public void showProgress(boolean showProgress) {
+        FrameLayout progressBar = findViewById(R.id.progress_bar);
+        AlphaAnimation inAnimation;
+        AlphaAnimation outAnimation;
+
+        if (showProgress) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            inAnimation = new AlphaAnimation(0f,1f);
+            inAnimation.setDuration(200);
+            progressBar.setAnimation(inAnimation);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            outAnimation = new AlphaAnimation(1f, 0f);
+            outAnimation.setDuration(200);
+            progressBar.setAnimation(outAnimation);
+            progressBar.setVisibility(View.GONE);
+            getWindow().clearFlags(WindowManager.LayoutParams
+                    .FLAG_NOT_TOUCHABLE);
+        }
+    }
+
+    public Intent startMainActivity() {
+        finish();
+        return new Intent(getApplicationContext(), MainActivity.class);
     }
 
     @Override
