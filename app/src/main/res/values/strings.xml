@@ -57,7 +57,7 @@
     <string name="error_invalid_email">Invalid email address</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="error_field_required">Field is required</string>
     <string name="login_attempt_error">Email or Password Invalid… Try Again.</string>
     <string name="google_login_error">Google Authentication Failed</string>
     <string name="password_too_short">Password to short… Must be 6 characters.</string>
@@ -75,6 +75,7 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="password_mismatch">Passwords do not match</string>
     <string name="password_requirements">Password Must Contain: \n \u2022 1 Uppercase \n \u2022
         1 Lowercase \n \u2022 1 Number</string>
     <string name="valid_registration">Registration Successful</string>

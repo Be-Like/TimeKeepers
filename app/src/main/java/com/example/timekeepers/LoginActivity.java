@@ -25,7 +25,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -102,8 +101,8 @@ private String TAG = "Sign In - ";
 
         showProgress(true);
 
-        String email = emailField.getText().toString().trim();
-        String password = passwordField.getText().toString().trim();
+        String email = Objects.requireNonNull(emailField.getText()).toString().trim();
+        String password = Objects.requireNonNull(passwordField.getText()).toString().trim();
 
         userAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

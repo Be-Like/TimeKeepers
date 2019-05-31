@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,8 +60,6 @@ public class Registration extends Fragment
     // Fragment Listener
     private OnFragmentInteractionListener mListener;
 
-    // View Declarations
-    private View fragmentView;
     private TextInputEditText firstNameField;
     private TextInputEditText lastNameField;
     private TextInputEditText emailField;
@@ -105,7 +104,9 @@ public class Registration extends Fragment
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Initialize Fragment View
-        fragmentView = inflater.inflate(R.layout.fragment_registration, container, false);
+        // View Declarations
+        View fragmentView =
+                inflater.inflate(R.layout.fragment_registration, container, false);
 
         // Text Field Initializers
         firstNameField = fragmentView.findViewById(R.id.first_name);
@@ -177,18 +178,23 @@ public class Registration extends Fragment
     }
 
     private void registerUser() {
+        if (!validateNameFields()) {
+            return;
+        }
         if (!((LoginActivity) Objects.requireNonNull(getActivity())).validateEmailField(emailField)) {
             return;
         }
-
         if (!((LoginActivity) getActivity()).validatePasswordField(passwordField)) {
+            return;
+        }
+        if (!validatePasswordConfirmation()) {
             return;
         }
 
         ((LoginActivity) getActivity()).showProgress(true);
 
-        email = emailField.getText().toString().trim();
-        password = passwordField.getText().toString().trim();
+        email = Objects.requireNonNull(emailField.getText()).toString().trim();
+        password = Objects.requireNonNull(passwordField.getText()).toString().trim();
 
         userAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(Objects.requireNonNull(getActivity()),
@@ -204,12 +210,46 @@ public class Registration extends Fragment
                             );
                             ((LoginActivity) getActivity()).showProgress(false);
                         } else {
-                            ((LoginActivity) getActivity()).showProgress(false);
+                            ((LoginActivity) Objects.requireNonNull(getActivity()))
+                                    .showProgress(false);
                             Toast.makeText(getContext(),
-                                    "Failed to Register: " + task.getException().getMessage(),
+                                    "Failed to Register: " +
+                                            Objects.requireNonNull(task.getException())
+                                                    .getMessage(),
                                     Toast.LENGTH_LONG).show();
                         }
                     }
                 });
+    }
+
+    private boolean validateNameFields() {
+        String firstName = Objects.requireNonNull(firstNameField.getText()).toString().trim();
+        String lastName = Objects.requireNonNull(lastNameField.getText()).toString().trim();
+
+        if (TextUtils.isEmpty(firstName)) {
+            firstNameField.setError(getString(R.string.error_field_required));
+            return false;
+        }
+        if (TextUtils.isEmpty(lastName)) {
+            lastNameField.setError(getString(R.string.error_field_required));
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validatePasswordConfirmation() {
+        String password = Objects.requireNonNull(passwordField.getText()).toString().trim();
+        String confirmation =
+                Objects.requireNonNull(passwordConfirmationField.getText()).toString().trim();
+
+        if (TextUtils.isEmpty(confirmation)) {
+            passwordConfirmationField.setError(getString(R.string.error_field_required));
+            return false;
+        }
+        if (!password.equals(confirmation)) {
+            passwordConfirmationField.setError(getString(R.string.password_mismatch));
+            return false;
+        }
+        return true;
     }
 }
