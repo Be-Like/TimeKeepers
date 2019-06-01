@@ -1,6 +1,4 @@
 <resources>
-    <string name="server_client_id">461537730133-j9besfdjtn1ua3156r6b62r2edtn936g.apps.googleusercontent.com</string>
-
     <string name="app_name">TimeKeepers</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

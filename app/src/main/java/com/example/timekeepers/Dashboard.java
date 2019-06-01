@@ -76,10 +76,6 @@ public class Dashboard extends Fragment {
 
         fragmentView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
-        TextView testText = fragmentView.findViewById(R.id.testText);
-        testText.setText(acct.getEmail());
-
         // Inflate the layout for this fragment
         return fragmentView;
     }

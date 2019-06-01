@@ -10,14 +10,21 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 
 import com.example.timekeepers.JobManagement.AddJob;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.navigation.NavigationView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.timekeepers.JobManagement.JobManagement;
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -26,6 +33,11 @@ public class MainActivity extends AppCompatActivity
         Calendar.OnFragmentInteractionListener, AddJob.OnFragmentInteractionListener {
 
     public Toolbar toolbar;
+
+    String usersName = "";
+    String usersEmail = "";
+    TextView usersNameTextView;
+    TextView usersEmailTextView;
 
     // Fragment Tags
     public final String dashboardTag = "DashboardTag";
@@ -36,6 +48,21 @@ public class MainActivity extends AppCompatActivity
 
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
+
+    public void onStart() {
+        super.onStart();
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+        if (acct != null) {
+            usersName = acct.getDisplayName();
+            usersEmail = acct.getEmail();
+            // TODO: Add get user photo
+            // Update db
+            UserDBUpdate.updateUserInformation(usersName, usersEmail);
+        } else {
+            // Get user info from db
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +91,13 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        usersNameTextView = headerView.findViewById(R.id.users_name);
+        usersEmailTextView = headerView.findViewById(R.id.users_email);
+        // TODO: Figure out why the text isn't apperaing
+        usersNameTextView.setText(usersName);
+        usersEmailTextView.setText(usersEmail);
     }
 
     @Override

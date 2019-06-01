@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.common.base.Joiner;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -193,6 +194,9 @@ public class Registration extends Fragment
 
         ((LoginActivity) getActivity()).showProgress(true);
 
+        final String fullName =
+                Joiner.on(" ").join(firstNameField.getText(), lastNameField.getText());
+
         email = Objects.requireNonNull(emailField.getText()).toString().trim();
         password = Objects.requireNonNull(passwordField.getText()).toString().trim();
 
@@ -203,6 +207,7 @@ public class Registration extends Fragment
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // TODO: Create user data
+                            UserDBUpdate.updateUserInformation(fullName, email);
                             Toast.makeText(getContext(), R.string.valid_registration,
                                     Toast.LENGTH_SHORT).show();
                             startActivity(
