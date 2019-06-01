@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Initialize Text Views
+        // TODO: delete this
         emailField = findViewById(R.id.email);
         passwordField = findViewById(R.id.password);
 
