@@ -7,6 +7,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.auth.FirebaseUser;
 
 
 /**
@@ -27,6 +32,8 @@ public class Dashboard extends Fragment {
     private String mParam1;
     private String mParam2;
     private String dashboardTitle = "Dashboard";
+
+    private View fragmentView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,8 +74,14 @@ public class Dashboard extends Fragment {
         // Set Toolbar Title
         ((MainActivity) getActivity()).toolbar.setTitle(dashboardTitle);
 
+        fragmentView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+        TextView testText = fragmentView.findViewById(R.id.testText);
+        testText.setText(acct.getEmail());
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard, container, false);
+        return fragmentView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

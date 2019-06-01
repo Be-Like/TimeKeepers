@@ -18,13 +18,22 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -36,18 +45,27 @@ public class LoginActivity extends AppCompatActivity
 
     // [START]Firebase Declaration
     private FirebaseAuth userAuth;
+    private GoogleSignInClient mGoogleSignInClient;
     // [END]Firebase Declaration
 
     private TextInputEditText emailField;
     private TextInputEditText passwordField;
     private MaterialButton emailSignIn;
     private MaterialButton emailRegister;
+    private SignInButton googleSignIn;
 
     @Override
     public void onStart() {
         super.onStart();
-        userAuth.signOut();
+        // TODO: uncomment and add transition to go to main activity vvv
+//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         // TODO: Get rid of these ^^^vvv
+        userAuth.signOut();
+        GoogleSignInOptions gso =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .build();
+        GoogleSignIn.getClient(this, gso).signOut();
         Log.d(TAG, "onStart: Logged Out");
     }
 
@@ -57,6 +75,12 @@ public class LoginActivity extends AppCompatActivity
         setContentView(R.layout.activity_login);
 
         userAuth = FirebaseAuth.getInstance();
+        GoogleSignInOptions gso =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Initialize Text Views
         emailField = findViewById(R.id.email);
@@ -67,6 +91,9 @@ public class LoginActivity extends AppCompatActivity
         emailRegister = findViewById(R.id.register_button);
         emailSignIn.setOnClickListener(this);
         emailRegister.setOnClickListener(this);
+        googleSignIn = findViewById(R.id.google_sign_in);
+        googleSignIn.setSize(SignInButton.SIZE_ICON_ONLY);
+        googleSignIn.setOnClickListener(this);
     }
 
     @Override
@@ -87,8 +114,11 @@ public class LoginActivity extends AppCompatActivity
                     (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(emailField.getWindowToken(), 0);
             openRegistrationPage();
+        } else if (view == googleSignIn) {
+            googleSignIn();
         }
     }
+
 private String TAG = "Sign In - ";
     private void emailSignIn(){
         // Validate the email and password
@@ -132,6 +162,48 @@ private String TAG = "Sign In - ";
                 .replace(R.id.registration_fragment, fragment)
                 .commit();
         findViewById(R.id.registration_fragment).setVisibility(View.VISIBLE);
+    }
+
+    private int RC_SIGN_IN = 1995;
+    private void googleSignIn() {
+        showProgress(true);
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                Log.w(TAG, "Google sign in failed", e);
+                showProgress(false);
+            }
+        }
+    }
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        userAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            startActivity(startMainActivity());
+                            showProgress(false);
+                        } else {
+                            showProgress(false);
+                            Toast.makeText(getApplicationContext(),
+                                    "Failed to sign in: " +
+                                            Objects.requireNonNull(task.getException())
+                                                    .getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
     // Validate text fields

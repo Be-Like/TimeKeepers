@@ -202,6 +202,7 @@ public class Registration extends Fragment
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            // TODO: Create user data
                             Toast.makeText(getContext(), R.string.valid_registration,
                                     Toast.LENGTH_SHORT).show();
                             startActivity(
