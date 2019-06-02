@@ -18,9 +18,11 @@
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
-    <!--OLD PARENT: ThemeOverlay.AppCompat.Dark.ActionBar-->
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
+
+    <style name="LauncherTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@drawable/launcher_screen</item>
+    </style>
 
 </resources>

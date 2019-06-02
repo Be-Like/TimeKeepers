@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+    <!--Launcher Background-->
+    <color name="launcher_background">#000000</color>
+
     <!--Loading Background-->
     <color name="loading_background">#000000</color>
 
