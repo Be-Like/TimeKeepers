@@ -66,18 +66,6 @@ public class MainActivity extends AppCompatActivity
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Fragment fragment = null;
-        Class fragmentClass;
-        fragmentClass = Dashboard.class;
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        assert fragment != null;
-        fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).commit();
-
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_dashboard);
@@ -113,11 +101,14 @@ public class MainActivity extends AppCompatActivity
             Uri pic = acct.getPhotoUrl();
             Glide.with(this).load(pic).into(usersProfilePicture);
 
+            initializeFirstFragment();
+
             // Update db
             UserDBUpdate.updateUserInformation(usersName, usersEmail);
 
             usersNameTextView.setText(usersName);
             usersEmailTextView.setText(usersEmail);
+
         } else {
             // Get user info from db
             FirebaseFirestore.getInstance()
@@ -133,9 +124,12 @@ public class MainActivity extends AppCompatActivity
                                 usersName = doc.getString("Users_Name");
                                 usersEmail = doc.getString("Email");
 
+                                initializeFirstFragment();
+
                                 usersNameTextView.setText(usersName);
                                 usersEmailTextView.setText(usersEmail);
                             } else {
+                                initializeFirstFragment();
                                 Toast.makeText(getApplicationContext(),
                                         "Error getting user info",
                                         Toast.LENGTH_SHORT).show();
@@ -143,6 +137,20 @@ public class MainActivity extends AppCompatActivity
                         }
                     });
         }
+    }
+
+    private void initializeFirstFragment() {
+        Fragment fragment = null;
+        Class fragmentClass;
+        fragmentClass = Dashboard.class;
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        assert fragment != null;
+        fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).commit();
     }
 
     @Override

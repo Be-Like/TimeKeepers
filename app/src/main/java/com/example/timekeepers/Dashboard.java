@@ -3,6 +3,8 @@ package com.example.timekeepers;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,8 @@ import android.widget.TextView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Objects;
 
 
 /**
@@ -68,16 +72,25 @@ public class Dashboard extends Fragment {
         }
     }
 
+    private TextView testText;
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Set Toolbar Title
-        ((MainActivity) getActivity()).toolbar.setTitle(dashboardTitle);
+        ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(dashboardTitle);
 
         fragmentView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
+        testText = fragmentView.findViewById(R.id.testText);
+
         // Inflate the layout for this fragment
         return fragmentView;
+    }
+
+    public void onStart() {
+        super.onStart();
+
+        testText.setText(((MainActivity) Objects.requireNonNull(getActivity())).getUsersName());
     }
 
     // TODO: Rename method, update argument and hook method into UI event
