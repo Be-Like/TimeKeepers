@@ -12,7 +12,7 @@
     <string name="menu_accounting">Accounting</string>
     <string name="menu_expenses">Expenses</string>
     <string name="menu_calendar">Calendar</string>
-    <string name="menu_logout">Log Out</string>
+    <string name="menu_settings">Account &amp; Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_dashboard">Hello blank dashboard</string>
@@ -81,5 +81,8 @@
         1 Lowercase \n \u2022 1 Number</string>
     <string name="valid_registration">Registration Successful</string>
     <string name="invalid_registration">Failed to Register</string>
+
+    <!--Settings Fragment-->
+    <string name="logout">Log Out</string>
 
 </resources>

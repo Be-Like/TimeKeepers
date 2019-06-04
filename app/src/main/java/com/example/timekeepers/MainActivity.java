@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         Dashboard.OnFragmentInteractionListener, JobManagement.OnFragmentInteractionListener,
         Accounting.OnFragmentInteractionListener, Expenses.OnFragmentInteractionListener,
-        Calendar.OnFragmentInteractionListener, AddJob.OnFragmentInteractionListener {
+        Calendar.OnFragmentInteractionListener, AddJob.OnFragmentInteractionListener,
+        Settings.OnFragmentInteractionListener {
 
     public Toolbar toolbar;
 
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     public final String accountingTag = "AccountingTag";
     public final String expensesTag = "ExpensesTag";
     public final String calendarTag = "CalendarTag";
+    public final String settingsTag = "SettingsTag";
 
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
@@ -214,6 +216,9 @@ public class MainActivity extends AppCompatActivity
                 fragmentClass = Calendar.class;
                 fragmentTag = calendarTag;
                 break;
+            case R.id.nav_settings:
+                fragmentClass = Settings.class;
+                fragmentTag = settingsTag;
             default:
                 break;
         }
