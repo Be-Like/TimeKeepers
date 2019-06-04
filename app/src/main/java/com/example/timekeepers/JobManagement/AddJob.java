@@ -102,6 +102,12 @@ public class AddJob extends Fragment
         return fragmentView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((MainActivity) getActivity()).showProgress(false);
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {

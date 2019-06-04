@@ -23,4 +23,9 @@
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/activity_main_drawer" />
 
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/loading_screen"
+        android:visibility="gone"/>
+
 </androidx.drawerlayout.widget.DrawerLayout>

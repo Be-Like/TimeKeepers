@@ -23,6 +23,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -271,5 +274,27 @@ public class MainActivity extends AppCompatActivity
 
     public String getUsersEmail() {
         return usersEmail;
+    }
+
+    public void showProgress(boolean showProgress) {
+        FrameLayout progressBar = findViewById(R.id.progress_bar);
+        AlphaAnimation inAnimation;
+        AlphaAnimation outAnimation;
+
+        if (showProgress) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            inAnimation = new AlphaAnimation(0f,1f);
+            inAnimation.setDuration(200);
+            progressBar.setAnimation(inAnimation);
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            outAnimation = new AlphaAnimation(1f, 0f);
+            outAnimation.setDuration(200);
+            progressBar.setAnimation(outAnimation);
+            progressBar.setVisibility(View.GONE);
+            getWindow().clearFlags(WindowManager.LayoutParams
+                    .FLAG_NOT_TOUCHABLE);
+        }
     }
 }

@@ -9,6 +9,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
@@ -159,18 +161,6 @@ public class JobManagement extends Fragment
     }
 
     private void selectJobTypeDialog() {
-//        FragmentTransaction ft = getFragmentManager().beginTransaction();
-//        Fragment prev = getFragmentManager().findFragmentByTag("dialogTag");
-//
-//        if (prev != null) {
-//            ft.remove(prev);
-//        }
-//        ft.addToBackStack(null);
-//
-//        DialogFragment dialogFragment = new JobTypeSelector();
-//        dialogFragment.setTargetFragment(this, 0);
-//        dialogFragment.show(ft, "dialogTag");
-
         // Create the items
         final JobTypeItem[] items = {
                 new JobTypeItem("Hourly", R.drawable.ic_hourly),
@@ -191,7 +181,7 @@ public class JobManagement extends Fragment
                 tv.setCompoundDrawablesWithIntrinsicBounds(items[position].jobTypeIcon, 0, 0, 0);
 
                 //Add margin between image and text (support various screen densities)
-                int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
+                int dp5 = (int) (25 * getResources().getDisplayMetrics().density + 0.5f);
                 tv.setCompoundDrawablePadding(dp5);
 
                 return v;
@@ -203,7 +193,30 @@ public class JobManagement extends Fragment
                 .setAdapter(adapter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Fragment addJob = null;
 
+                        switch (which) {
+                            case 0:
+                                Toast.makeText(getContext(), "Hourly selected", Toast.LENGTH_SHORT).show();
+                                addJob = AddJob.newInstance("Hourly");
+                                break;
+                            case 1:
+                                Toast.makeText(getContext(), "Salary selected", Toast.LENGTH_SHORT).show();
+                                addJob = AddJob.newInstance("Salary");
+                                break;
+                            case 2:
+                                Toast.makeText(getContext(), "Project selected", Toast.LENGTH_SHORT).show();
+                                addJob = AddJob.newInstance("Project");
+                                break;
+                        }
+
+                        ((MainActivity) getActivity()).showProgress(true);
+
+                        FragmentManager fragmentManager =
+                                Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.main_fragment, addJob)
+                                .addToBackStack(null).commit();
                     }
                 }).show();
     }
