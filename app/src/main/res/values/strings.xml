@@ -22,7 +22,7 @@
     <string name="hello_blank_calendar">Hello blank calendar</string>
 
     <!--Job Management-->
-    <string name="dialog_job_type_prompt">What type of job do you want to create?</string>
+    <string name="dialog_job_type_prompt">Select a job type:</string>
 
     <!--Add Job Page-->
     <string name="job_details_label">Job Details</string>

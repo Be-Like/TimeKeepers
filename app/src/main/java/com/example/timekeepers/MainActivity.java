@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity
         usersProfilePicture = headerView.findViewById(R.id.users_profile_picture);
     }
 
+    // TODO: Initialize first fragment needs to run the last page it was on, otherwise, start at dashboard
     @Override
     public void onStart() {
         super.onStart();
@@ -154,6 +155,11 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         assert fragment != null;
         fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).commit();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override

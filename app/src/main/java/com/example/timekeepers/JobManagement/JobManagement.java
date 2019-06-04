@@ -1,19 +1,22 @@
 package com.example.timekeepers.JobManagement;
 
+import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.TextView;
 
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
@@ -156,16 +159,52 @@ public class JobManagement extends Fragment
     }
 
     private void selectJobTypeDialog() {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag("dialogTag");
+//        FragmentTransaction ft = getFragmentManager().beginTransaction();
+//        Fragment prev = getFragmentManager().findFragmentByTag("dialogTag");
+//
+//        if (prev != null) {
+//            ft.remove(prev);
+//        }
+//        ft.addToBackStack(null);
+//
+//        DialogFragment dialogFragment = new JobTypeSelector();
+//        dialogFragment.setTargetFragment(this, 0);
+//        dialogFragment.show(ft, "dialogTag");
 
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
+        // Create the items
+        final JobTypeItem[] items = {
+                new JobTypeItem("Hourly", R.drawable.ic_hourly),
+                new JobTypeItem("Salary", R.drawable.ic_salary),
+                new JobTypeItem("Project", R.drawable.ic_project)
+        };
 
-        DialogFragment dialogFragment = new JobTypeSelector();
-        dialogFragment.setTargetFragment(this, 0);
-        dialogFragment.show(ft, "dialogTag");
+        ListAdapter adapter = new ArrayAdapter<JobTypeItem>(getContext(),
+                android.R.layout.select_dialog_item,
+                android.R.id.text1,
+                items) {
+            public View getView(int position, View convertView, ViewGroup parent) {
+                //Use super class to create the View
+                View v = super.getView(position, convertView, parent);
+                TextView tv = v.findViewById(android.R.id.text1);
+
+                //Put the image on the TextView
+                tv.setCompoundDrawablesWithIntrinsicBounds(items[position].jobTypeIcon, 0, 0, 0);
+
+                //Add margin between image and text (support various screen densities)
+                int dp5 = (int) (5 * getResources().getDisplayMetrics().density + 0.5f);
+                tv.setCompoundDrawablePadding(dp5);
+
+                return v;
+            }
+        };
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.dialog_job_type_prompt)
+                .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
     }
 }
