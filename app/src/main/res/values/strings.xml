@@ -12,6 +12,7 @@
     <string name="menu_accounting">Accounting</string>
     <string name="menu_expenses">Expenses</string>
     <string name="menu_calendar">Calendar</string>
+    <string name="menu_logout">Log Out</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_dashboard">Hello blank dashboard</string>

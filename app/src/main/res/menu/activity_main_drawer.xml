@@ -27,4 +27,11 @@
             android:title="@string/menu_calendar" />
     </group>
 
+    <group>
+        <item
+            android:id="@+id/user_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/menu_logout"/>
+    </group>
+
 </menu>
