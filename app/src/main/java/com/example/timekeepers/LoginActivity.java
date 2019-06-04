@@ -57,15 +57,9 @@ public class LoginActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        // TODO: uncomment and add transition to go to main activity vvv
-//        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        // TODO: Get rid of these ^^^vvv
-        userAuth.signOut();
-        GoogleSignInOptions gso =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestEmail()
-                        .build();
-        GoogleSignIn.getClient(this, gso).signOut();
+        if (userAuth.getCurrentUser() != null) {
+            startActivity(startMainActivity());
+        }
         Log.d(TAG, "onStart: Logged Out");
     }
 

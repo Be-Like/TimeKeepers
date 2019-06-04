@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity
         usersProfilePicture = headerView.findViewById(R.id.users_profile_picture);
     }
 
+    @Override
     public void onStart() {
         super.onStart();
 
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // Make sure somebody is logged in
-        if (acct == null && currentUser == null) {
+        if (currentUser == null) {
             Intent i = new Intent(this, LoginActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(i);
