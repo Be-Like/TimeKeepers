@@ -183,15 +183,15 @@ public class JobManagement extends Fragment
                         switch (which) {
                             case 0:
                                 Toast.makeText(getContext(), "Hourly selected", Toast.LENGTH_SHORT).show();
-                                addJob = AddJob.newInstance("Hourly");
+                                addJob = AddJob.newInstance(getString(R.string.hourly));
                                 break;
                             case 1:
                                 Toast.makeText(getContext(), "Salary selected", Toast.LENGTH_SHORT).show();
-                                addJob = AddJob.newInstance("Salary");
+                                addJob = AddJob.newInstance(getString(R.string.salary));
                                 break;
                             case 2:
                                 Toast.makeText(getContext(), "Project selected", Toast.LENGTH_SHORT).show();
-                                addJob = AddJob.newInstance("Project");
+                                addJob = AddJob.newInstance(getString(R.string.project));
                                 break;
                         }
 

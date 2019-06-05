@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    // TODO: Initialize first fragment needs to run the last page it was on, otherwise, start at dashboard
     @Override
     public void onStart() {
         super.onStart();
@@ -257,9 +256,16 @@ String currentFragmentTag;
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             toggle.setDrawerIndicatorEnabled(false);
             Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+            toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
         } else {
             Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(false);
             toggle.setDrawerIndicatorEnabled(true);
+            toggle.setToolbarNavigationClickListener(null);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
     }

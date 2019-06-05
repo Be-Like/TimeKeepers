@@ -1,10 +1,13 @@
 package com.example.timekeepers.JobManagement;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -13,12 +16,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.timekeepers.CurrencyAdapter;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Objects;
 
@@ -34,6 +42,8 @@ import static android.content.ContentValues.TAG;
  */
 public class AddJob extends Fragment
         implements View.OnClickListener {
+
+    // [START] Class Declarations
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -47,11 +57,37 @@ public class AddJob extends Fragment
     private String mParam2;
     private String jobType;
 
+    // Job Details Declarations
+    private TextInputEditText jobTitle;
+    private CheckBox completedCheckbox;
+    private TextInputEditText payRate;
+
+    // Address Declarations
+    private AutoCompleteTextView addressLine1;
+    private AutoCompleteTextView addressLine2;
+    private AutoCompleteTextView city;
+    private AutoCompleteTextView state;
+    private AutoCompleteTextView zipcode;
+
+    // Job Contact Info Declarations
+    private AutoCompleteTextView phoneNumber;
+    private AutoCompleteTextView jobEmail;
+    private AutoCompleteTextView website;
+
+    // Taxes Declarations
+    private TextInputEditText federalIncome;
+    private TextInputEditText stateIncome;
+    private TextInputEditText socialSecurity;
+    private TextInputEditText medicareInput;
+    private TextInputEditText individualRetirement;
+    private TextInputEditText otherWithholdings;
+
     // Button Declarations
     private Button saveButton;
     private Button cancelButton;
 
     private OnFragmentInteractionListener mListener;
+    // [END] Class Declarations
 
     public AddJob() {
         // Required empty public constructor
@@ -92,11 +128,12 @@ public class AddJob extends Fragment
                 .toolbar.setTitle(addJobTitle + " (" + mParam1 + ")");
         ((MainActivity) getActivity()).lockNavigationDrawer(true);
 
-        // Button Initializers
-        saveButton = fragmentView.findViewById(R.id.save_button);
-        cancelButton = fragmentView.findViewById(R.id.cancel_button);
-        saveButton.setOnClickListener(this);
-        cancelButton.setOnClickListener(this);
+        // Initialize form declarations
+        initJobDetailDeclarations();
+        initAddressDeclarations();
+        initJobContactDeclarations();
+        initTaxDeclarations();
+        initButtonDeclarations();
 
         // Inflate the layout for this fragment
         return fragmentView;
@@ -105,6 +142,53 @@ public class AddJob extends Fragment
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    private void initJobDetailDeclarations() {
+        jobTitle = fragmentView.findViewById(R.id.job_title);
+        completedCheckbox = fragmentView.findViewById(R.id.completed_checkbox);
+        payRate = fragmentView.findViewById(R.id.pay_rate);
+        CurrencyAdapter currencyAdapter = new CurrencyAdapter(getContext(), payRate);
+        payRate.addTextChangedListener(currencyAdapter);
+
+        if (mParam1.equals(getString(R.string.salary))) {
+            setTextInputLayoutHint("Annual Salary");
+            AppCompatSpinner payPeriod = fragmentView.findViewById(R.id.pay_period);
+            payPeriod.setVisibility(View.VISIBLE);
+        } else if (mParam1.equals(getString(R.string.project))) {
+            setTextInputLayoutHint("Pay Upon Completion");
+        }
+    }
+    private void initAddressDeclarations() {
+        addressLine1 = fragmentView.findViewById(R.id.address_first_line);
+        addressLine2 = fragmentView.findViewById(R.id.address_second_line);
+        city = fragmentView.findViewById(R.id.city_name);
+        state = fragmentView.findViewById(R.id.state_name);
+        zipcode = fragmentView.findViewById(R.id.zipcode);
+    }
+    private void initJobContactDeclarations() {
+        phoneNumber = fragmentView.findViewById(R.id.phone_number);
+        jobEmail = fragmentView.findViewById(R.id.email);
+        website = fragmentView.findViewById(R.id.website);
+    }
+    private void initTaxDeclarations() {
+        federalIncome = fragmentView.findViewById(R.id.federal_income);
+        stateIncome = fragmentView.findViewById(R.id.state_income);
+        socialSecurity = fragmentView.findViewById(R.id.social_security);
+        medicareInput = fragmentView.findViewById(R.id.medicare);
+        individualRetirement = fragmentView.findViewById(R.id.individual_retirement);
+        otherWithholdings = fragmentView.findViewById(R.id.other_withholdings);
+    }
+    private void initButtonDeclarations() {
+        saveButton = fragmentView.findViewById(R.id.save_button);
+        cancelButton = fragmentView.findViewById(R.id.cancel_button);
+        saveButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+    }
+    private void setTextInputLayoutHint(String hint) {
+        TextInputLayout layoutHint;
+        layoutHint = fragmentView.findViewById(R.id.text_input_layout);
+        layoutHint.setHint(hint);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
