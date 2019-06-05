@@ -105,7 +105,6 @@ public class AddJob extends Fragment
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) getActivity()).showProgress(false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

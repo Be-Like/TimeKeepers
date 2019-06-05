@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity
         Settings.OnFragmentInteractionListener {
 
     public Toolbar toolbar;
+    NavigationView navigationView;
 
     String usersName = "";
     String usersEmail = "";
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_dashboard);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -84,6 +87,10 @@ public class MainActivity extends AppCompatActivity
         usersNameTextView = headerView.findViewById(R.id.users_name);
         usersEmailTextView = headerView.findViewById(R.id.users_email);
         usersProfilePicture = headerView.findViewById(R.id.users_profile_picture);
+
+        if (savedInstanceState == null) {
+            initializeFirstFragment();
+        }
     }
 
     // TODO: Initialize first fragment needs to run the last page it was on, otherwise, start at dashboard
@@ -108,7 +115,7 @@ public class MainActivity extends AppCompatActivity
             Uri pic = acct.getPhotoUrl();
             Glide.with(this).load(pic).into(usersProfilePicture);
 
-            initializeFirstFragment();
+//            initializeFirstFragment();
 
             // Update db
             UserDBUpdate.updateUserInformation(usersName, usersEmail);
@@ -131,12 +138,12 @@ public class MainActivity extends AppCompatActivity
                                 usersName = doc.getString("Users_Name");
                                 usersEmail = doc.getString("Email");
 
-                                initializeFirstFragment();
+//                                initializeFirstFragment();
 
                                 usersNameTextView.setText(usersName);
                                 usersEmailTextView.setText(usersEmail);
                             } else {
-                                initializeFirstFragment();
+//                                initializeFirstFragment();
                                 Toast.makeText(getApplicationContext(),
                                         "Error getting user info",
                                         Toast.LENGTH_SHORT).show();
@@ -147,19 +154,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initializeFirstFragment() {
-        Fragment fragment = null;
-        Class fragmentClass;
-        fragmentClass = Dashboard.class;
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        currentFragmentTag = dashboardTag;
+        Fragment fragment = Dashboard.newInstance();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        assert fragment != null;
         fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).commit();
     }
 
+    final String currentFragmentKey = "CurrentFragmentKey";
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -196,55 +197,50 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
+String currentFragmentTag;
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         Fragment fragment = null;
-        Class fragmentClass = null;
         String fragmentTag = null;
 
         switch (id) {
             case R.id.nav_dashboard:
-                fragmentClass = Dashboard.class;
+                fragment = Dashboard.newInstance();
                 fragmentTag = dashboardTag;
                 break;
             case R.id.nav_job_management:
-                fragmentClass = JobManagement.class;
+                fragment = JobManagement.newInstance();
                 fragmentTag = jobManagementTag;
                 break;
             case R.id.nav_accounting:
-                fragmentClass = Accounting.class;
+                fragment = Accounting.newInstance();
                 fragmentTag = accountingTag;
                 break;
             case R.id.nav_expenses:
-                fragmentClass = Expenses.class;
+                fragment = Expenses.newInstance();
                 fragmentTag = expensesTag;
                 break;
             case R.id.nav_calendar:
-                fragmentClass = Calendar.class;
+                fragment = Calendar.newInstance();
                 fragmentTag = calendarTag;
                 break;
             case R.id.nav_settings:
-                fragmentClass = Settings.class;
+                fragment = Settings.newInstance();
                 fragmentTag = settingsTag;
-            default:
-                break;
         }
+        Log.d("TAG", "onNavigationItemSelected: " + id);
 
-        try {
-            assert fragmentClass != null;
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
+        assert fragmentTag != null;
+        if (!fragmentTag.equals(currentFragmentTag)) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            assert fragment != null;
+            fragmentManager.beginTransaction()
+                    .replace(R.id.main_fragment, fragment, fragmentTag)
+                    .commit();
+            currentFragmentTag = fragmentTag;
         }
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        assert fragment != null;
-        fragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, fragment, fragmentTag)
-                .commit();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

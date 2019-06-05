@@ -38,18 +38,7 @@ import static android.content.ContentValues.TAG;
  */
 public class JobManagement extends Fragment
         implements View.OnClickListener {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private View fragmentView;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private final String jobManagementTitle = "Job Management";
 
     private FloatingActionButton addJob;
 
@@ -63,16 +52,14 @@ public class JobManagement extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+//     * @param param1 Parameter 1.
+//     * @param param2 Parameter 2.
      * @return A new instance of fragment JobManagement.
      */
     // TODO: Rename and change types and number of parameters
-    public static JobManagement newInstance(String param1, String param2) {
+    public static JobManagement newInstance() {
         JobManagement fragment = new JobManagement();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,10 +67,7 @@ public class JobManagement extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        if (getArguments() != null) {}
     }
 
     @Override
@@ -93,7 +77,7 @@ public class JobManagement extends Fragment
         fragmentView = inflater.inflate(R.layout.fragment_job_management, container, false);
 
         // Set Toolbar Title
-        ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(jobManagementTitle);
+        ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle("Job Management");
         // TODO: Modify this to be solely in the Add Job fragment... I think.
         ((MainActivity) getActivity()).lockNavigationDrawer(false);
 
@@ -168,11 +152,12 @@ public class JobManagement extends Fragment
                 new JobTypeItem("Project", R.drawable.ic_project)
         };
 
-        ListAdapter adapter = new ArrayAdapter<JobTypeItem>(getContext(),
+        ListAdapter adapter = new ArrayAdapter<JobTypeItem>(Objects.requireNonNull(getContext()),
                 android.R.layout.select_dialog_item,
                 android.R.id.text1,
                 items) {
-            public View getView(int position, View convertView, ViewGroup parent) {
+            @NonNull
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 //Use super class to create the View
                 View v = super.getView(position, convertView, parent);
                 TextView tv = v.findViewById(android.R.id.text1);
@@ -188,7 +173,7 @@ public class JobManagement extends Fragment
             }
         };
 
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(Objects.requireNonNull(getContext()))
                 .setTitle(R.string.dialog_job_type_prompt)
                 .setAdapter(adapter, new DialogInterface.OnClickListener() {
                     @Override
@@ -210,10 +195,9 @@ public class JobManagement extends Fragment
                                 break;
                         }
 
-                        ((MainActivity) getActivity()).showProgress(true);
-
                         FragmentManager fragmentManager =
                                 Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+                        assert addJob != null;
                         fragmentManager.beginTransaction()
                                 .replace(R.id.main_fragment, addJob)
                                 .addToBackStack(null).commit();
