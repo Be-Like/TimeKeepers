@@ -49,6 +49,14 @@
     <string name="medicare">Medicare %</string>
     <string name="retirement">Individual Retirement %</string>
     <string name="other_withholdings">Other Withholding\'s %</string>
+    <string-array name="pay_period_selections">
+        <item>Weekly</item>
+        <item>Bi-Weekly</item>
+        <item>Bi-Monthly</item>
+        <item>Monthly</item>
+        <item>Quarterly</item>
+        <item>Annually</item>
+    </string-array>
 
     <!--Save and Cancel Buttons-->
     <string name="save_button">Save</string>

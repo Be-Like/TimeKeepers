@@ -8,13 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import com.example.timekeepers.CurrencyTextListener;
 import com.example.timekeepers.MainActivity;
@@ -43,7 +47,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  * create an instance of this fragment.
  */
 public class AddJob extends Fragment
-        implements View.OnClickListener {
+        implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     // [START] Class Declarations
     // TODO: Rename parameter arguments, choose names that match
@@ -62,6 +66,7 @@ public class AddJob extends Fragment
     private TextInputEditText jobTitle;
     private CheckBox completedCheckbox;
     private TextInputEditText payRate;
+    private String payPeriod;
 
     // Address Declarations
     private AutoCompleteTextView addressLine1;
@@ -155,7 +160,14 @@ public class AddJob extends Fragment
         if (jobType.equals(getString(R.string.salary))) {
             setTextInputLayoutHint("Annual Salary");
             AppCompatSpinner payPeriod = fragmentView.findViewById(R.id.pay_period);
+            ArrayAdapter<CharSequence> adapter =
+                    ArrayAdapter.createFromResource(Objects.requireNonNull(getContext()),
+                            R.array.pay_period_selections,
+                            android.R.layout.simple_spinner_dropdown_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            payPeriod.setAdapter(adapter);
             payPeriod.setVisibility(View.VISIBLE);
+            payPeriod.setOnItemSelectedListener(this);
         } else if (jobType.equals(getString(R.string.project))) {
             setTextInputLayoutHint("Pay Upon Completion");
         }
@@ -191,6 +203,10 @@ public class AddJob extends Fragment
         layoutHint = fragmentView.findViewById(R.id.text_input_layout);
         layoutHint.setHint(hint);
     }
+    public void onItemSelected(AdapterView<?> parent, View v, int pos, long id) {
+        payPeriod = parent.getItemAtPosition(pos).toString();
+    }
+    public void onNothingSelected(AdapterView<?> parent) {}
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -245,43 +261,15 @@ public class AddJob extends Fragment
     private FirebaseFirestore initializeFirestoreInstance() {
         return FirebaseFirestore.getInstance();
     }
-    private void updateUserJobData() {
-        final DocumentReference jobData = db.collection("Jobs")
-                .document(mainActivity.getUsersEmail());
-
-        db.collection("Jobs")
-                .document(mainActivity.getUsersEmail())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.exists()) {
-                            jobData.update("Total_Jobs", FieldValue.increment(1));
-                            if (!completedCheckbox.isChecked()) {
-                                jobData.update("Active_Jobs", FieldValue.increment(1));
-                            }
-                            Log.d(TAG, "onSuccess: updateUserJobData");
-                        } else {
-                            setDefaultUserJobData();
-                            updateUserJobData();
-                        }
-                    }
-                });
-    }
-    private void setDefaultUserJobData() {
-        Map<String, Object> defaultData = new HashMap<>();
-        defaultData.put("Total_Jobs", 0);
-        defaultData.put("Active_Jobs", 0);
-        defaultData.put("Gross_Pay", 0);
-
-        db.collection("Jobs")
-                .document(mainActivity.getUsersEmail())
-                .set(defaultData);
-
-        Log.d(TAG, "setDefaultUserJobData: ");
-    }
 
     private void saveJob() {
+        if (!validateJobTitleField()) {
+            return;
+        }
+        if (!validatePayRate()) {
+            return;
+        }
+
         // Get Job Details from Text Views
         String job_title = Objects.requireNonNull(jobTitle.getText()).toString().trim();
         Boolean completed_checkbox = completedCheckbox.isChecked();
@@ -289,7 +277,6 @@ public class AddJob extends Fragment
         String pay_rate = Objects.requireNonNull(payRate.getText()).toString();
         double pay = Double.valueOf(pay_rate.replaceAll("[$,',']", ""));
         pay = Double.valueOf(df.format(pay));
-        // TODO: Add feature for pay period
 
         // Get Address Info from Text Views
         String street_1 = addressLine1.getText().toString().trim();
@@ -318,12 +305,14 @@ public class AddJob extends Fragment
         address.put("City", city_name);
         address.put("State", state_name);
         address.put("Zip_Code", zip_code);
+        // TODO: Figure out how to implement salary pay... (spinners, or something).
 
         // Hash map that crap
         Map<String, Object> newJob = new HashMap<>();
         newJob.put("Job_Title", job_title);
         newJob.put("Completed", completed_checkbox);
         newJob.put("Pay_Rate", pay);
+        newJob.put("Pay_Period", payPeriod);
         newJob.put("Job_Type", jobType);
         newJob.put("Phone", phone_number);
         newJob.put("Email", job_email);
@@ -369,15 +358,64 @@ public class AddJob extends Fragment
             newJob.put("Other_Withholdings", 0);
         }
 
+        final double grossPay = pay;
         Log.d(TAG, "saveJob: ");
         db.collection("Jobs").document(mainActivity.getUsersEmail())
                 .collection("Users_Jobs")
                 .document()
-                .set(newJob);
+                .set(newJob)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        updateUserJobData(grossPay);
+                    }
+                });
+    }
 
-        updateUserJobData();
+    private void updateUserJobData(final double projectPay) {
+        final DocumentReference jobData = db.collection("Jobs")
+                .document(mainActivity.getUsersEmail());
 
-        // Go back to Job Management page
-        Objects.requireNonNull(getActivity()).onBackPressed();
+        db.collection("Jobs")
+                .document(mainActivity.getUsersEmail())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (documentSnapshot.exists()) {
+                            jobData.update("Total_Jobs", FieldValue.increment(1));
+                            if (!completedCheckbox.isChecked()) {
+                                jobData.update("Active_Jobs", FieldValue.increment(1));
+                            }
+                            if (completedCheckbox.isChecked()
+                                    && jobType.equals(getString(R.string.project))) {
+                                jobData.update("Gross_Pay", FieldValue.increment(projectPay));
+                            }
+                            Log.d(TAG, "onSuccess: updateUserJobData");
+                            // Go back to Job Management page
+                            Objects.requireNonNull(getActivity()).onBackPressed();
+                        }
+                    }
+                });
+    }
+
+    // Form Validations
+    private boolean validateJobTitleField() {
+        String job = Objects.requireNonNull(jobTitle.getText()).toString().trim();
+        // checks if job title text field is empty
+        if (TextUtils.isEmpty(job)) {
+            jobTitle.setError(getString(R.string.error_field_required));
+            return false;
+        }
+        return true;
+    }
+    private boolean validatePayRate() {
+        String payRateField = Objects.requireNonNull(payRate.getText()).toString().trim();
+        // chicks if pay rate text field is empty
+        if (TextUtils.isEmpty(payRateField)) {
+            payRate.setError(getString(R.string.error_field_required));
+            return false;
+        }
+        return true;
     }
 }
