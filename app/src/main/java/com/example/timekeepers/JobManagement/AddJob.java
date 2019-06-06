@@ -56,9 +56,6 @@ public class AddJob extends Fragment
     // View Declarations
     private View fragmentView;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private String jobType;
 
     // Job Details Declarations
@@ -117,7 +114,7 @@ public class AddJob extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            jobType = getArguments().getString(ARG_PARAM1);
         }
         mainActivity = (MainActivity) getActivity();
     }
@@ -129,7 +126,7 @@ public class AddJob extends Fragment
         fragmentView = inflater.inflate(R.layout.fragment_add_job, container, false);
 
         // Set Toolbar Title and Lock Navigation Drawer
-        mainActivity.toolbar.setTitle(addJobTitle + " (" + mParam1 + ")");
+        mainActivity.toolbar.setTitle(addJobTitle + " (" + jobType + ")");
         mainActivity.lockNavigationDrawer(true);
 
         // Initialize form declarations
@@ -155,11 +152,11 @@ public class AddJob extends Fragment
         CurrencyTextListener currencyTextListener = new CurrencyTextListener(payRate);
         payRate.addTextChangedListener(currencyTextListener);
 
-        if (mParam1.equals(getString(R.string.salary))) {
+        if (jobType.equals(getString(R.string.salary))) {
             setTextInputLayoutHint("Annual Salary");
             AppCompatSpinner payPeriod = fragmentView.findViewById(R.id.pay_period);
             payPeriod.setVisibility(View.VISIBLE);
-        } else if (mParam1.equals(getString(R.string.project))) {
+        } else if (jobType.equals(getString(R.string.project))) {
             setTextInputLayoutHint("Pay Upon Completion");
         }
     }
@@ -237,7 +234,6 @@ public class AddJob extends Fragment
     public void onClick(View view) {
         if (view == saveButton) {
             db = initializeFirestoreInstance();
-            updateUserJobData();
             saveJob();
         }
         if (view == cancelButton) {
@@ -328,12 +324,18 @@ public class AddJob extends Fragment
         newJob.put("Job_Title", job_title);
         newJob.put("Completed", completed_checkbox);
         newJob.put("Pay_Rate", pay);
-        newJob.put("Gross_Pay", 0);
+        newJob.put("Job_Type", jobType);
         newJob.put("Phone", phone_number);
         newJob.put("Email", job_email);
         newJob.put("Website", web);
         newJob.put("Hours_Worked", 0);
         newJob.put("Address", address);
+        if (completed_checkbox && jobType.equals(getString(R.string.project))) {
+            newJob.put("Gross_Pay", pay);
+        } else {
+            newJob.put("Gross_Pay", 0);
+        }
+
 
         // Tax and Withholding Information
         if (!federal_income.isEmpty()) {
@@ -372,6 +374,8 @@ public class AddJob extends Fragment
                 .collection("Users_Jobs")
                 .document()
                 .set(newJob);
+
+        updateUserJobData();
 
         // Go back to Job Management page
         Objects.requireNonNull(getActivity()).onBackPressed();

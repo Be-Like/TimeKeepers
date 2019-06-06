@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -34,10 +35,18 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class LoginActivity extends AppCompatActivity
         implements View.OnClickListener,
@@ -187,6 +196,14 @@ private String TAG = "Sign In - ";
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            boolean isNewUser =
+                                    Objects.requireNonNull(task.getResult()).getAdditionalUserInfo()
+                                            .isNewUser();
+
+                            if (isNewUser) {
+                                createNewUserData(task.getResult().getUser().getEmail());
+                            }
+
                             startActivity(startMainActivity());
                             showProgress(false);
                         } else {
@@ -272,6 +289,20 @@ private String TAG = "Sign In - ";
     public Intent startMainActivity() {
         finish();
         return new Intent(getApplicationContext(), MainActivity.class);
+    }
+
+    public void createNewUserData(final String userEmail) {
+        FirebaseFirestore db;
+        db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> defaultData = new HashMap<>();
+        defaultData.put("Total_Jobs", 0);
+        defaultData.put("Active_Jobs", 0);
+        defaultData.put("Gross_Pay", 0);
+
+        db.collection("Jobs")
+                .document(userEmail)
+                .set(defaultData);
     }
 
     @Override
