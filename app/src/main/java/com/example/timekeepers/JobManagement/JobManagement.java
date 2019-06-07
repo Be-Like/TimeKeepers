@@ -10,6 +10,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,8 +24,18 @@ import android.widget.Toast;
 
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
+
+import javax.annotation.Nullable;
 
 import static android.content.ContentValues.TAG;
 
@@ -39,8 +51,9 @@ import static android.content.ContentValues.TAG;
 public class JobManagement extends Fragment
         implements View.OnClickListener {
     private View fragmentView;
-
     private FloatingActionButton addJob;
+
+    private ArrayList<JobObject> jobsArray;
 
     private OnFragmentInteractionListener mListener;
 
@@ -78,10 +91,10 @@ public class JobManagement extends Fragment
 
         // Set Toolbar Title
         ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle("Job Management");
-        // TODO: Modify this to be solely in the Add Job fragment... I think.
         ((MainActivity) getActivity()).lockNavigationDrawer(false);
 
         // Initializers
+        initRecyclerView();
         initButton();
 
         // Inflate the layout for this fragment
@@ -137,6 +150,56 @@ public class JobManagement extends Fragment
         if (view == addJob) {
             selectJobTypeDialog();
         }
+    }
+
+    private void initRecyclerView() {
+        FirebaseFirestore.getInstance()
+                .collection("Jobs")
+                .document(((MainActivity) Objects.requireNonNull(getActivity())).getUsersEmail())
+                .collection("Users_Jobs")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        jobsArray = new ArrayList<>();
+                        assert queryDocumentSnapshots != null;
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            jobsArray.add(new JobObject(
+                                    doc.getString("Job_Title"),
+                                    doc.getDouble("Pay_Rate"),
+                                    doc.getDouble("Hours_Worked"),
+                                    doc.getBoolean("Completed"),
+                                    doc.getString("Email"),
+                                    doc.getDouble("Federal_Income_Tax"),
+                                    doc.getDouble("Gross_Pay"),
+                                    doc.getDouble("Medicare"),
+                                    doc.getDouble("OASDI"),
+                                    doc.getDouble("Other_Withholdings"),
+                                    doc.getString("Phone"),
+                                    doc.getDouble("Retirement_Contribution"),
+                                    doc.getDouble("State_Income_Tax"),
+                                    doc.getString("Website"),
+                                    doc.getString("Address.Street_1"),
+                                    doc.getString("Address.Street_2"),
+                                    doc.getString("Address.City"),
+                                    doc.getString("Address.State"),
+                                    doc.getString("Address.Zip_Code"),
+                                    doc.getId()
+                            ));
+                            Comparator<JobObject> compare = new Comparator<JobObject>() {
+                                @Override
+                                public int compare(JobObject o1, JobObject o2) {
+                                    return o1.getJobTitle().compareTo(o2.getJobTitle());
+                                }
+                            };
+                            Collections.sort(jobsArray, compare);
+                            RecyclerView recyclerView = fragmentView.findViewById(R.id.recycler_view);
+                            ManagementAdapter adapter = new ManagementAdapter(getContext(), jobsArray);
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        }
+                    }
+                });
     }
 
     private void initButton() {

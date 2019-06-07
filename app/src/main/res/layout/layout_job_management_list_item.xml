@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp"
+    android:id="@+id/parent_layout">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/job_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Job Title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/time_worked"/>
+    <!--TODO: alter the horizontal weight of each and add style-->
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/time_worked"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Hrs"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/job_title"
+        app:layout_constraintEnd_toStartOf="@id/pay_rate"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/pay_rate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Pay"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/time_worked"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
