@@ -155,15 +155,14 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/federal_label"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Federal Tax: "
-            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintHorizontal_weight="3"
             app:layout_constraintTop_toBottomOf="@id/tax_withholdings_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/federal_tax"
             />
-
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/federal_tax"
             android:layout_width="0dp"
@@ -173,6 +172,116 @@
             app:layout_constraintTop_toTopOf="@id/federal_label"
             app:layout_constraintBottom_toBottomOf="@id/federal_label"
             app:layout_constraintStart_toEndOf="@id/federal_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/state_tax_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="State Tax: "
+            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintTop_toBottomOf="@id/federal_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/state_tax"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/state_tax"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Temp %"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintTop_toTopOf="@id/state_tax_label"
+            app:layout_constraintBottom_toBottomOf="@id/state_tax_label"
+            app:layout_constraintStart_toEndOf="@id/state_tax_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/social_security_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Social Security: "
+            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintTop_toBottomOf="@id/state_tax_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/social_security"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/social_security"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Temp %"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintTop_toTopOf="@id/social_security_label"
+            app:layout_constraintBottom_toBottomOf="@id/social_security_label"
+            app:layout_constraintStart_toEndOf="@id/social_security_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/medicare_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Medicare: "
+            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintTop_toBottomOf="@id/social_security_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/medicare"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/medicare"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Temp %"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintTop_toTopOf="@id/medicare_label"
+            app:layout_constraintBottom_toBottomOf="@id/medicare_label"
+            app:layout_constraintStart_toEndOf="@id/medicare_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/individual_retirement_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Retirement: "
+            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintTop_toBottomOf="@id/medicare_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/individual_retirement"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/individual_retirement"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Temp %"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintTop_toTopOf="@id/individual_retirement_label"
+            app:layout_constraintBottom_toBottomOf="@id/individual_retirement_label"
+            app:layout_constraintStart_toEndOf="@id/individual_retirement_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/other_withholdings_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Other: "
+            app:layout_constraintHorizontal_weight="3"
+            app:layout_constraintTop_toBottomOf="@id/individual_retirement_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/other_withholdings"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/other_withholdings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Temp %"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintTop_toTopOf="@id/other_withholdings_label"
+            app:layout_constraintBottom_toBottomOf="@id/other_withholdings_label"
+            app:layout_constraintStart_toEndOf="@id/other_withholdings_label"
             app:layout_constraintEnd_toEndOf="parent"
             />
 

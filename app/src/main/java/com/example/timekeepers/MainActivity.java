@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
 import com.example.timekeepers.JobManagement.AddJob;
+import com.example.timekeepers.JobManagement.JobInformation;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,7 +46,8 @@ public class MainActivity extends AppCompatActivity
         Dashboard.OnFragmentInteractionListener, JobManagement.OnFragmentInteractionListener,
         Accounting.OnFragmentInteractionListener, Expenses.OnFragmentInteractionListener,
         Calendar.OnFragmentInteractionListener, AddJob.OnFragmentInteractionListener,
-        Settings.OnFragmentInteractionListener {
+        Settings.OnFragmentInteractionListener,
+        JobInformation.OnFragmentInteractionListener {
 
     public Toolbar toolbar;
     NavigationView navigationView;

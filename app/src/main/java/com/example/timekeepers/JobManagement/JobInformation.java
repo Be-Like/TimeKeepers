@@ -1,9 +1,12 @@
 package com.example.timekeepers.JobManagement;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -11,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.timekeepers.R;
+
+import java.text.NumberFormat;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,16 +26,24 @@ import com.example.timekeepers.R;
  * create an instance of this fragment.
  */
 public class JobInformation extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private static final String BUNDLE_KEY = "PassedBundle";
+    private Bundle jobInformation;
     private OnFragmentInteractionListener mListener;
+
+    // Text View Declarations
+    private AppCompatTextView jobTitle;
+    private AppCompatTextView payRate;
+    private AppCompatTextView completedJobs;
+    private AppCompatTextView jobEmail;
+    private AppCompatTextView jobFederal;
+    private AppCompatTextView medicare;
+    private AppCompatTextView socialSecurity;
+    private AppCompatTextView otherWithholdings;
+    private AppCompatTextView jobPhone;
+    private AppCompatTextView retirement;
+    private AppCompatTextView stateTax;
+    private AppCompatTextView jobWebsite;
+    private AppCompatTextView jobAddress;
 
     public JobInformation() {
         // Required empty public constructor
@@ -40,16 +53,14 @@ public class JobInformation extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param bundle Parameter 1.
      * @return A new instance of fragment JobInformation.
      */
     // TODO: Rename and change types and number of parameters
-    public static JobInformation newInstance(String param1, String param2) {
+    public static JobInformation newInstance(Bundle bundle) {
         JobInformation fragment = new JobInformation();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBundle(BUNDLE_KEY, bundle);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,16 +69,23 @@ public class JobInformation extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            jobInformation = getArguments().getBundle(BUNDLE_KEY);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Instantiate Fragment View
+        View fragmentView = inflater.inflate(R.layout.fragment_job_information,
+                container, false);
+
+        // Initialize and set views
+        initializeViews(fragmentView);
+        setViews();
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_job_information, container, false);
+        return fragmentView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -107,5 +125,105 @@ public class JobInformation extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void initializeViews(View fragmentView) {
+        jobTitle = fragmentView.findViewById(R.id.job_title);
+        completedJobs = fragmentView.findViewById(R.id.job_status);
+        payRate = fragmentView.findViewById(R.id.pay_rate);
+        jobAddress = fragmentView.findViewById(R.id.address);
+        jobPhone = fragmentView.findViewById(R.id.phone_number);
+        jobEmail = fragmentView.findViewById(R.id.email);
+        jobWebsite = fragmentView.findViewById(R.id.website);
+        jobFederal = fragmentView.findViewById(R.id.federal_tax);
+        stateTax = fragmentView.findViewById(R.id.state_tax);
+        socialSecurity = fragmentView.findViewById(R.id.social_security);
+        medicare = fragmentView.findViewById(R.id.medicare);
+        retirement = fragmentView.findViewById(R.id.individual_retirement);
+        otherWithholdings = fragmentView.findViewById(R.id.other_withholdings);
+    }
+    @SuppressLint("SetTextI18n")
+    private void setViews() {
+        NumberFormat currency = NumberFormat.getCurrencyInstance();
+
+        jobTitle.setText(jobInformation.getString("jobTitle"));
+
+        if (jobInformation.getBoolean("completedJob")) {
+//            completedJobs.setText(R.string.job_completed);
+            completedJobs.setText("Complete");
+        } else {
+//            completedJobs.setText(R.string.job_incomplete);
+            completedJobs.setText("Active");
+        }
+
+        payRate.setText(currency.format(jobInformation.getDouble("payRate")));
+
+        // TODO: add job type to the formatting (including the suffix for the pay rate)
+
+        // TODO: add address and address formatting
+        addressFormat();
+
+        jobPhone.setText(jobInformation.getString("jobPhone"));
+        jobEmail.setText(jobInformation.getString("jobEmail"));
+        jobWebsite.setText(jobInformation.getString("jobWebsite"));
+
+        double tmpFederal = jobInformation.getDouble("jobFederal");
+        double tmpState = jobInformation.getDouble("stateTax");
+        double tmpSocial = jobInformation.getDouble("socialSecurity");
+        double tmpMedicare = jobInformation.getDouble("medicare");
+        double tmpRetirement = jobInformation.getDouble("retirement");
+        double tmpOther = jobInformation.getDouble("otherWithholding");
+
+        jobFederal.setText(tmpFederal + " %");
+        stateTax.setText(tmpState + " %");
+        socialSecurity.setText(tmpSocial + " %");
+        medicare.setText(tmpMedicare + " %");
+        retirement.setText(tmpRetirement + " %");
+        otherWithholdings.setText(tmpOther + " %");
+    }
+
+    private void addressFormat() {
+        String passedStreet1 = jobInformation.getString("jobStreet1");
+        String passedStreet2 = jobInformation.getString("jobStreet2");
+        String passedCity = jobInformation.getString("jobCity");
+        String passedState = jobInformation.getString("jobState");
+        String passedZipCode = jobInformation.getString("jobZipCode");
+
+        if (passedStreet1 != "") {
+            if (passedStreet2 != "") {
+                if (passedState != "" && passedZipCode != "") {
+                    if (passedCity == "") {
+                        jobAddress.setText(passedStreet1 + "\n" + passedStreet2 +
+                                "\n" + passedState + ", " + passedZipCode);
+                    } else {
+                        jobAddress.setText(passedStreet1 + "\n" + passedStreet2 +
+                                "\n" + passedCity + " " + passedState + ", " + passedZipCode);
+                    }
+                } else {
+                    jobAddress.setText(passedStreet1 + "\n" + passedStreet2);
+                }
+            } else {
+                if (passedState != "" && passedZipCode != "") {
+                    if (passedCity == "") {
+                        jobAddress.setText(passedStreet1 + "\n" + passedState + ", " + passedZipCode);
+                    } else {
+                        jobAddress.setText(passedStreet1 + "\n" +
+                                passedCity + " " + passedState + ", " + passedZipCode);
+                    }
+                } else {
+                    jobAddress.setText(passedStreet1);
+                }
+            }
+        }
+        else if (passedState != "" && passedZipCode != "") {
+            if (passedCity == "") {
+                jobAddress.setText(passedState + ", " + passedZipCode);
+            } else {
+                jobAddress.setText(passedCity + " " + passedState + ", " + passedZipCode);
+            }
+        }
+        else {
+            jobAddress.setText("No Address Entered");
+        }
     }
 }

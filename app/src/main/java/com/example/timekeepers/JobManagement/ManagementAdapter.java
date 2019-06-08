@@ -10,7 +10,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
@@ -64,7 +67,7 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
 
                 Bundle bundle = new Bundle();
                 bundle.putString("jobId", entry.generatedJobId);
-                bundle.putString("jobName" , entry.jobTitle);
+                bundle.putString("jobTitle" , entry.jobTitle);
                 bundle.putDouble("payRate", entry.payRate);
                 bundle.putDouble("hoursWorked", entry.hoursWorked);
                 bundle.putBoolean("completedJob", entry.completedJob);
@@ -86,6 +89,16 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
 
                 Toast.makeText(context, "Will open: " + entry.getJobTitle(),
                         Toast.LENGTH_SHORT).show();
+
+
+                Fragment viewJob = JobInformation.newInstance(bundle);
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                activity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_fragment, viewJob)
+                        .addToBackStack(null)
+                        .commit();
+
 
 //                Management manage = (Management) view.getContext();
 //                JobInfoView jobInfoView = new JobInfoView();
