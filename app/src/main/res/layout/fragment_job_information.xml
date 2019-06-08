@@ -59,8 +59,122 @@
             android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Temp \n Address"
             app:layout_constraintTop_toBottomOf="@id/address_label"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/contact_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contact Info"
+            app:layout_constraintTop_toBottomOf="@id/address"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/phone_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Phone: "
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintTop_toBottomOf="@id/contact_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/phone_number"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/phone_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="(803)554-TEMP"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintTop_toTopOf="@id/phone_label"
+            app:layout_constraintBottom_toBottomOf="@id/phone_label"
+            app:layout_constraintStart_toEndOf="@id/phone_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+        <!--TODO: get rid of margin and replace with the styles-->
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/email_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Email: "
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintTop_toBottomOf="@id/phone_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/email"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Temp@email.com"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintTop_toTopOf="@id/email_label"
+            app:layout_constraintBottom_toBottomOf="@id/email_label"
+            app:layout_constraintStart_toEndOf="@id/email_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+        <!--TODO: get rid of margin and replace with the styles-->
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/website_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Website: "
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintTop_toBottomOf="@id/email_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/website"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/website"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="TempWebsite.com"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintTop_toTopOf="@id/website_label"
+            app:layout_constraintBottom_toBottomOf="@id/website_label"
+            app:layout_constraintStart_toEndOf="@id/website_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+        <!--TODO: get rid of margin and replace with the styles-->
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tax_withholdings_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Taxes and Withholding\'s"
+            app:layout_constraintTop_toBottomOf="@id/website_label"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/federal_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Federal Tax: "
+            app:layout_constraintHorizontal_weight="2"
+            app:layout_constraintTop_toBottomOf="@id/tax_withholdings_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/federal_tax"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/federal_tax"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Temp%"
+            app:layout_constraintHorizontal_weight="8"
+            app:layout_constraintTop_toTopOf="@id/federal_label"
+            app:layout_constraintBottom_toBottomOf="@id/federal_label"
+            app:layout_constraintStart_toEndOf="@id/federal_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
