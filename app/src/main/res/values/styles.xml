@@ -25,4 +25,7 @@
         <item name="android:windowBackground">@drawable/launcher_screen</item>
     </style>
 
+    <style name="FormHeader" parent="TextAppearance.MaterialComponents.Headline6"/>
+    <style name="FormSubtitles" parent="TextAppearance.MaterialComponents.Subtitle2"/>
+
 </resources>

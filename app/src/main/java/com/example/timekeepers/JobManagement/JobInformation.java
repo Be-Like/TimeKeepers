@@ -13,9 +13,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 
 import java.text.NumberFormat;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,6 +78,10 @@ public class JobInformation extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Toolbar navigation
+        ((MainActivity) Objects.requireNonNull(getActivity()))
+                .lockNavigationDrawer(true);
+
         // Instantiate Fragment View
         View fragmentView = inflater.inflate(R.layout.fragment_job_information,
                 container, false);
@@ -182,6 +188,7 @@ public class JobInformation extends Fragment {
         otherWithholdings.setText(tmpOther + " %");
     }
 
+    @SuppressLint("SetTextI18n")
     private void addressFormat() {
         String passedStreet1 = jobInformation.getString("jobStreet1");
         String passedStreet2 = jobInformation.getString("jobStreet2");
@@ -189,10 +196,17 @@ public class JobInformation extends Fragment {
         String passedState = jobInformation.getString("jobState");
         String passedZipCode = jobInformation.getString("jobZipCode");
 
-        if (passedStreet1 != "") {
-            if (passedStreet2 != "") {
-                if (passedState != "" && passedZipCode != "") {
-                    if (passedCity == "") {
+        // Assertions
+        assert passedStreet1 != null;
+        assert passedStreet2 != null;
+        assert passedCity != null;
+        assert passedState != null;
+        assert passedZipCode != null;
+
+        if (!passedStreet1.equals("")) {
+            if (!passedStreet2.equals("")) {
+                if (!passedState.equals("") && !passedZipCode.equals("")) {
+                    if (passedCity.equals("")) {
                         jobAddress.setText(passedStreet1 + "\n" + passedStreet2 +
                                 "\n" + passedState + ", " + passedZipCode);
                     } else {
@@ -203,8 +217,8 @@ public class JobInformation extends Fragment {
                     jobAddress.setText(passedStreet1 + "\n" + passedStreet2);
                 }
             } else {
-                if (passedState != "" && passedZipCode != "") {
-                    if (passedCity == "") {
+                if (!passedState.equals("") && !passedZipCode.equals("")) {
+                    if (passedCity.equals("")) {
                         jobAddress.setText(passedStreet1 + "\n" + passedState + ", " + passedZipCode);
                     } else {
                         jobAddress.setText(passedStreet1 + "\n" +
@@ -215,8 +229,8 @@ public class JobInformation extends Fragment {
                 }
             }
         }
-        else if (passedState != "" && passedZipCode != "") {
-            if (passedCity == "") {
+        else if (!passedState.equals("") && !passedZipCode.equals("")) {
+            if (passedCity.equals("")) {
                 jobAddress.setText(passedState + ", " + passedZipCode);
             } else {
                 jobAddress.setText(passedCity + " " + passedState + ", " + passedZipCode);

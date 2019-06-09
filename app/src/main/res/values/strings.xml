@@ -42,7 +42,7 @@
     <string name="phone_number">Phone Number</string>
     <string name="email">Email</string>
     <string name="website">Website</string>
-    <string name="taxes_label">Taxes and Withholding\'s Percentages</string>
+    <string name="taxes_label">Taxes and Withholding\'s</string>
     <string name="federal_income">Federal Income Tax %</string>
     <string name="state_income">State Income Tax %</string>
     <string name="social_security">Social Security %</string>
@@ -57,6 +57,17 @@
         <item>Quarterly</item>
         <item>Annually</item>
     </string-array>
+
+    <!--Job Information Page-->
+    <string name="phone_label">Phone: </string>
+    <string name="email_label">Email: </string>
+    <string name="website_label">Website: </string>
+    <string name="federal_tax_label">Federal Tax: </string>
+    <string name="state_tax_label">State Tax: </string>
+    <string name="social_security_label">Social Security: </string>
+    <string name="medicare_label">Medicare: </string>
+    <string name="retirement_label">Retirement: </string>
+    <string name="other_withholdings_label">Other: </string>
 
     <!--Save and Cancel Buttons-->
     <string name="save_button">Save</string>
