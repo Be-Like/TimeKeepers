@@ -25,8 +25,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.ViewHolder> {
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
     private ArrayList<JobObject> jobs;
     private Context context;
 
@@ -68,6 +66,7 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
                 Bundle bundle = new Bundle();
                 bundle.putString("jobId", entry.generatedJobId);
                 bundle.putString("jobTitle" , entry.jobTitle);
+                bundle.putString("jobType" , entry.jobType);
                 bundle.putDouble("payRate", entry.payRate);
                 bundle.putDouble("hoursWorked", entry.hoursWorked);
                 bundle.putBoolean("completedJob", entry.completedJob);
@@ -98,17 +97,6 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
                         .replace(R.id.main_fragment, viewJob)
                         .addToBackStack(null)
                         .commit();
-
-
-//                Management manage = (Management) view.getContext();
-//                JobInfoView jobInfoView = new JobInfoView();
-//                jobInfoView.setArguments(bundle);
-//                fragmentManager = manage.getSupportFragmentManager();
-//                fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.management_fragment, jobInfoView);
-//                fragmentTransaction.addToBackStack("Edit_Job_Info");
-//                fragmentTransaction.commit();
-
             }
         });
     }

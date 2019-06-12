@@ -25,7 +25,20 @@
         <item name="android:windowBackground">@drawable/launcher_screen</item>
     </style>
 
-    <style name="FormHeader" parent="TextAppearance.MaterialComponents.Headline6"/>
-    <style name="FormSubtitles" parent="TextAppearance.MaterialComponents.Subtitle2"/>
+    <style name="FormHeader" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="FormSubtitles" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="FormLabels" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+    <style name="FormInfo" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
 
 </resources>

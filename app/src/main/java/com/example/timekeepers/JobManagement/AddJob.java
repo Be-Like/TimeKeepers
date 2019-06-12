@@ -1,5 +1,6 @@
 package com.example.timekeepers.JobManagement;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import com.example.timekeepers.CurrencyTextListener;
 import com.example.timekeepers.MainActivity;
@@ -32,6 +32,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -50,10 +51,9 @@ public class AddJob extends Fragment
         implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     // [START] Class Declarations
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private final String addJobTitle = "Add Job";
+    private static final String BUNDLE_KEY = "PassedBundle";
+    private Bundle jobInformation;
 
     private MainActivity mainActivity;
 
@@ -107,10 +107,11 @@ public class AddJob extends Fragment
      * @return A new instance of fragment AddJob.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddJob newInstance(String jobType) {
+    public static AddJob newInstance(String jobType, Bundle bundle) {
         AddJob fragment = new AddJob();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, jobType);
+        args.putBundle(BUNDLE_KEY, bundle);
         fragment.setArguments(args);
         return fragment;
     }
@@ -120,6 +121,7 @@ public class AddJob extends Fragment
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             jobType = getArguments().getString(ARG_PARAM1);
+            jobInformation = getArguments().getBundle(BUNDLE_KEY);
         }
         mainActivity = (MainActivity) getActivity();
     }
@@ -131,6 +133,7 @@ public class AddJob extends Fragment
         fragmentView = inflater.inflate(R.layout.fragment_add_job, container, false);
 
         // Set Toolbar Title and Lock Navigation Drawer
+        String addJobTitle = "Add Job";
         mainActivity.toolbar.setTitle(addJobTitle + " (" + jobType + ")");
         mainActivity.lockNavigationDrawer(true);
 
@@ -140,6 +143,11 @@ public class AddJob extends Fragment
         initJobContactDeclarations();
         initTaxDeclarations();
         initButtonDeclarations();
+
+        // Set views if bundle is not null
+        if (jobInformation != null) {
+            setViews();
+        }
 
         // Inflate the layout for this fragment
         return fragmentView;
@@ -203,6 +211,31 @@ public class AddJob extends Fragment
         layoutHint = fragmentView.findViewById(R.id.text_input_layout);
         layoutHint.setHint(hint);
     }
+    @SuppressLint("SetTextI18n")
+    private void setViews() {
+        jobTitle.setText(jobInformation.getString("jobTitle"));
+        completedCheckbox.setChecked(jobInformation.getBoolean("completedJob"));
+
+        NumberFormat currency = NumberFormat.getCurrencyInstance();
+        payRate.setText(currency.format(jobInformation.getDouble("payRate")));
+
+        addressLine1.setText(jobInformation.getString("jobStreet1"));
+        addressLine2.setText(jobInformation.getString("jobStreet2"));
+        city.setText(jobInformation.getString("jobCity"));
+        state.setText(jobInformation.getString("jobState"));
+        zipcode.setText(jobInformation.getString("jobZipCode"));
+
+        phoneNumber.setText(jobInformation.getString("jobPhone"));
+        jobEmail.setText(jobInformation.getString("jobEmail"));
+        website.setText(jobInformation.getString("jobWebsite"));
+
+        federalIncome.setText(Double.toString(jobInformation.getDouble("jobFederal")));
+        stateIncome.setText(Double.toString(jobInformation.getDouble("stateTax")));
+        socialSecurity.setText(Double.toString(jobInformation.getDouble("socialSecurity")));
+        medicareInput.setText(Double.toString(jobInformation.getDouble("medicare")));
+        individualRetirement.setText(Double.toString(jobInformation.getDouble("retirement")));
+        otherWithholdings.setText(Double.toString(jobInformation.getDouble("otherWithholding")));
+    }
     public void onItemSelected(AdapterView<?> parent, View v, int pos, long id) {
         payPeriod = parent.getItemAtPosition(pos).toString();
     }
@@ -262,6 +295,8 @@ public class AddJob extends Fragment
         return FirebaseFirestore.getInstance();
     }
 
+    // TODO: fix this to check if it is an edit, then delete old (or should I utilize a
+    //  new method for updating???)...
     private void saveJob() {
         if (!validateJobTitleField()) {
             return;

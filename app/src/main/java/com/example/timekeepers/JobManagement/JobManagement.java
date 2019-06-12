@@ -166,6 +166,7 @@ public class JobManagement extends Fragment
                         for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                             jobsArray.add(new JobObject(
                                     doc.getString("Job_Title"),
+                                    doc.getString("Job_Type"),
                                     doc.getDouble("Pay_Rate"),
                                     doc.getDouble("Hours_Worked"),
                                     doc.getBoolean("Completed"),
@@ -246,15 +247,15 @@ public class JobManagement extends Fragment
                         switch (which) {
                             case 0:
                                 Toast.makeText(getContext(), "Hourly selected", Toast.LENGTH_SHORT).show();
-                                addJob = AddJob.newInstance(getString(R.string.hourly));
+                                addJob = AddJob.newInstance(getString(R.string.hourly), null);
                                 break;
                             case 1:
                                 Toast.makeText(getContext(), "Salary selected", Toast.LENGTH_SHORT).show();
-                                addJob = AddJob.newInstance(getString(R.string.salary));
+                                addJob = AddJob.newInstance(getString(R.string.salary), null);
                                 break;
                             case 2:
                                 Toast.makeText(getContext(), "Project selected", Toast.LENGTH_SHORT).show();
-                                addJob = AddJob.newInstance(getString(R.string.project));
+                                addJob = AddJob.newInstance(getString(R.string.project), null);
                                 break;
                         }
 

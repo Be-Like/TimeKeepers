@@ -2,6 +2,7 @@ package com.example.timekeepers.JobManagement;
 
 public class JobObject {
     public final String jobTitle;
+    public String jobType;
     public Double payRate;
     public Double hoursWorked;
     public Boolean completedJob;
@@ -13,9 +14,6 @@ public class JobObject {
     public Double otherWithholding;
     public String jobPhone;
     public Double retirement;
-    public Boolean jobSalary;
-    public Boolean jobHourly;
-    public Boolean jobProject;
     public Double stateTax;
     public String jobWebsite;
     public String jobStreet1;
@@ -26,6 +24,7 @@ public class JobObject {
     public String generatedJobId;
 
     public JobObject(String jobTitle,
+                     String jobType,
                      Double pay,
                      Double hoursWorked,
                      Boolean completedJob,
@@ -48,6 +47,7 @@ public class JobObject {
         super();
 
         this.jobTitle = jobTitle;
+        this.jobType = jobType;
         this.payRate = pay;
         this.hoursWorked = hoursWorked;
         this.completedJob = completedJob;
@@ -75,6 +75,7 @@ public class JobObject {
 
     public String toString() {
         return "Job Title=" + jobTitle +
+                " Job Type=" + jobType +
                 " Completed Job=" + completedJob +
                 " Pay Rate=" + payRate +
                 " Gross Pay=" + grossPay +

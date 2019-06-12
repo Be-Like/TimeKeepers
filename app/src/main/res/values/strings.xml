@@ -59,6 +59,8 @@
     </string-array>
 
     <!--Job Information Page-->
+    <string name="job_completed">Job is Completed</string>
+    <string name="job_incomplete">Job is Active</string>
     <string name="phone_label">Phone: </string>
     <string name="email_label">Email: </string>
     <string name="website_label">Website: </string>
@@ -106,6 +108,10 @@
 
     <!--Settings Fragment-->
     <string name="logout">Log Out</string>
+
+    <!--Menu Options-->
+    <string name="edit_entry">EDIT</string>
+    <string name="delete_entry">DELETE</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
