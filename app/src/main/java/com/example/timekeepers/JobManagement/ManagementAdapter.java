@@ -51,12 +51,12 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
         DecimalFormat df = new DecimalFormat("0.00");
 
         holder.jobTitle.setText(
-                entry.jobTitle);
+                entry.getJobTitle());
         holder.timeWorked.setText(
-                df.format(entry.hoursWorked)
+                df.format(entry.getHoursWorked())
         );
         holder.payRate.setText(
-                currency.format(entry.payRate)
+                currency.format(entry.getPayRate())
         );
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
@@ -64,27 +64,27 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
             public void onClick(View view) {
 
                 Bundle bundle = new Bundle();
-                bundle.putString("jobId", entry.generatedJobId);
-                bundle.putString("jobTitle" , entry.jobTitle);
-                bundle.putString("jobType" , entry.jobType);
-                bundle.putDouble("payRate", entry.payRate);
-                bundle.putDouble("hoursWorked", entry.hoursWorked);
-                bundle.putBoolean("completedJob", entry.completedJob);
-                bundle.putString("jobEmail", entry.jobEmail);
-                bundle.putDouble("jobFederal", entry.jobFederal);
-                bundle.putDouble("grossPay", entry.grossPay);
-                bundle.putDouble("medicare", entry.medicare);
-                bundle.putDouble("socialSecurity", entry.socialSecurity);
-                bundle.putDouble("otherWithholding", entry.otherWithholding);
-                bundle.putString("jobPhone", entry.jobPhone);
-                bundle.putDouble("retirement", entry.retirement);
-                bundle.putDouble("stateTax", entry.stateTax);
-                bundle.putString("jobWebsite", entry.jobWebsite);
-                bundle.putString("jobStreet1", entry.jobStreet1);
-                bundle.putString("jobStreet2", entry.jobStreet2);
-                bundle.putString("jobCity", entry.jobCity);
-                bundle.putString("jobState", entry.jobState);
-                bundle.putString("jobZipCode", entry.jobZipCode);
+                bundle.putString("jobId", entry.getGeneratedJobId());
+                bundle.putString("jobTitle" , entry.getJobTitle());
+                bundle.putString("jobType" , entry.getJobType());
+                bundle.putDouble("payRate", entry.getPayRate());
+                bundle.putDouble("hoursWorked", entry.getHoursWorked());
+                bundle.putBoolean("completedJob", entry.getCompletedJob());
+                bundle.putString("jobEmail", entry.getJobEmail());
+                bundle.putDouble("jobFederal", entry.getJobFederal());
+                bundle.putDouble("grossPay", entry.getGrossPay());
+                bundle.putDouble("medicare", entry.getMedicare());
+                bundle.putDouble("socialSecurity", entry.getSocialSecurity());
+                bundle.putDouble("otherWithholding", entry.getOtherWithholding());
+                bundle.putString("jobPhone", entry.getJobPhone());
+                bundle.putDouble("retirement", entry.getRetirement());
+                bundle.putDouble("stateTax", entry.getStateTax());
+                bundle.putString("jobWebsite", entry.getJobWebsite());
+                bundle.putString("jobStreet1", entry.getJobStreet1());
+                bundle.putString("jobStreet2", entry.getJobStreet2());
+                bundle.putString("jobCity", entry.getJobCity());
+                bundle.putString("jobState", entry.getJobState());
+                bundle.putString("jobZipCode", entry.getJobZipCode());
 
                 Toast.makeText(context, "Will open: " + entry.getJobTitle(),
                         Toast.LENGTH_SHORT).show();
