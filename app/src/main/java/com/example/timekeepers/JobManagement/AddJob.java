@@ -23,9 +23,11 @@ import android.widget.CheckBox;
 import com.example.timekeepers.CurrencyTextListener;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -307,9 +309,9 @@ public class AddJob extends Fragment
 
         // Get Job Details from Text Views
         String job_title = Objects.requireNonNull(jobTitle.getText()).toString().trim();
-        Boolean completed_checkbox = completedCheckbox.isChecked();
+        final Boolean completed_checkbox = completedCheckbox.isChecked();
         DecimalFormat df = new DecimalFormat(".00");
-        String pay_rate = Objects.requireNonNull(payRate.getText()).toString();
+        final String pay_rate = Objects.requireNonNull(payRate.getText()).toString();
         double pay = Double.valueOf(pay_rate.replaceAll("[$,',']", ""));
         pay = Double.valueOf(df.format(pay));
 
@@ -395,18 +397,78 @@ public class AddJob extends Fragment
 
         final double grossPay = pay;
         Log.d(TAG, "saveJob: ");
-        db.collection("Jobs").document(mainActivity.getUsersEmail())
-                .collection("Users_Jobs")
-                .document()
-                .set(newJob)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        updateUserJobData(grossPay);
-                    }
-                });
+
+        CollectionReference jobReference = db.collection("Jobs")
+                .document(mainActivity.getUsersEmail())
+                .collection("Users_Jobs");
+
+        if (jobInformation != null) {
+            Log.d(TAG, "job information was not null: " + jobInformation.getString("jobId"));
+            jobReference.document(Objects.requireNonNull(jobInformation.getString("jobId")))
+                    .update(newJob)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            final DocumentReference overviewData = db.collection("Jobs")
+                                    .document(mainActivity.getUsersEmail());
+
+                            double passedGrossPay = jobInformation.getDouble("payRate");
+                            boolean passedCompleted = jobInformation.getBoolean("completedJob");
+
+                            if (passedCompleted && completed_checkbox
+                                    && passedGrossPay != grossPay
+                                    && jobType.equals(getString(R.string.project))) {
+                                overviewData.update("Gross_Pay",
+                                        FieldValue.increment(-1 * passedGrossPay))
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                overviewData.update("Gross_Pay",
+                                                        FieldValue.increment(grossPay));
+                                            }
+                                        });
+                            } else if (passedCompleted && !completed_checkbox) {
+                                overviewData.update("Active_Jobs", FieldValue.increment(1));
+
+                                if (jobType.equals(getString(R.string.project))) {
+                                    overviewData.update("Gross_Pay",
+                                            FieldValue.increment(-1 * passedGrossPay));
+                                }
+                            } else if (!passedCompleted && completed_checkbox) {
+                                overviewData.update("Active_Jobs", FieldValue.increment(-1));
+
+                                if (jobType.equals(getString(R.string.project))) {
+                                    overviewData.update("Gross_Pay",
+                                            FieldValue.increment(grossPay));
+                                }
+                            }
+                            // If !passedIsComplete && !isComplete -> do nothing
+
+                            // TODO: either have a listener in the jobinformation page listening
+                            //  for changes or "finish()" the fragment and upon closing the edit
+                            //  fragment open another job information view while also "finishing"
+                            //  the edit job
+                            Objects.requireNonNull(getActivity()).onBackPressed();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e(TAG, "onFailure: ", e);
+                }
+            });
+        } else {
+            jobReference.document()
+                    .set(newJob)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            updateUserJobData(grossPay);
+                        }
+                    });
+        }
     }
 
+    // Updates the document containing: Total_Jobs, Active_Jobs and Gross_Pay (overall)
     private void updateUserJobData(final double projectPay) {
         final DocumentReference jobData = db.collection("Jobs")
                 .document(mainActivity.getUsersEmail());
@@ -427,9 +489,8 @@ public class AddJob extends Fragment
                                 jobData.update("Gross_Pay", FieldValue.increment(projectPay));
                             }
                             Log.d(TAG, "onSuccess: updateUserJobData");
-                            // Go back to Job Management page
-                            Objects.requireNonNull(getActivity()).onBackPressed();
                         }
+                        Objects.requireNonNull(getActivity()).onBackPressed();
                     }
                 });
     }

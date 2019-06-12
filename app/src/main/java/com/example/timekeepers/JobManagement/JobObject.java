@@ -152,7 +152,7 @@ public class JobObject {
     }
 
     String getGeneratedJobId() {
-        return jobZipCode;
+        return generatedJobId;
     }
 
     @NonNull
