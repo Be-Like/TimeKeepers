@@ -63,6 +63,7 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
             @Override
             public void onClick(View view) {
 
+                // TODO: set key values in the strings.xml file.
                 Bundle bundle = new Bundle();
                 bundle.putString("jobId", entry.getGeneratedJobId());
                 bundle.putString("jobTitle" , entry.getJobTitle());
