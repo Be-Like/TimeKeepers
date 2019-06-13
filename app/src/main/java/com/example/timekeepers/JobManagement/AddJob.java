@@ -2,6 +2,7 @@ package com.example.timekeepers.JobManagement;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -39,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static android.app.Activity.RESULT_OK;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /**
@@ -308,7 +310,7 @@ public class AddJob extends Fragment
         }
 
         // Get Job Details from Text Views
-        String job_title = Objects.requireNonNull(jobTitle.getText()).toString().trim();
+        final String job_title = Objects.requireNonNull(jobTitle.getText()).toString().trim();
         final Boolean completed_checkbox = completedCheckbox.isChecked();
         DecimalFormat df = new DecimalFormat(".00");
         final String pay_rate = Objects.requireNonNull(payRate.getText()).toString();
@@ -448,7 +450,14 @@ public class AddJob extends Fragment
                             //  for changes or "finish()" the fragment and upon closing the edit
                             //  fragment open another job information view while also "finishing"
                             //  the edit job
-                            Objects.requireNonNull(getActivity()).onBackPressed();
+
+                            // THIS WORKED!
+                            Intent intent = new Intent(getContext(), AddJob.class);
+                            intent.putExtra("jobTitle", "Testing this crap");
+                            getTargetFragment().onActivityResult(getTargetRequestCode(), RESULT_OK, intent);
+
+                            getFragmentManager().popBackStack();
+//                            Objects.requireNonNull(getActivity()).onBackPressed();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override

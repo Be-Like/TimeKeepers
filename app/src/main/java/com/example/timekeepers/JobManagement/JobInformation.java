@@ -2,6 +2,7 @@ package com.example.timekeepers.JobManagement;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -30,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.NumberFormat;
 import java.util.Objects;
 
+import static android.app.Activity.RESULT_OK;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /**
@@ -325,12 +327,36 @@ public class JobInformation extends Fragment {
     }
     private void editJobEntry() {
         AddJob editJob = AddJob.newInstance(jobType, jobInformation);
+        editJob.setTargetFragment(JobInformation.this, 2015);
 
         FragmentManager fragmentManager =
                 Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.main_fragment, editJob)
-                .addToBackStack(null)
+                .replace(R.id.main_fragment, editJob, "Some Tag")
+                .addToBackStack(editJob.getClass().getName())
                 .commit();
+    }
+
+
+    // Everything below this is testing the passing of data from B->A (It works... but now need to figure out best way)
+    String passedJobTitle;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 2015) {
+                passedJobTitle = data.getStringExtra("jobTitle");
+                Log.d(TAG, "onActivityResult: passedJobTitle " + passedJobTitle);
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (passedJobTitle != null) {
+            jobTitle.setText(passedJobTitle);
+        }
     }
 }
