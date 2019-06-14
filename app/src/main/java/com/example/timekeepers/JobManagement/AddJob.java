@@ -33,6 +33,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.protobuf.DoubleValue;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -217,28 +218,34 @@ public class AddJob extends Fragment
     }
     @SuppressLint("SetTextI18n")
     private void setViews() {
-        jobTitle.setText(jobInformation.getString("jobTitle"));
-        completedCheckbox.setChecked(jobInformation.getBoolean("completedJob"));
+        jobTitle.setText(jobInformation.getString(getString(R.string.jobTitleKey)));
+        completedCheckbox.setChecked(jobInformation.getBoolean(getString(R.string.completedJobKey)));
 
         NumberFormat currency = NumberFormat.getCurrencyInstance();
-        payRate.setText(currency.format(jobInformation.getDouble("payRate")));
+        payRate.setText(currency.format(jobInformation.getDouble(getString(R.string.payRateKey))));
 
-        addressLine1.setText(jobInformation.getString("jobStreet1"));
-        addressLine2.setText(jobInformation.getString("jobStreet2"));
-        city.setText(jobInformation.getString("jobCity"));
-        state.setText(jobInformation.getString("jobState"));
-        zipcode.setText(jobInformation.getString("jobZipCode"));
+        addressLine1.setText(jobInformation.getString(getString(R.string.street1Key)));
+        addressLine2.setText(jobInformation.getString(getString(R.string.street2Key)));
+        city.setText(jobInformation.getString(getString(R.string.cityKey)));
+        state.setText(jobInformation.getString(getString(R.string.stateKey)));
+        zipcode.setText(jobInformation.getString(getString(R.string.zipCodeKey)));
 
-        phoneNumber.setText(jobInformation.getString("jobPhone"));
-        jobEmail.setText(jobInformation.getString("jobEmail"));
-        website.setText(jobInformation.getString("jobWebsite"));
+        phoneNumber.setText(jobInformation.getString(getString(R.string.jobPhoneKey)));
+        jobEmail.setText(jobInformation.getString(getString(R.string.jobEmailKey)));
+        website.setText(jobInformation.getString(getString(R.string.jobWebsiteKey)));
 
-        federalIncome.setText(Double.toString(jobInformation.getDouble("jobFederal")));
-        stateIncome.setText(Double.toString(jobInformation.getDouble("stateTax")));
-        socialSecurity.setText(Double.toString(jobInformation.getDouble("socialSecurity")));
-        medicareInput.setText(Double.toString(jobInformation.getDouble("medicare")));
-        individualRetirement.setText(Double.toString(jobInformation.getDouble("retirement")));
-        otherWithholdings.setText(Double.toString(jobInformation.getDouble("otherWithholding")));
+        federalIncome.setText(Double.toString(
+                jobInformation.getDouble(getString(R.string.federalTaxKey))));
+        stateIncome.setText(Double.toString(
+                jobInformation.getDouble(getString(R.string.stateTaxKey))));
+        socialSecurity.setText(Double.toString(
+                jobInformation.getDouble(getString(R.string.socialSecurityKey))));
+        medicareInput.setText(Double.toString(
+                jobInformation.getDouble(getString(R.string.medicareKey))));
+        individualRetirement.setText(Double.toString(
+                jobInformation.getDouble(getString(R.string.retirementKey))));
+        otherWithholdings.setText(Double.toString(
+                jobInformation.getDouble(getString(R.string.otherWithholdingsKey))));
     }
     public void onItemSelected(AdapterView<?> parent, View v, int pos, long id) {
         payPeriod = parent.getItemAtPosition(pos).toString();
@@ -318,16 +325,16 @@ public class AddJob extends Fragment
         pay = Double.valueOf(df.format(pay));
 
         // Get Address Info from Text Views
-        String street_1 = addressLine1.getText().toString().trim();
-        String street_2 = addressLine2.getText().toString().trim();
-        String city_name = city.getText().toString().trim();
-        String state_name = state.getText().toString().trim();
-        String zip_code = zipcode.getText().toString().trim();
+        final String street_1 = addressLine1.getText().toString().trim();
+        final String street_2 = addressLine2.getText().toString().trim();
+        final String city_name = city.getText().toString().trim();
+        final String state_name = state.getText().toString().trim();
+        final String zip_code = zipcode.getText().toString().trim();
 
         // Get Job Contact Info from Text Views
-        String phone_number = phoneNumber.getText().toString().trim();
-        String job_email = jobEmail.getText().toString().trim();
-        String web = website.getText().toString().trim();
+        final String phone_number = phoneNumber.getText().toString().trim();
+        final String job_email = jobEmail.getText().toString().trim();
+        final String web = website.getText().toString().trim();
 
         // Get Tax Info from Text Views
         String federal_income = federalIncome.getText().toString().trim();
@@ -336,6 +343,44 @@ public class AddJob extends Fragment
         String medicare = medicareInput.getText().toString().trim();
         String individual_retirement = individualRetirement.getText().toString().trim();
         String other_withholdings = otherWithholdings.getText().toString().trim();
+
+        final double federalTax;
+        final double stateTax;
+        final double socialSecurityTax;
+        final double medicareTax;
+        final double retirementInvestment;
+        final double otherWithholdingsInvestment;
+
+        if (!federal_income.isEmpty()) {
+            federalTax = Double.valueOf(federal_income);
+        } else {
+            federalTax = 0;
+        }
+        if (!state_income.isEmpty()) {
+            stateTax = Double.valueOf(state_income);
+        } else {
+            stateTax = 0;
+        }
+        if (!social_security.isEmpty()) {
+            socialSecurityTax = Double.valueOf(social_security);
+        } else {
+            socialSecurityTax = 0;
+        }
+        if (!medicare.isEmpty()) {
+            medicareTax = Double.valueOf(medicare);
+        } else {
+            medicareTax = 0;
+        }
+        if (!individual_retirement.isEmpty()) {
+            retirementInvestment = Double.valueOf(individual_retirement);
+        } else {
+            retirementInvestment = 0;
+        }
+        if (!other_withholdings.isEmpty()) {
+            otherWithholdingsInvestment = Double.valueOf(other_withholdings);
+        } else {
+            otherWithholdingsInvestment = 0;
+        }
 
         // Hash map the address
         Map<String, Object> address = new HashMap<>();
@@ -356,48 +401,21 @@ public class AddJob extends Fragment
         newJob.put("Phone", phone_number);
         newJob.put("Email", job_email);
         newJob.put("Website", web);
-        newJob.put("Hours_Worked", 0);
+        newJob.put("Hours_Worked", 0); // TODO: this shouldn't be reset to 0 if the user already has hours worked
         newJob.put("Address", address);
+        newJob.put("Federal_Income_Tax", federalTax);
+        newJob.put("State_Income_Tax", stateTax);
+        newJob.put("OASDI", socialSecurityTax);
+        newJob.put("Medicare", medicareTax);
+        newJob.put("Retirement_Contribution", retirementInvestment);
+        newJob.put("Other_Withholdings", otherWithholdingsInvestment);
         if (completed_checkbox && jobType.equals(getString(R.string.project))) {
             newJob.put("Gross_Pay", pay);
         } else {
             newJob.put("Gross_Pay", 0);
         }
 
-
-        // Tax and Withholding Information
-        if (!federal_income.isEmpty()) {
-            newJob.put("Federal_Income_Tax", Double.valueOf(federal_income));
-        } else {
-            newJob.put("Federal_Income_Tax", 0);
-        }
-        if (!state_income.isEmpty()) {
-            newJob.put("State_Income_Tax", Double.valueOf(state_income));
-        } else {
-            newJob.put("State_Income_Tax", 0);
-        }
-        if (!social_security.isEmpty()) {
-            newJob.put("OASDI", Double.valueOf(social_security));
-        } else {
-            newJob.put("OASDI", 0);
-        }
-        if (!medicare.isEmpty()) {
-            newJob.put("Medicare", Double.valueOf(medicare));
-        } else {
-            newJob.put("Medicare", 0);
-        }
-        if (!individual_retirement.isEmpty()) {
-            newJob.put("Retirement_Contribution", Double.valueOf(individual_retirement));
-        } else {
-            newJob.put("Retirement_Contribution", 0);
-        }
-        if (!other_withholdings.isEmpty()) {
-            newJob.put("Other_Withholdings", Double.valueOf(other_withholdings));
-        } else {
-            newJob.put("Other_Withholdings", 0);
-        }
-
-        final double grossPay = pay;
+        final double finalPay = pay;
         Log.d(TAG, "saveJob: ");
 
         CollectionReference jobReference = db.collection("Jobs")
@@ -405,8 +423,10 @@ public class AddJob extends Fragment
                 .collection("Users_Jobs");
 
         if (jobInformation != null) {
-            Log.d(TAG, "job information was not null: " + jobInformation.getString("jobId"));
-            jobReference.document(Objects.requireNonNull(jobInformation.getString("jobId")))
+            Log.d(TAG, "job information was not null: " +
+                    jobInformation.getString(getString(R.string.idKey)));
+            jobReference.document(Objects.requireNonNull(
+                    jobInformation.getString(getString(R.string.idKey))))
                     .update(newJob)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -414,19 +434,21 @@ public class AddJob extends Fragment
                             final DocumentReference overviewData = db.collection("Jobs")
                                     .document(mainActivity.getUsersEmail());
 
-                            double passedGrossPay = jobInformation.getDouble("payRate");
-                            boolean passedCompleted = jobInformation.getBoolean("completedJob");
+                            double passedFinalPay = jobInformation.getDouble(
+                                    getString(R.string.payRateKey));
+                            boolean passedCompleted = jobInformation.getBoolean(
+                                    getString(R.string.completedJobKey));
 
                             if (passedCompleted && completed_checkbox
-                                    && passedGrossPay != grossPay
+                                    && passedFinalPay != finalPay
                                     && jobType.equals(getString(R.string.project))) {
                                 overviewData.update("Gross_Pay",
-                                        FieldValue.increment(-1 * passedGrossPay))
+                                        FieldValue.increment(-1 * passedFinalPay))
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 overviewData.update("Gross_Pay",
-                                                        FieldValue.increment(grossPay));
+                                                        FieldValue.increment(finalPay));
                                             }
                                         });
                             } else if (passedCompleted && !completed_checkbox) {
@@ -434,14 +456,14 @@ public class AddJob extends Fragment
 
                                 if (jobType.equals(getString(R.string.project))) {
                                     overviewData.update("Gross_Pay",
-                                            FieldValue.increment(-1 * passedGrossPay));
+                                            FieldValue.increment(-1 * passedFinalPay));
                                 }
                             } else if (!passedCompleted && completed_checkbox) {
                                 overviewData.update("Active_Jobs", FieldValue.increment(-1));
 
                                 if (jobType.equals(getString(R.string.project))) {
                                     overviewData.update("Gross_Pay",
-                                            FieldValue.increment(grossPay));
+                                            FieldValue.increment(finalPay));
                                 }
                             }
                             // If !passedIsComplete && !isComplete -> do nothing
@@ -452,8 +474,38 @@ public class AddJob extends Fragment
                             //  the edit job
 
                             // THIS WORKED!
+                            Bundle bundle = new Bundle();
+                            bundle.putString(getString(R.string.idKey),
+                                    jobInformation.getString(getString(R.string.idKey)));
+                            bundle.putString(getString(R.string.jobTitleKey) , job_title);
+                            bundle.putString(getString(R.string.jobTypeKey) , jobType);
+                            bundle.putDouble(getString(R.string.payRateKey), finalPay);
+                            bundle.putDouble(getString(R.string.hoursWorkedKey),
+                                    jobInformation.getDouble(getString(R.string.hoursWorkedKey)));
+                            bundle.putBoolean(getString(R.string.completedJobKey),
+                                    completed_checkbox);
+                            bundle.putString(getString(R.string.jobEmailKey), job_email);
+                            bundle.putDouble(getString(R.string.federalTaxKey), federalTax);
+                            bundle.putDouble(getString(R.string.grossPayKey),
+                                    jobInformation.getDouble(getString(R.string.grossPayKey)));
+                            bundle.putDouble(getString(R.string.medicareKey), medicareTax);
+                            bundle.putDouble(getString(R.string.socialSecurityKey),
+                                    socialSecurityTax);
+                            bundle.putDouble(getString(R.string.otherWithholdingsKey),
+                                    otherWithholdingsInvestment);
+                            bundle.putString(getString(R.string.jobPhoneKey), phone_number);
+                            bundle.putDouble(getString(R.string.retirementKey),
+                                    retirementInvestment);
+                            bundle.putDouble(getString(R.string.stateTaxKey), stateTax);
+                            bundle.putString(getString(R.string.jobWebsiteKey), web);
+                            bundle.putString(getString(R.string.street1Key), street_1);
+                            bundle.putString(getString(R.string.street2Key), street_2);
+                            bundle.putString(getString(R.string.cityKey), city_name);
+                            bundle.putString(getString(R.string.stateKey), state_name);
+                            bundle.putString(getString(R.string.zipCodeKey), zip_code);
+
                             Intent intent = new Intent(getContext(), AddJob.class);
-                            intent.putExtra("jobTitle", "Testing this crap");
+                            intent.putExtra("Job Edit Information", bundle);
                             getTargetFragment().onActivityResult(getTargetRequestCode(), RESULT_OK, intent);
 
                             getFragmentManager().popBackStack();
@@ -471,7 +523,7 @@ public class AddJob extends Fragment
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            updateUserJobData(grossPay);
+                            updateUserJobData(finalPay);
                         }
                     });
         }

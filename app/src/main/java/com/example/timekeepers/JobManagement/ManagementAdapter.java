@@ -2,6 +2,7 @@ package com.example.timekeepers.JobManagement;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import com.example.timekeepers.R;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.ViewHolder> {
     private ArrayList<JobObject> jobs;
@@ -64,28 +67,31 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
             public void onClick(View view) {
 
                 // TODO: set key values in the strings.xml file.
+                String idKey = context.getString(R.string.idKey);
+                Log.d(TAG, "onClick: adapter class " + idKey);
+
                 Bundle bundle = new Bundle();
-                bundle.putString("jobId", entry.getGeneratedJobId());
-                bundle.putString("jobTitle" , entry.getJobTitle());
-                bundle.putString("jobType" , entry.getJobType());
-                bundle.putDouble("payRate", entry.getPayRate());
-                bundle.putDouble("hoursWorked", entry.getHoursWorked());
-                bundle.putBoolean("completedJob", entry.getCompletedJob());
-                bundle.putString("jobEmail", entry.getJobEmail());
-                bundle.putDouble("jobFederal", entry.getJobFederal());
-                bundle.putDouble("grossPay", entry.getGrossPay());
-                bundle.putDouble("medicare", entry.getMedicare());
-                bundle.putDouble("socialSecurity", entry.getSocialSecurity());
-                bundle.putDouble("otherWithholding", entry.getOtherWithholding());
-                bundle.putString("jobPhone", entry.getJobPhone());
-                bundle.putDouble("retirement", entry.getRetirement());
-                bundle.putDouble("stateTax", entry.getStateTax());
-                bundle.putString("jobWebsite", entry.getJobWebsite());
-                bundle.putString("jobStreet1", entry.getJobStreet1());
-                bundle.putString("jobStreet2", entry.getJobStreet2());
-                bundle.putString("jobCity", entry.getJobCity());
-                bundle.putString("jobState", entry.getJobState());
-                bundle.putString("jobZipCode", entry.getJobZipCode());
+                bundle.putString(context.getString(R.string.idKey), entry.getGeneratedJobId());
+                bundle.putString(context.getString(R.string.jobTitleKey) , entry.getJobTitle());
+                bundle.putString(context.getString(R.string.jobTypeKey) , entry.getJobType());
+                bundle.putDouble(context.getString(R.string.payRateKey), entry.getPayRate());
+                bundle.putDouble(context.getString(R.string.hoursWorkedKey), entry.getHoursWorked());
+                bundle.putBoolean(context.getString(R.string.completedJobKey), entry.getCompletedJob());
+                bundle.putString(context.getString(R.string.jobEmailKey), entry.getJobEmail());
+                bundle.putDouble(context.getString(R.string.federalTaxKey), entry.getJobFederal());
+                bundle.putDouble(context.getString(R.string.grossPayKey), entry.getGrossPay());
+                bundle.putDouble(context.getString(R.string.medicareKey), entry.getMedicare());
+                bundle.putDouble(context.getString(R.string.socialSecurityKey), entry.getSocialSecurity());
+                bundle.putDouble(context.getString(R.string.otherWithholdingsKey), entry.getOtherWithholding());
+                bundle.putString(context.getString(R.string.jobPhoneKey), entry.getJobPhone());
+                bundle.putDouble(context.getString(R.string.retirementKey), entry.getRetirement());
+                bundle.putDouble(context.getString(R.string.stateTaxKey), entry.getStateTax());
+                bundle.putString(context.getString(R.string.jobWebsiteKey), entry.getJobWebsite());
+                bundle.putString(context.getString(R.string.street1Key), entry.getJobStreet1());
+                bundle.putString(context.getString(R.string.street2Key), entry.getJobStreet2());
+                bundle.putString(context.getString(R.string.cityKey), entry.getJobCity());
+                bundle.putString(context.getString(R.string.stateKey), entry.getJobState());
+                bundle.putString(context.getString(R.string.zipCodeKey), entry.getJobZipCode());
 
                 Toast.makeText(context, "Will open: " + entry.getJobTitle(),
                         Toast.LENGTH_SHORT).show();

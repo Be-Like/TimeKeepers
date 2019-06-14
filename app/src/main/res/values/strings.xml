@@ -70,6 +70,28 @@
     <string name="medicare_label">Medicare: </string>
     <string name="retirement_label">Retirement: </string>
     <string name="other_withholdings_label">Other: </string>
+    <!--Bundle Key's-->
+    <string name="idKey">idKey</string>
+    <string name="jobTitleKey">jobTitleKey</string>
+    <string name="jobTypeKey">jobTypeKey</string>
+    <string name="payRateKey">payRateKey</string>
+    <string name="grossPayKey">grossPayKey</string>
+    <string name="hoursWorkedKey">hoursWorkedKey</string>
+    <string name="completedJobKey">completedJobKey</string>
+    <string name="jobPhoneKey">jobPhoneKey</string>
+    <string name="jobEmailKey">jobEmailKey</string>
+    <string name="jobWebsiteKey">jobWebsiteKey</string>
+    <string name="street1Key">street1Key</string>
+    <string name="street2Key">street2Key</string>
+    <string name="cityKey">cityKey</string>
+    <string name="stateKey">stateKey</string>
+    <string name="zipCodeKey">zipCodeKey</string>
+    <string name="federalTaxKey">federalTaxKey</string>
+    <string name="stateTaxKey">stateTaxKey</string>
+    <string name="medicareKey">medicareKey</string>
+    <string name="socialSecurityKey">socialSecurityKey</string>
+    <string name="retirementKey">retirementKey</string>
+    <string name="otherWithholdingsKey">otherWithholdingsKey</string>
 
     <!--Save and Cancel Buttons-->
     <string name="save_button">Save</string>
@@ -112,6 +134,10 @@
     <!--Menu Options-->
     <string name="edit_entry">EDIT</string>
     <string name="delete_entry">DELETE</string>
+
+
+    <!--Firebase Firestore Key's-->
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

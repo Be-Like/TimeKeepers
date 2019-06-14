@@ -80,7 +80,6 @@ public class JobInformation extends Fragment {
      * @param bundle Parameter 1.
      * @return A new instance of fragment JobInformation.
      */
-    // TODO: Rename and change types and number of parameters
     public static JobInformation newInstance(Bundle bundle) {
         JobInformation fragment = new JobInformation();
         Bundle args = new Bundle();
@@ -111,7 +110,7 @@ public class JobInformation extends Fragment {
 
         // Initialize and set views
         initializeViews(fragmentView);
-        setViews();
+//        setViews();
 
         // Inflate the layout for this fragment
         return fragmentView;
@@ -142,6 +141,12 @@ public class JobInformation extends Fragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setViews();
     }
 
     @Override
@@ -194,14 +199,14 @@ public class JobInformation extends Fragment {
     @SuppressLint("SetTextI18n")
     private void setViews() {
         // Needed Variables for throughout rest of logic
-        jobId = jobInformation.getString("jobId");
-        jobIsCompleted = jobInformation.getBoolean("completedJob");
-        jobGrossPay = jobInformation.getDouble("grossPay");
-        jobType = jobInformation.getString("jobType");
+        jobId = jobInformation.getString(getString(R.string.idKey));
+        jobIsCompleted = jobInformation.getBoolean(getString(R.string.completedJobKey));
+        jobGrossPay = jobInformation.getDouble(getString(R.string.grossPayKey));
+        jobType = jobInformation.getString(getString(R.string.jobTypeKey));
 
         NumberFormat currency = NumberFormat.getCurrencyInstance();
 
-        jobTitle.setText(jobInformation.getString("jobTitle"));
+        jobTitle.setText(jobInformation.getString(getString(R.string.jobTitleKey)));
 
         if (jobIsCompleted) {
 //            completedJobs.setText(R.string.job_completed);
@@ -211,22 +216,22 @@ public class JobInformation extends Fragment {
             completedJobs.setText(getString(R.string.job_incomplete));
         }
 
-        payRate.setText(currency.format(jobInformation.getDouble("payRate")));
+        payRate.setText(currency.format(jobInformation.getDouble(getString(R.string.payRateKey))));
 
         // TODO: add job type to the formatting (including the suffix for the pay rate)
 
         addressFormat();
 
-        jobPhone.setText(jobInformation.getString("jobPhone"));
-        jobEmail.setText(jobInformation.getString("jobEmail"));
-        jobWebsite.setText(jobInformation.getString("jobWebsite"));
+        jobPhone.setText(jobInformation.getString(getString(R.string.jobPhoneKey)));
+        jobEmail.setText(jobInformation.getString(getString(R.string.jobEmailKey)));
+        jobWebsite.setText(jobInformation.getString(getString(R.string.jobWebsiteKey)));
 
-        double tmpFederal = jobInformation.getDouble("jobFederal");
-        double tmpState = jobInformation.getDouble("stateTax");
-        double tmpSocial = jobInformation.getDouble("socialSecurity");
-        double tmpMedicare = jobInformation.getDouble("medicare");
-        double tmpRetirement = jobInformation.getDouble("retirement");
-        double tmpOther = jobInformation.getDouble("otherWithholding");
+        double tmpFederal = jobInformation.getDouble(getString(R.string.federalTaxKey));
+        double tmpState = jobInformation.getDouble(getString(R.string.stateTaxKey));
+        double tmpSocial = jobInformation.getDouble(getString(R.string.socialSecurityKey));
+        double tmpMedicare = jobInformation.getDouble(getString(R.string.medicareKey));
+        double tmpRetirement = jobInformation.getDouble(getString(R.string.retirementKey));
+        double tmpOther = jobInformation.getDouble(getString(R.string.otherWithholdingsKey));
 
         jobFederal.setText(tmpFederal + " %");
         stateTax.setText(tmpState + " %");
@@ -238,11 +243,11 @@ public class JobInformation extends Fragment {
 
     @SuppressLint("SetTextI18n")
     private void addressFormat() {
-        String passedStreet1 = jobInformation.getString("jobStreet1");
-        String passedStreet2 = jobInformation.getString("jobStreet2");
-        String passedCity = jobInformation.getString("jobCity");
-        String passedState = jobInformation.getString("jobState");
-        String passedZipCode = jobInformation.getString("jobZipCode");
+        String passedStreet1 = jobInformation.getString(getString(R.string.street1Key));
+        String passedStreet2 = jobInformation.getString(getString(R.string.street2Key));
+        String passedCity = jobInformation.getString(getString(R.string.cityKey));
+        String passedState = jobInformation.getString(getString(R.string.stateKey));
+        String passedZipCode = jobInformation.getString(getString(R.string.zipCodeKey));
 
         // Assertions
         assert passedStreet1 != null;
@@ -337,26 +342,15 @@ public class JobInformation extends Fragment {
                 .commit();
     }
 
-
-    // Everything below this is testing the passing of data from B->A (It works... but now need to figure out best way)
-    String passedJobTitle;
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
             if (requestCode == 2015) {
-                passedJobTitle = data.getStringExtra("jobTitle");
-                Log.d(TAG, "onActivityResult: passedJobTitle " + passedJobTitle);
+                jobInformation = data.getBundleExtra("Job Edit Information");
+                Log.d(TAG, "onActivityResult: passed job information " + jobInformation.toString());
             }
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (passedJobTitle != null) {
-            jobTitle.setText(passedJobTitle);
         }
     }
 }
