@@ -306,8 +306,6 @@ public class AddJob extends Fragment
         return FirebaseFirestore.getInstance();
     }
 
-    // TODO: fix this to check if it is an edit, then delete old (or should I utilize a
-    //  new method for updating???)...
     private void saveJob() {
         if (!validateJobTitleField()) {
             return;
@@ -315,6 +313,9 @@ public class AddJob extends Fragment
         if (!validatePayRate()) {
             return;
         }
+        // TODO: add validation checking that the total percentages of tax and such are <= 100
+
+        // TODO: clean up warnings being thrown
 
         // Get Job Details from Text Views
         final String job_title = Objects.requireNonNull(jobTitle.getText()).toString().trim();
@@ -401,7 +402,6 @@ public class AddJob extends Fragment
         newJob.put("Phone", phone_number);
         newJob.put("Email", job_email);
         newJob.put("Website", web);
-        newJob.put("Hours_Worked", 0); // TODO: this shouldn't be reset to 0 if the user already has hours worked
         newJob.put("Address", address);
         newJob.put("Federal_Income_Tax", federalTax);
         newJob.put("State_Income_Tax", stateTax);
@@ -409,9 +409,20 @@ public class AddJob extends Fragment
         newJob.put("Medicare", medicareTax);
         newJob.put("Retirement_Contribution", retirementInvestment);
         newJob.put("Other_Withholdings", otherWithholdingsInvestment);
+        if (jobInformation != null) {
+            newJob.put("Hours_Worked",
+                    jobInformation.getDouble(getString(R.string.hoursWorkedKey)));
+        } else {
+            newJob.put("Hours_Worked", 0);
+        }
         if (completed_checkbox && jobType.equals(getString(R.string.project))) {
             newJob.put("Gross_Pay", pay);
-        } else {
+        }
+        else if (!jobType.equals(getString(R.string.project))
+                && jobInformation != null) {
+            newJob.put("Gross_Pay", jobInformation.getDouble(getString(R.string.grossPayKey)));
+        }
+        else {
             newJob.put("Gross_Pay", 0);
         }
 
@@ -467,11 +478,6 @@ public class AddJob extends Fragment
                                 }
                             }
                             // If !passedIsComplete && !isComplete -> do nothing
-
-                            // TODO: either have a listener in the jobinformation page listening
-                            //  for changes or "finish()" the fragment and upon closing the edit
-                            //  fragment open another job information view while also "finishing"
-                            //  the edit job
 
                             // THIS WORKED!
                             Bundle bundle = new Bundle();
