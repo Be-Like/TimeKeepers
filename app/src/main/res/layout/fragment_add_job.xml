@@ -80,7 +80,7 @@
                 app:layout_constraintHorizontal_weight="9"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/pay_period">
+                app:layout_constraintEnd_toStartOf="@id/calculate_hourly_rate">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/pay_rate"
                     android:hint="@string/pay_rate"
@@ -93,10 +93,12 @@
                 <!--TODO: Change this according to version-->
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/pay_period"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/calculate_hourly_rate"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:text="Calculate"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
                 app:layout_constraintHorizontal_weight="4"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -258,7 +260,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:imeOptions="actionNext"
-                    android:inputType="textWebEditText"
+                    android:inputType="textUri"
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

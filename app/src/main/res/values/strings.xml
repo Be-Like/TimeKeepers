@@ -49,14 +49,12 @@
     <string name="medicare">Medicare %</string>
     <string name="retirement">Individual Retirement %</string>
     <string name="other_withholdings">Other Withholding\'s %</string>
-    <string-array name="pay_period_selections">
-        <item>Weekly</item>
-        <item>Bi-Weekly</item>
-        <item>Bi-Monthly</item>
-        <item>Monthly</item>
-        <item>Quarterly</item>
-        <item>Annually</item>
-    </string-array>
+    <string name="salary_information_prompt">
+        To provide the most accurate hourly accounting, please answer the following prompts:
+    </string>
+    <string name="salary_compensation">What is your annual salary?</string>
+    <string name="salary_weekly_hours">What are your average weekly hours?</string>
+    <string name="salary_annual_weeks_worked">How many weeks do you work in a year?</string>
 
     <!--Job Information Page-->
     <string name="job_completed">Job is Completed</string>

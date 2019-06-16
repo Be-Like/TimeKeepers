@@ -8,7 +8,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,12 +22,15 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.timekeepers.CurrencyTextListener;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.CollectionReference;
@@ -94,8 +99,9 @@ public class AddJob extends Fragment
     private TextInputEditText otherWithholdings;
 
     // Button Declarations
-    private Button saveButton;
-    private Button cancelButton;
+    private MaterialButton saveButton;
+    private MaterialButton cancelButton;
+    private MaterialButton calculateRate;
 
     private OnFragmentInteractionListener mListener;
     // [END] Class Declarations
@@ -171,16 +177,10 @@ public class AddJob extends Fragment
         payRate.addTextChangedListener(currencyTextListener);
 
         if (jobType.equals(getString(R.string.salary))) {
-            setTextInputLayoutHint("Annual Salary");
-            AppCompatSpinner payPeriod = fragmentView.findViewById(R.id.pay_period);
-            ArrayAdapter<CharSequence> adapter =
-                    ArrayAdapter.createFromResource(Objects.requireNonNull(getContext()),
-                            R.array.pay_period_selections,
-                            android.R.layout.simple_spinner_dropdown_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            payPeriod.setAdapter(adapter);
-            payPeriod.setVisibility(View.VISIBLE);
-            payPeriod.setOnItemSelectedListener(this);
+            setTextInputLayoutHint("Hourly Rate of Annual Salary");
+            calculateRate = fragmentView.findViewById(R.id.calculate_hourly_rate);
+            calculateRate.setVisibility(View.VISIBLE);
+            calculateRate.setOnClickListener(this);
         } else if (jobType.equals(getString(R.string.project))) {
             setTextInputLayoutHint("Pay Upon Completion");
         }
@@ -287,7 +287,6 @@ public class AddJob extends Fragment
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
@@ -299,6 +298,25 @@ public class AddJob extends Fragment
         if (view == cancelButton) {
             Objects.requireNonNull(getActivity()).onBackPressed();
         }
+        if (view == calculateRate) {
+            openCalculationDialog();
+        }
+    }
+
+    private void openCalculationDialog() {
+        assert getFragmentManager() != null;
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+
+        if (prev != null) {
+            ft.remove(prev);
+        }
+
+        ft.addToBackStack(null);
+
+        DialogFragment dialogFragment = new CalculateSalaryDialog();
+        dialogFragment.setTargetFragment(this, 0);
+        dialogFragment.show(ft, "dialog");
     }
 
     private FirebaseFirestore db;
@@ -313,13 +331,11 @@ public class AddJob extends Fragment
         if (!validatePayRate()) {
             return;
         }
-        // TODO: add validation checking that the total percentages of tax and such are <= 100
-
         // TODO: clean up warnings being thrown
 
         // Get Job Details from Text Views
         final String job_title = Objects.requireNonNull(jobTitle.getText()).toString().trim();
-        final Boolean completed_checkbox = completedCheckbox.isChecked();
+        final boolean completed_checkbox = completedCheckbox.isChecked();
         DecimalFormat df = new DecimalFormat(".00");
         final String pay_rate = Objects.requireNonNull(payRate.getText()).toString();
         double pay = Double.valueOf(pay_rate.replaceAll("[$,',']", ""));
@@ -338,12 +354,14 @@ public class AddJob extends Fragment
         final String web = website.getText().toString().trim();
 
         // Get Tax Info from Text Views
-        String federal_income = federalIncome.getText().toString().trim();
-        String state_income = stateIncome.getText().toString().trim();
-        String social_security = socialSecurity.getText().toString().trim();
-        String medicare = medicareInput.getText().toString().trim();
-        String individual_retirement = individualRetirement.getText().toString().trim();
-        String other_withholdings = otherWithholdings.getText().toString().trim();
+        String federal_income = Objects.requireNonNull(federalIncome.getText()).toString().trim();
+        String state_income = Objects.requireNonNull(stateIncome.getText()).toString().trim();
+        String social_security = Objects.requireNonNull(socialSecurity.getText()).toString().trim();
+        String medicare = Objects.requireNonNull(medicareInput.getText()).toString().trim();
+        String individual_retirement = Objects.requireNonNull(individualRetirement.getText())
+                .toString().trim();
+        String other_withholdings = Objects.requireNonNull(otherWithholdings.getText())
+                .toString().trim();
 
         final double federalTax;
         final double stateTax;
@@ -381,6 +399,11 @@ public class AddJob extends Fragment
             otherWithholdingsInvestment = Double.valueOf(other_withholdings);
         } else {
             otherWithholdingsInvestment = 0;
+        }
+
+        if (!validatePercentages(federalTax, stateTax, socialSecurityTax, medicareTax,
+                retirementInvestment, otherWithholdingsInvestment)) {
+            return;
         }
 
         // Hash map the address
@@ -512,10 +535,12 @@ public class AddJob extends Fragment
 
                             Intent intent = new Intent(getContext(), AddJob.class);
                             intent.putExtra("Job Edit Information", bundle);
-                            getTargetFragment().onActivityResult(getTargetRequestCode(), RESULT_OK, intent);
+                            assert getTargetFragment() != null;
+                            getTargetFragment().onActivityResult(getTargetRequestCode(),
+                                    RESULT_OK, intent);
 
-                            getFragmentManager().popBackStack();
-//                            Objects.requireNonNull(getActivity()).onBackPressed();
+//                            getFragmentManager().popBackStack();
+                            Objects.requireNonNull(getActivity()).onBackPressed();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -577,6 +602,19 @@ public class AddJob extends Fragment
         // chicks if pay rate text field is empty
         if (TextUtils.isEmpty(payRateField)) {
             payRate.setError(getString(R.string.error_field_required));
+            return false;
+        }
+        return true;
+    }
+    private boolean validatePercentages(double federal, double state, double social,
+                                        double medicare, double retirement, double other) {
+        double sum = federal + state + social + medicare + retirement + other;
+        if (sum > 100) {
+            Toast.makeText(getContext(),
+                    "Failed to Create: Percentage total is greater than 100.",
+                    Toast.LENGTH_LONG).show();
+            TextView taxLabel = fragmentView.findViewById(R.id.taxes_label);
+            taxLabel.setError("Percentage total is greater than 100.");
             return false;
         }
         return true;
