@@ -8,6 +8,7 @@
     android:padding="8dp"
     tools:context=".JobManagement.CalculateSalaryDialog">
 
+    <!--TODO: add styling to make the dialog look nicer...-->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/salary_information_prompt"
         android:text="@string/salary_information_prompt"
@@ -45,7 +46,7 @@
             android:hint="@string/salary_weekly_hours"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="number"
             android:maxLines="1"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -62,7 +63,7 @@
             android:hint="@string/salary_annual_weeks_worked"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
+            android:inputType="number"
             android:maxLines="1"
             android:singleLine="true" />
     </com.google.android.material.textfield.TextInputLayout>

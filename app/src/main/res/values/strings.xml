@@ -55,6 +55,7 @@
     <string name="salary_compensation">What is your annual salary?</string>
     <string name="salary_weekly_hours">What are your average weekly hours?</string>
     <string name="salary_annual_weeks_worked">How many weeks do you work in a year?</string>
+    <string name="greater_than_0">Entry has to be greater than 0.</string>
 
     <!--Job Information Page-->
     <string name="job_completed">Job is Completed</string>

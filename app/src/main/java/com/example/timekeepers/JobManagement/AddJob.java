@@ -7,8 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -17,10 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +33,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.protobuf.DoubleValue;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -58,7 +52,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  * create an instance of this fragment.
  */
 public class AddJob extends Fragment
-        implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+        implements View.OnClickListener, CalculateSalaryDialog.JobCompensationListener {
 
     // [START] Class Declarations
     private static final String ARG_PARAM1 = "param1";
@@ -76,7 +70,6 @@ public class AddJob extends Fragment
     private TextInputEditText jobTitle;
     private CheckBox completedCheckbox;
     private TextInputEditText payRate;
-    private String payPeriod;
 
     // Address Declarations
     private AutoCompleteTextView addressLine1;
@@ -117,7 +110,6 @@ public class AddJob extends Fragment
      * @param jobType Parameter 1.
      * @return A new instance of fragment AddJob.
      */
-    // TODO: Rename and change types and number of parameters
     public static AddJob newInstance(String jobType, Bundle bundle) {
         AddJob fragment = new AddJob();
         Bundle args = new Bundle();
@@ -247,12 +239,7 @@ public class AddJob extends Fragment
         otherWithholdings.setText(Double.toString(
                 jobInformation.getDouble(getString(R.string.otherWithholdingsKey))));
     }
-    public void onItemSelected(AdapterView<?> parent, View v, int pos, long id) {
-        payPeriod = parent.getItemAtPosition(pos).toString();
-    }
-    public void onNothingSelected(AdapterView<?> parent) {}
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -314,9 +301,14 @@ public class AddJob extends Fragment
 
         ft.addToBackStack(null);
 
-        DialogFragment dialogFragment = new CalculateSalaryDialog();
-        dialogFragment.setTargetFragment(this, 0);
-        dialogFragment.show(ft, "dialog");
+        CalculateSalaryDialog dialog = CalculateSalaryDialog.newInstance(
+                Objects.requireNonNull(payRate.getText()).toString());
+        dialog.setTargetFragment(this, 0);
+        dialog.show(ft, "dialog");
+
+//        DialogFragment dialogFragment = new CalculateSalaryDialog();
+//        dialogFragment.setTargetFragment(this, 0);
+//        dialogFragment.show(ft, "dialog");
     }
 
     private FirebaseFirestore db;
@@ -331,7 +323,6 @@ public class AddJob extends Fragment
         if (!validatePayRate()) {
             return;
         }
-        // TODO: clean up warnings being thrown
 
         // Get Job Details from Text Views
         final String job_title = Objects.requireNonNull(jobTitle.getText()).toString().trim();
@@ -413,14 +404,12 @@ public class AddJob extends Fragment
         address.put("City", city_name);
         address.put("State", state_name);
         address.put("Zip_Code", zip_code);
-        // TODO: Figure out how to implement salary pay... (spinners, or something).
 
         // Hash map that crap
         Map<String, Object> newJob = new HashMap<>();
         newJob.put("Job_Title", job_title);
         newJob.put("Completed", completed_checkbox);
         newJob.put("Pay_Rate", pay);
-        newJob.put("Pay_Period", payPeriod);
         newJob.put("Job_Type", jobType);
         newJob.put("Phone", phone_number);
         newJob.put("Email", job_email);
@@ -618,5 +607,10 @@ public class AddJob extends Fragment
             return false;
         }
         return true;
+    }
+
+    public void saveSalaryInfo(double compensation) {
+        NumberFormat currency = NumberFormat.getCurrencyInstance();
+        payRate.setText(currency.format(compensation));
     }
 }

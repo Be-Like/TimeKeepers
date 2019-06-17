@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
 import com.example.timekeepers.JobManagement.AddJob;
+import com.example.timekeepers.JobManagement.CalculateSalaryDialog;
 import com.example.timekeepers.JobManagement.JobInformation;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -47,7 +48,8 @@ public class MainActivity extends AppCompatActivity
         Accounting.OnFragmentInteractionListener, Expenses.OnFragmentInteractionListener,
         Calendar.OnFragmentInteractionListener, AddJob.OnFragmentInteractionListener,
         Settings.OnFragmentInteractionListener,
-        JobInformation.OnFragmentInteractionListener {
+        JobInformation.OnFragmentInteractionListener,
+        CalculateSalaryDialog.JobCompensationListener {
 
     public Toolbar toolbar;
     NavigationView navigationView;
@@ -228,6 +230,11 @@ String currentFragmentTag;
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void saveSalaryInfo(double hourlyRate) {
 
     }
 
