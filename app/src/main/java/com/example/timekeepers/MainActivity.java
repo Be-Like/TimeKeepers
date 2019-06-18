@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity
         Accounting.OnFragmentInteractionListener, Expenses.OnFragmentInteractionListener,
         Calendar.OnFragmentInteractionListener, AddJob.OnFragmentInteractionListener,
         Settings.OnFragmentInteractionListener,
-        JobInformation.OnFragmentInteractionListener,
+//        JobInformation.OnFragmentInteractionListener, TODO: Delete all Commented out code regarding the OnFragmentInteractionListener
         CalculateSalaryDialog.JobCompensationListener {
 
     public Toolbar toolbar;

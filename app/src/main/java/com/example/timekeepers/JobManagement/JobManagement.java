@@ -48,6 +48,7 @@ import static android.content.ContentValues.TAG;
  * Use the {@link JobManagement#newInstance} factory method to
  * create an instance of this fragment.
  */
+// TODO: Delete all Commented out code regarding the OnFragmentInteractionListener
 public class JobManagement extends Fragment
         implements View.OnClickListener {
     private View fragmentView;
@@ -55,7 +56,7 @@ public class JobManagement extends Fragment
 
     private ArrayList<JobObject> jobsArray;
 
-    private OnFragmentInteractionListener mListener;
+//    private OnFragmentInteractionListener mListener;
 
     public JobManagement() {
         // Required empty public constructor
@@ -65,11 +66,8 @@ public class JobManagement extends Fragment
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
      * @return A new instance of fragment JobManagement.
      */
-    // TODO: Rename and change types and number of parameters
     public static JobManagement newInstance() {
         JobManagement fragment = new JobManagement();
         Bundle args = new Bundle();
@@ -80,7 +78,6 @@ public class JobManagement extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {}
     }
 
     @Override
@@ -107,28 +104,27 @@ public class JobManagement extends Fragment
         Log.d(TAG, "onResume: is called");
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+//    public void onButtonPressed(Uri uri) {
+//        if (mListener != null) {
+//            mListener.onFragmentInteraction(uri);
+//        }
+//    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+//        mListener = null;
     }
 
     /**
@@ -142,7 +138,6 @@ public class JobManagement extends Fragment
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 

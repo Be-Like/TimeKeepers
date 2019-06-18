@@ -305,10 +305,6 @@ public class AddJob extends Fragment
                 Objects.requireNonNull(payRate.getText()).toString());
         dialog.setTargetFragment(this, 0);
         dialog.show(ft, "dialog");
-
-//        DialogFragment dialogFragment = new CalculateSalaryDialog();
-//        dialogFragment.setTargetFragment(this, 0);
-//        dialogFragment.show(ft, "dialog");
     }
 
     private FirebaseFirestore db;

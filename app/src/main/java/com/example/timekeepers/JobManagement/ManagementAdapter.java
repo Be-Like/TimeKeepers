@@ -1,22 +1,19 @@
 package com.example.timekeepers.JobManagement;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.timekeepers.R;
@@ -31,7 +28,8 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
     private ArrayList<JobObject> jobs;
     private Context context;
 
-    public ManagementAdapter(Context context, ArrayList<JobObject> jobs) {
+    // TODO: make package public if broken...
+    ManagementAdapter(Context context, ArrayList<JobObject> jobs) {
         this.jobs = jobs;
         this.context = context;
     }
@@ -45,6 +43,7 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position){
         final JobObject entry = jobs.get(position);
@@ -56,7 +55,7 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
         holder.jobTitle.setText(
                 entry.getJobTitle());
         holder.timeWorked.setText(
-                df.format(entry.getHoursWorked())
+                df.format(entry.getHoursWorked()) + " Hrs"
         );
         holder.payRate.setText(
                 currency.format(entry.getPayRate())
@@ -66,7 +65,6 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
             @Override
             public void onClick(View view) {
 
-                // TODO: set key values in the strings.xml file.
                 String idKey = context.getString(R.string.idKey);
                 Log.d(TAG, "onClick: adapter class " + idKey);
 
@@ -115,7 +113,8 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
     }
 
     // View holder with correct data fields for the list
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    // TODO: make class public again if broken
+    class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView jobTitle;
         TextView timeWorked;
@@ -123,7 +122,8 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
         ConstraintLayout parentLayout;
 
         // Associating the correct text with the correct layout
-        public ViewHolder(View itemView){
+        // TODO: make class public again if broken
+        ViewHolder(View itemView){
             super(itemView);
             jobTitle = itemView.findViewById(R.id.job_title);
             timeWorked = itemView.findViewById(R.id.time_worked);

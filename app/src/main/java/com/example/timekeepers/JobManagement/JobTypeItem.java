@@ -1,10 +1,12 @@
 package com.example.timekeepers.JobManagement;
 
+// TODO: return JobTypItem to public along with two variable names (jobType and jobTypeIcon)
+//  if broken
 public class JobTypeItem {
-    public final String jobType;
-    public final int jobTypeIcon;
+    private final String jobType;
+    final int jobTypeIcon;
 
-    public JobTypeItem(String jobType, int jobTypeIcon) {
+    JobTypeItem(String jobType, int jobTypeIcon) {
         this.jobType = jobType;
         this.jobTypeIcon = jobTypeIcon;
     }

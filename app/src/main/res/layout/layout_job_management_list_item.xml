@@ -6,22 +6,21 @@
     android:padding="16dp"
     android:id="@+id/parent_layout">
 
+    <!--TODO: alter the horizontal weight of each and add style-->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/job_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Job Title"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/time_worked"/>
-    <!--TODO: alter the horizontal weight of each and add style-->
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/time_worked"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Hrs"
+        android:textAlignment="viewEnd"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/job_title"
@@ -31,7 +30,7 @@
         android:id="@+id/pay_rate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Pay"
+        android:textAlignment="textEnd"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/time_worked"

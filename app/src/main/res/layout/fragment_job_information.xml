@@ -41,7 +41,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="TempPay/hr"
             style="@style/FormInfo"
             app:layout_constraintTop_toTopOf="@id/pay_rate_label"
             app:layout_constraintBottom_toBottomOf="@id/pay_rate_label"
@@ -62,7 +61,6 @@
             android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Temp \n Address"
             style="@style/FormInfo"
             app:layout_constraintTop_toBottomOf="@id/address_label"
             app:layout_constraintStart_toStartOf="parent"/>

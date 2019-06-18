@@ -8,13 +8,13 @@
     android:padding="8dp"
     tools:context=".JobManagement.CalculateSalaryDialog">
 
-    <!--TODO: add styling to make the dialog look nicer...-->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/salary_information_prompt"
         android:text="@string/salary_information_prompt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
+        style="@style/FormLabels"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.material.textfield.TextInputLayout

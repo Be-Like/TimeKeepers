@@ -3,7 +3,6 @@ package com.example.timekeepers.JobManagement;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -34,19 +33,21 @@ import java.util.Objects;
 import static android.app.Activity.RESULT_OK;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link JobInformation.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link JobInformation#newInstance} factory method to
- * create an instance of this fragment.
- */
+///**
+// * A simple {@link Fragment} subclass.
+// * Activities that contain this fragment must implement the
+// * {@link JobInformation.OnFragmentInteractionListener} interface
+// * to handle interaction events.
+// * Use the {@link JobInformation#newInstance} factory method to
+// * create an instance of this fragment.
+// */
+
+// TODO: Delete all Commented out code regarding the OnFragmentInteractionListener
 public class JobInformation extends Fragment {
     private MainActivity mainActivity;
     private static final String BUNDLE_KEY = "PassedBundle";
     private Bundle jobInformation;
-    private OnFragmentInteractionListener mListener;
+//    private OnFragmentInteractionListener mListener;
 
     // Key variables needed for logic throughout
     private String jobId;
@@ -56,6 +57,7 @@ public class JobInformation extends Fragment {
 
     // Text View Declarations
     private AppCompatTextView jobTitle;
+    private AppCompatTextView payRateLabel;
     private AppCompatTextView payRate;
     private AppCompatTextView completedJobs;
     private AppCompatTextView jobEmail;
@@ -116,11 +118,11 @@ public class JobInformation extends Fragment {
         return fragmentView;
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+//    public void onButtonPressed(Uri uri) {
+//        if (mListener != null) {
+////            mListener.onFragmentInteraction(uri);
+//        }
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -152,18 +154,18 @@ public class JobInformation extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+//        mListener = null;
     }
 
     /**
@@ -176,14 +178,14 @@ public class JobInformation extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+//    public interface OnFragmentInteractionListener {
+//        void onFragmentInteraction(Uri uri);
+//    }
 
     private void initializeViews(@NonNull View fragmentView) {
         jobTitle = fragmentView.findViewById(R.id.job_title);
         completedJobs = fragmentView.findViewById(R.id.job_status);
+        payRateLabel = fragmentView.findViewById(R.id.pay_rate_label);
         payRate = fragmentView.findViewById(R.id.pay_rate);
         jobAddress = fragmentView.findViewById(R.id.address);
         jobPhone = fragmentView.findViewById(R.id.phone_number);
@@ -217,14 +219,17 @@ public class JobInformation extends Fragment {
         }
 
         payRate.setText(currency.format(jobInformation.getDouble(getString(R.string.payRateKey))));
-
-        // TODO: add job type to the formatting (including the suffix for the pay rate)
+        if (getString(R.string.project).equals(jobType)) {
+            payRateLabel.setText("Pay");
+        } else {
+            payRate.append(" /hr");
+        }
 
         addressFormat();
 
-        jobPhone.setText(jobInformation.getString(getString(R.string.jobPhoneKey)));
-        jobEmail.setText(jobInformation.getString(getString(R.string.jobEmailKey)));
-        jobWebsite.setText(jobInformation.getString(getString(R.string.jobWebsiteKey)));
+        jobPhone.setText(jobInformation.getString(getString(R.string.jobPhoneKey))); // TODO: make link to call phone number
+        jobEmail.setText(jobInformation.getString(getString(R.string.jobEmailKey))); // TODO: make link to create email using default email
+        jobWebsite.setText(jobInformation.getString(getString(R.string.jobWebsiteKey))); // TODO: make link to default browser
 
         double tmpFederal = jobInformation.getDouble(getString(R.string.federalTaxKey));
         double tmpState = jobInformation.getDouble(getString(R.string.stateTaxKey));
