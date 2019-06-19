@@ -20,11 +20,7 @@ import com.example.timekeepers.CurrencyListFormatter;
 import com.example.timekeepers.R;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -32,7 +28,6 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
     private ArrayList<JobObject> jobs;
     private Context context;
 
-    // TODO: make package public if broken...
     ManagementAdapter(Context context, ArrayList<JobObject> jobs) {
         this.jobs = jobs;
         this.context = context;
@@ -55,7 +50,6 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
         // Format for Money to only show two decimal places
         DecimalFormat df = new DecimalFormat("0");
 
-        // TODO: abbreviate currency and hours once they reach a certain value (thousands, millions, etc.)
         holder.jobTitle.setText(
                 entry.getJobTitle());
         holder.timeWorked.setText(
@@ -117,7 +111,6 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
     }
 
     // View holder with correct data fields for the list
-    // TODO: make class public again if broken
     class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView jobTitle;
@@ -126,7 +119,6 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
         ConstraintLayout parentLayout;
 
         // Associating the correct text with the correct layout
-        // TODO: make class public again if broken
         ViewHolder(View itemView){
             super(itemView);
             jobTitle = itemView.findViewById(R.id.job_title);

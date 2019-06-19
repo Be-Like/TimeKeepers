@@ -46,7 +46,6 @@
             app:layout_constraintBottom_toBottomOf="@id/pay_rate_label"
             app:layout_constraintStart_toEndOf="@id/pay_rate_label"
             />
-        <!--TODO: get rid of margin and replace/include with style-->
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/address_label"
@@ -91,6 +90,7 @@
             android:id="@+id/phone_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColorLink="@android:color/widget_edittext_dark"
             style="@style/FormInfo"
             app:layout_constraintHorizontal_weight="8"
             app:layout_constraintTop_toTopOf="@id/phone_label"
@@ -98,7 +98,6 @@
             app:layout_constraintStart_toEndOf="@id/phone_label"
             app:layout_constraintEnd_toEndOf="parent"
             />
-        <!--TODO: get rid of margin and replace with the styles-->
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/email_label"
@@ -116,6 +115,7 @@
             android:id="@+id/email"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColorLink="@android:color/widget_edittext_dark"
             style="@style/FormInfo"
             app:layout_constraintHorizontal_weight="8"
             app:layout_constraintTop_toTopOf="@id/email_label"
@@ -123,7 +123,6 @@
             app:layout_constraintStart_toEndOf="@id/email_label"
             app:layout_constraintEnd_toEndOf="parent"
             />
-        <!--TODO: get rid of margin and replace with the styles-->
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/website_label"
@@ -141,6 +140,7 @@
             android:id="@+id/website"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColorLink="@android:color/widget_edittext_dark"
             style="@style/FormInfo"
             app:layout_constraintHorizontal_weight="8"
             app:layout_constraintTop_toTopOf="@id/website_label"
@@ -148,7 +148,6 @@
             app:layout_constraintStart_toEndOf="@id/website_label"
             app:layout_constraintEnd_toEndOf="parent"
             />
-        <!--TODO: get rid of margin and replace with the styles-->
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tax_withholdings_label"

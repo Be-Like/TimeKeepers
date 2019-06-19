@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,21 +34,15 @@ import java.util.Objects;
 import static android.app.Activity.RESULT_OK;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-///**
-// * A simple {@link Fragment} subclass.
-// * Activities that contain this fragment must implement the
-// * {@link JobInformation.OnFragmentInteractionListener} interface
-// * to handle interaction events.
-// * Use the {@link JobInformation#newInstance} factory method to
-// * create an instance of this fragment.
-// */
-
-// TODO: Delete all Commented out code regarding the OnFragmentInteractionListener
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link JobInformation#newInstance} factory method to
+ * create an instance of this fragment.
+ */
 public class JobInformation extends Fragment {
     private MainActivity mainActivity;
     private static final String BUNDLE_KEY = "PassedBundle";
     private Bundle jobInformation;
-//    private OnFragmentInteractionListener mListener;
 
     // Key variables needed for logic throughout
     private String jobId;
@@ -112,17 +107,10 @@ public class JobInformation extends Fragment {
 
         // Initialize and set views
         initializeViews(fragmentView);
-//        setViews();
 
         // Inflate the layout for this fragment
         return fragmentView;
     }
-
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-////            mListener.onFragmentInteraction(uri);
-//        }
-//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -154,33 +142,12 @@ public class JobInformation extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-//        mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-//    public interface OnFragmentInteractionListener {
-//        void onFragmentInteraction(Uri uri);
-//    }
 
     private void initializeViews(@NonNull View fragmentView) {
         jobTitle = fragmentView.findViewById(R.id.job_title);
@@ -211,10 +178,8 @@ public class JobInformation extends Fragment {
         jobTitle.setText(jobInformation.getString(getString(R.string.jobTitleKey)));
 
         if (jobIsCompleted) {
-//            completedJobs.setText(R.string.job_completed);
             completedJobs.setText(getString(R.string.job_completed));
         } else {
-//            completedJobs.setText(R.string.job_incomplete);
             completedJobs.setText(getString(R.string.job_incomplete));
         }
 
@@ -227,9 +192,12 @@ public class JobInformation extends Fragment {
 
         addressFormat();
 
-        jobPhone.setText(jobInformation.getString(getString(R.string.jobPhoneKey))); // TODO: make link to call phone number
-        jobEmail.setText(jobInformation.getString(getString(R.string.jobEmailKey))); // TODO: make link to create email using default email
-        jobWebsite.setText(jobInformation.getString(getString(R.string.jobWebsiteKey))); // TODO: make link to default browser
+        jobPhone.setText(jobInformation.getString(getString(R.string.jobPhoneKey)));
+        Linkify.addLinks(jobPhone, Linkify.PHONE_NUMBERS);
+        jobEmail.setText(jobInformation.getString(getString(R.string.jobEmailKey)));
+        Linkify.addLinks(jobEmail, Linkify.EMAIL_ADDRESSES);
+        jobWebsite.setText(jobInformation.getString(getString(R.string.jobWebsiteKey)));
+        Linkify.addLinks(jobWebsite, Linkify.WEB_URLS);
 
         double tmpFederal = jobInformation.getDouble(getString(R.string.federalTaxKey));
         double tmpState = jobInformation.getDouble(getString(R.string.stateTaxKey));
