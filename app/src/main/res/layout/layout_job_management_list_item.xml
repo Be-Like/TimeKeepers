@@ -6,7 +6,6 @@
     android:padding="16dp"
     android:id="@+id/parent_layout">
 
-    <!--TODO: alter the horizontal weight of each and add style-->
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/job_title"
         android:layout_width="0dp"

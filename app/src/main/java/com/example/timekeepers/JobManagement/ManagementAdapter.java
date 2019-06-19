@@ -16,11 +16,15 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.timekeepers.CurrencyListFormatter;
 import com.example.timekeepers.R;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -49,8 +53,7 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
         final JobObject entry = jobs.get(position);
 
         // Format for Money to only show two decimal places
-        NumberFormat currency = NumberFormat.getCurrencyInstance();
-        DecimalFormat df = new DecimalFormat("0.0");
+        DecimalFormat df = new DecimalFormat("0");
 
         // TODO: abbreviate currency and hours once they reach a certain value (thousands, millions, etc.)
         holder.jobTitle.setText(
@@ -59,7 +62,7 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
                 df.format(entry.getHoursWorked()) + " Hrs"
         );
         holder.payRate.setText(
-                currency.format(entry.getPayRate())
+                "$" + CurrencyListFormatter.format(entry.getPayRate())
         );
 
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
