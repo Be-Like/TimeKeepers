@@ -76,12 +76,29 @@ public class Dashboard extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        /**
+         * TODO: Cards will be used to display all the active jobs.
+         * Functions of the card include:
+         *  - Title
+         *  - Pay Rate (maybe)
+         *  - Address
+         *  - Phone Number
+         *  - Clock-In Button
+         *  - Add Job Entry Button
+         *
+         * Cards fill full screen using a parent child relationship
+         *
+         * Potentially use swipes to clock in or to add job entries
+         */
+
+
+
+
         // Set Toolbar Title
         ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(dashboardTitle);
 
         fragmentView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        testText = fragmentView.findViewById(R.id.testText);
 
         // Inflate the layout for this fragment
         return fragmentView;
@@ -89,8 +106,6 @@ public class Dashboard extends Fragment {
 
     public void onStart() {
         super.onStart();
-
-        testText.setText(((MainActivity) Objects.requireNonNull(getActivity())).getUsersName());
     }
 
     // TODO: Rename method, update argument and hook method into UI event
