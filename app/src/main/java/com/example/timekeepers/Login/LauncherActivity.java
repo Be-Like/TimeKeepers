@@ -1,9 +1,11 @@
-package com.example.timekeepers;
+package com.example.timekeepers.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.timekeepers.Login.LoginActivity;
 
 public class LauncherActivity extends AppCompatActivity {
 

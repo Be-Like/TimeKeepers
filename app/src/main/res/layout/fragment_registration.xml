@@ -8,7 +8,7 @@
     android:background="@color/content_background"
     android:padding="16dp"
     android:clipToPadding="false"
-    tools:context=".Registration">
+    tools:context=".Login.Registration">
 
     <!--TODO: change image width and height once image is generated-->
     <ImageView

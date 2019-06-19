@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.timekeepers.CurrencyListFormatter;
+import com.example.timekeepers.Misc.CurrencyListFormatter;
 import com.example.timekeepers.R;
 
 import java.text.DecimalFormat;
@@ -88,10 +87,6 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
                 bundle.putString(context.getString(R.string.cityKey), entry.getJobCity());
                 bundle.putString(context.getString(R.string.stateKey), entry.getJobState());
                 bundle.putString(context.getString(R.string.zipCodeKey), entry.getJobZipCode());
-
-                Toast.makeText(context, "Will open: " + entry.getJobTitle(),
-                        Toast.LENGTH_SHORT).show();
-
 
                 Fragment viewJob = JobInformation.newInstance(bundle);
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();

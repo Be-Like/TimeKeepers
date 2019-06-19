@@ -3,7 +3,6 @@ package com.example.timekeepers.JobManagement;
 import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -20,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
@@ -43,12 +41,9 @@ import static android.content.ContentValues.TAG;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link JobManagement.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link JobManagement#newInstance} factory method to
  * create an instance of this fragment.
  */
-// TODO: Delete all Commented out code regarding the OnFragmentInteractionListener
 public class JobManagement extends Fragment
         implements View.OnClickListener {
     private View fragmentView;
@@ -56,7 +51,6 @@ public class JobManagement extends Fragment
 
     private ArrayList<JobObject> jobsArray;
 
-//    private OnFragmentInteractionListener mListener;
 
     public JobManagement() {
         // Required empty public constructor
@@ -65,7 +59,6 @@ public class JobManagement extends Fragment
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     *
      * @return A new instance of fragment JobManagement.
      */
     public static JobManagement newInstance() {
@@ -104,41 +97,14 @@ public class JobManagement extends Fragment
         Log.d(TAG, "onResume: is called");
     }
 
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-//        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 
     public void onClick(View view) {
@@ -241,15 +207,12 @@ public class JobManagement extends Fragment
 
                         switch (which) {
                             case 0:
-                                Toast.makeText(getContext(), "Hourly selected", Toast.LENGTH_SHORT).show();
                                 addJob = AddJob.newInstance(getString(R.string.hourly), null);
                                 break;
                             case 1:
-                                Toast.makeText(getContext(), "Salary selected", Toast.LENGTH_SHORT).show();
                                 addJob = AddJob.newInstance(getString(R.string.salary), null);
                                 break;
                             case 2:
-                                Toast.makeText(getContext(), "Project selected", Toast.LENGTH_SHORT).show();
                                 addJob = AddJob.newInstance(getString(R.string.project), null);
                                 break;
                         }

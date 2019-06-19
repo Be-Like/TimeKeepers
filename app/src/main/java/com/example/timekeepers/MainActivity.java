@@ -13,9 +13,8 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
-import com.example.timekeepers.JobManagement.AddJob;
 import com.example.timekeepers.JobManagement.CalculateSalaryDialog;
-import com.example.timekeepers.JobManagement.JobInformation;
+import com.example.timekeepers.Login.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,7 +24,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -44,11 +42,10 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        Dashboard.OnFragmentInteractionListener, JobManagement.OnFragmentInteractionListener,
+        Dashboard.OnFragmentInteractionListener,
         Accounting.OnFragmentInteractionListener, Expenses.OnFragmentInteractionListener,
-        Calendar.OnFragmentInteractionListener, AddJob.OnFragmentInteractionListener,
+        Calendar.OnFragmentInteractionListener,
         Settings.OnFragmentInteractionListener,
-//        JobInformation.OnFragmentInteractionListener, TODO: Delete all Commented out code regarding the OnFragmentInteractionListener
         CalculateSalaryDialog.JobCompensationListener {
 
     public Toolbar toolbar;

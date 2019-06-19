@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:clipToPadding="false"
-    tools:context=".LoginActivity">
+    tools:context=".Login.LoginActivity">
 
     <!--TODO: Change image width and height once image is generated-->
     <ImageView

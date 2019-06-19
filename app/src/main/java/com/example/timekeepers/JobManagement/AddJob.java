@@ -3,7 +3,6 @@ package com.example.timekeepers.JobManagement;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,7 +19,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.timekeepers.CurrencyTextListener;
+import com.example.timekeepers.Misc.CurrencyTextListener;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -46,8 +45,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AddJob.OnFragmentInteractionListener} interface
- * to handle interaction events.
+ *
  * Use the {@link AddJob#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -96,7 +94,6 @@ public class AddJob extends Fragment
     private MaterialButton cancelButton;
     private MaterialButton calculateRate;
 
-    private OnFragmentInteractionListener mListener;
     // [END] Class Declarations
 
     public AddJob() {
@@ -240,41 +237,14 @@ public class AddJob extends Fragment
                 jobInformation.getDouble(getString(R.string.otherWithholdingsKey))));
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 
     public void onClick(View view) {

@@ -1,7 +1,7 @@
 package com.example.timekeepers.JobManagement;
 
-// TODO: return JobTypItem to public along with two variable names (jobType and jobTypeIcon)
-//  if broken
+import androidx.annotation.NonNull;
+
 public class JobTypeItem {
     private final String jobType;
     final int jobTypeIcon;
@@ -11,6 +11,7 @@ public class JobTypeItem {
         this.jobTypeIcon = jobTypeIcon;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return jobType;

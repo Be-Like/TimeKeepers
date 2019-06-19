@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.timekeepers.CurrencyTextListener;
+import com.example.timekeepers.Misc.CurrencyTextListener;
 import com.example.timekeepers.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;

@@ -100,6 +100,7 @@ public class JobInformation extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Toolbar navigation
+        mainActivity.toolbar.setTitle("Job Info");
         mainActivity.lockNavigationDrawer(true);
         setHasOptionsMenu(true);
 
