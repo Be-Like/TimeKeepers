@@ -50,8 +50,9 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
 
         // Format for Money to only show two decimal places
         NumberFormat currency = NumberFormat.getCurrencyInstance();
-        DecimalFormat df = new DecimalFormat("0.00");
+        DecimalFormat df = new DecimalFormat("0.0");
 
+        // TODO: abbreviate currency and hours once they reach a certain value (thousands, millions, etc.)
         holder.jobTitle.setText(
                 entry.getJobTitle());
         holder.timeWorked.setText(
