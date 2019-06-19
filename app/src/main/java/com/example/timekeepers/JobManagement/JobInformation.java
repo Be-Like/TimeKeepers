@@ -3,6 +3,8 @@ package com.example.timekeepers.JobManagement;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -229,40 +231,45 @@ public class JobInformation extends Fragment {
         assert passedState != null;
         assert passedZipCode != null;
 
-        if (!passedStreet1.equals("")) {
-            if (!passedStreet2.equals("")) {
-                if (!passedState.equals("") && !passedZipCode.equals("")) {
-                    if (passedCity.equals("")) {
-                        jobAddress.setText(passedStreet1 + "\n" + passedStreet2 +
-                                "\n" + passedState + ", " + passedZipCode);
-                    } else {
-                        jobAddress.setText(passedStreet1 + "\n" + passedStreet2 +
-                                "\n" + passedCity + " " + passedState + ", " + passedZipCode);
-                    }
-                } else {
-                    jobAddress.setText(passedStreet1 + "\n" + passedStreet2);
-                }
-            } else {
-                if (!passedState.equals("") && !passedZipCode.equals("")) {
-                    if (passedCity.equals("")) {
-                        jobAddress.setText(passedStreet1 + "\n" + passedState + ", " + passedZipCode);
-                    } else {
-                        jobAddress.setText(passedStreet1 + "\n" +
-                                passedCity + " " + passedState + ", " + passedZipCode);
-                    }
-                } else {
-                    jobAddress.setText(passedStreet1);
-                }
+        jobAddress.setText(passedStreet1);
+        if (!passedStreet2.isEmpty()) {
+            if (!jobAddress.getText().toString().isEmpty()) {
+                jobAddress.append("\n");
             }
+            jobAddress.append(passedStreet2);
         }
-        else if (!passedState.equals("") && !passedZipCode.equals("")) {
-            if (passedCity.equals("")) {
-                jobAddress.setText(passedState + ", " + passedZipCode);
-            } else {
-                jobAddress.setText(passedCity + " " + passedState + ", " + passedZipCode);
+        if (!passedCity.isEmpty()) {
+            if (!jobAddress.getText().toString().isEmpty()) {
+                jobAddress.append("\n");
             }
+            jobAddress.append(passedCity);
         }
-        else {
+        if (!passedState.isEmpty()) {
+            jobAddress.append(" " + passedState);
+        }
+        if (!passedZipCode.isEmpty()) {
+            jobAddress.append(" " + passedZipCode);
+        }
+
+        if (!jobAddress.getText().toString().isEmpty()) {
+            // Underline text
+            jobAddress.setPaintFlags(jobAddress.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+            // Set up navigation to maps for directions or reference
+            jobAddress.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + jobAddress.getText().toString());
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+
+                    if (mapIntent.resolveActivity(Objects.requireNonNull(
+                            getActivity()).getPackageManager()) != null) {
+                        startActivity(mapIntent);
+                    }
+                }
+            });
+        } else {
             jobAddress.setText("No Address Entered");
         }
     }
