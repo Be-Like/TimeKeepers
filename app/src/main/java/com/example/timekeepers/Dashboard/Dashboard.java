@@ -21,17 +21,12 @@ import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
-import javax.annotation.Nullable;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -105,6 +100,8 @@ public class Dashboard extends Fragment {
          *  - Phone Number
          *  - Clock-In Button
          *  - Add Job Entry Button
+         *  - Number of Job Entries
+         *  - Number of Expense Entries
          *
          * Cards fill full screen using a parent child relationship
          *
@@ -130,7 +127,6 @@ public class Dashboard extends Fragment {
         super.onStart();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -222,7 +218,6 @@ public class Dashboard extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

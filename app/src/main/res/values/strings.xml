@@ -16,10 +16,12 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_dashboard">Hello blank dashboard</string>
-    <string name="hello_blank_job_management">Hello blank job management</string>
     <string name="hello_blank_accounting">Hello blank accounting</string>
     <string name="hello_blank_expenses">Hello blank expenses</string>
     <string name="hello_blank_calendar">Hello blank calendar</string>
+
+    <!--Dashboard-->
+    <string name="clock_in">Clock In</string>
 
     <!--Job Management-->
     <string name="dialog_job_type_prompt">Select a job type:</string>

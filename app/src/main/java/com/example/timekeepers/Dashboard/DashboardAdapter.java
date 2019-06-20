@@ -18,8 +18,6 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
-import javax.annotation.Nullable;
-
 public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.ViewHolder> {
     private ArrayList<JobObject> jobs;
     private Context context;
