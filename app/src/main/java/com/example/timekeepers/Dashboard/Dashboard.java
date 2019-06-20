@@ -87,18 +87,16 @@ public class Dashboard extends Fragment {
         }
     }
 
-    private TextView testText;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         /**
          * TODO: Cards will be used to display all the active jobs.
          * Functions of the card include:
-         *  - Title
-         *  - Pay Rate (maybe)
-         *  - Address
-         *  - Phone Number
-         *  - Clock-In Button
+         *  - Title (Done)
+         *  - Address (Done)
+         *  - Phone Number (Done)
+         *  - Clock-In Button (XML done)
          *  - Add Job Entry Button
          *  - Number of Job Entries
          *  - Number of Expense Entries
@@ -199,7 +197,7 @@ public class Dashboard extends Fragment {
                             RecyclerView recyclerView =
                                     fragmentView.findViewById(R.id.recycler_view);
                             DashboardAdapter adapter =
-                                    new DashboardAdapter(getContext(), jobsArray);
+                                    new DashboardAdapter(getContext(), jobsArray, getActivity());
                             recyclerView.setAdapter(adapter);
                             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                         }

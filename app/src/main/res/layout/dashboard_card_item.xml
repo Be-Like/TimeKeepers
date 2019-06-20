@@ -6,13 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
     app:cardCornerRadius="6dp"
     app:cardElevation="6dp"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/job_title"
@@ -23,13 +31,53 @@
             app:layout_constraintStart_toStartOf="parent"
             />
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorLink="@android:color/widget_edittext_dark"
+            style="@style/FormInfo"
+            app:layout_constraintTop_toBottomOf="@id/job_title"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/FormInfo"
+            app:layout_constraintTop_toBottomOf="@id/phone_number"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/job_entries"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Job Entries \n 100"
+            app:layout_constraintTop_toBottomOf="@id/address"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/expense_entries"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:gravity="center"
+            android:text="Expenses \n 25"
+            app:layout_constraintTop_toBottomOf="@id/address"
+            app:layout_constraintStart_toEndOf="@id/job_entries"
+            />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/clock_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/clock_in"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            app:layout_constraintTop_toBottomOf="@id/job_title"
+            app:layout_constraintTop_toBottomOf="@id/address"
             app:layout_constraintEnd_toEndOf="parent"
             />
 
