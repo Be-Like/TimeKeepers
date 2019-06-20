@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.Constraints;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,9 +20,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -114,9 +117,18 @@ public class JobManagement extends Fragment
     }
 
     private void initRecyclerView() {
+        String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance()
+                .getCurrentUser()).getEmail();
+        Log.d(Constraints.TAG, "initRecyclerView: jobManagement " + userEmail);
+
+        if (userEmail == null) {
+            Toast.makeText(getContext(), "Error getting user information.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
         FirebaseFirestore.getInstance()
                 .collection("Jobs")
-                .document(((MainActivity) Objects.requireNonNull(getActivity())).getUsersEmail())
+                .document(userEmail)
                 .collection("Users_Jobs")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override

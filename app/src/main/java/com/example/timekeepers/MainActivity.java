@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
+import com.example.timekeepers.Dashboard.Dashboard;
 import com.example.timekeepers.JobManagement.CalculateSalaryDialog;
 import com.example.timekeepers.Login.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -138,12 +139,9 @@ public class MainActivity extends AppCompatActivity
                                 usersName = doc.getString("Users_Name");
                                 usersEmail = doc.getString("Email");
 
-//                                initializeFirstFragment();
-
                                 usersNameTextView.setText(usersName);
                                 usersEmailTextView.setText(usersEmail);
                             } else {
-//                                initializeFirstFragment();
                                 Toast.makeText(getApplicationContext(),
                                         "Error getting user info",
                                         Toast.LENGTH_SHORT).show();

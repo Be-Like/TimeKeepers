@@ -1,4 +1,4 @@
-package com.example.timekeepers;
+package com.example.timekeepers.Dashboard;
 
 import android.content.Context;
 import android.net.Uri;
@@ -6,16 +6,34 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.example.timekeepers.JobManagement.JobObject;
+import com.example.timekeepers.MainActivity;
+import com.example.timekeepers.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Objects;
+
+import javax.annotation.Nullable;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 /**
@@ -38,6 +56,8 @@ public class Dashboard extends Fragment {
     private String dashboardTitle = "Dashboard";
 
     private View fragmentView;
+
+    private ArrayList<JobObject> jobsArray;
 
     private OnFragmentInteractionListener mListener;
 
@@ -99,6 +119,8 @@ public class Dashboard extends Fragment {
 
         fragmentView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
+        initRecyclerView();
+
 
         // Inflate the layout for this fragment
         return fragmentView;
@@ -130,6 +152,63 @@ public class Dashboard extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void initRecyclerView() {
+        String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance()
+                .getCurrentUser()).getEmail();
+        Log.d(TAG, "initRecyclerView: Dashboard " + userEmail);
+
+        if (userEmail == null) {
+            Toast.makeText(getContext(), "Error getting user information.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        FirebaseFirestore.getInstance()
+                .collection("Jobs")
+                .document(userEmail)
+                .collection("Users_Jobs")
+                .whereEqualTo("Completed", false)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        jobsArray = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            jobsArray.add(new JobObject(
+                                    doc.getString("Job_Title"),
+                                    doc.getString("Job_Type"),
+                                    doc.getDouble("Pay_Rate"),
+                                    doc.getDouble("Hours_Worked"),
+                                    doc.getBoolean("Completed"),
+                                    doc.getString("Email"),
+                                    doc.getDouble("Federal_Income_Tax"),
+                                    doc.getDouble("Gross_Pay"),
+                                    doc.getDouble("Medicare"),
+                                    doc.getDouble("OASDI"),
+                                    doc.getDouble("Other_Withholdings"),
+                                    doc.getString("Phone"),
+                                    doc.getDouble("Retirement_Contribution"),
+                                    doc.getDouble("State_Income_Tax"),
+                                    doc.getString("Website"),
+                                    doc.getString("Address.Street_1"),
+                                    doc.getString("Address.Street_2"),
+                                    doc.getString("Address.City"),
+                                    doc.getString("Address.State"),
+                                    doc.getString("Address.Zip_Code"),
+                                    doc.getId()
+                            ));
+                            Log.d(TAG, "onSuccess: jobsArray= " + jobsArray);
+                            RecyclerView recyclerView =
+                                    fragmentView.findViewById(R.id.recycler_view);
+                            DashboardAdapter adapter =
+                                    new DashboardAdapter(getContext(), jobsArray);
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        }
+                    }
+                });
     }
 
     /**

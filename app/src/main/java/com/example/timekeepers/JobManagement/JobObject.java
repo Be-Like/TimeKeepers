@@ -25,7 +25,7 @@ public class JobObject {
     private final String jobZipCode;
     private final String generatedJobId;
 
-    JobObject(String jobTitle,
+    public JobObject(String jobTitle,
               String jobType,
               Double pay,
               Double hoursWorked,
@@ -71,87 +71,87 @@ public class JobObject {
         this.generatedJobId = generatedJobId;
     }
 
-    String getJobTitle() {
+    public String getJobTitle() {
         return jobTitle;
     }
 
-    String getJobType() {
+    public String getJobType() {
         return jobType;
     }
 
-    Double getPayRate() {
+    public Double getPayRate() {
         return payRate;
     }
 
-    Double getHoursWorked() {
+    public Double getHoursWorked() {
         return hoursWorked;
     }
 
-    Boolean getCompletedJob() {
+    public Boolean getCompletedJob() {
         return completedJob;
     }
 
-    String getJobEmail() {
+    public String getJobEmail() {
         return jobEmail;
     }
 
-    Double getJobFederal() {
+    public Double getJobFederal() {
         return jobFederal;
     }
 
-    Double getGrossPay() {
+    public Double getGrossPay() {
         return grossPay;
     }
 
-    Double getMedicare() {
+    public Double getMedicare() {
         return medicare;
     }
 
-    Double getSocialSecurity() {
+    public Double getSocialSecurity() {
         return socialSecurity;
     }
 
-    Double getOtherWithholding() {
+    public Double getOtherWithholding() {
         return otherWithholding;
     }
 
-    String getJobPhone() {
+    public String getJobPhone() {
         return jobPhone;
     }
 
-    Double getRetirement() {
+    public Double getRetirement() {
         return retirement;
     }
 
-    Double getStateTax() {
+    public Double getStateTax() {
         return stateTax;
     }
 
-    String getJobWebsite() {
+    public String getJobWebsite() {
         return jobWebsite;
     }
 
-    String getJobStreet1() {
+    public String getJobStreet1() {
         return jobStreet1;
     }
 
-    String getJobStreet2() {
+    public String getJobStreet2() {
         return jobStreet2;
     }
 
-    String getJobCity() {
+    public String getJobCity() {
         return jobCity;
     }
 
-    String getJobState() {
+    public String getJobState() {
         return jobState;
     }
 
-    String getJobZipCode() {
+    public String getJobZipCode() {
         return jobZipCode;
     }
 
-    String getGeneratedJobId() {
+    public String getGeneratedJobId() {
         return generatedJobId;
     }
 
