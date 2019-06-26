@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.timekeepers.JobManagement.JobObject;
@@ -98,8 +97,8 @@ public class Dashboard extends Fragment {
          *  - Phone Number (Done)
          *  - Clock-In Button (XML done)
          *  - Add Job Entry Button
-         *  - Number of Job Entries
-         *  - Number of Expense Entries
+         *  - Number of Job Entries (XML Layout done)
+         *  - Number of Expense Entries (XML Layout done)
          *
          * Cards fill full screen using a parent child relationship
          *

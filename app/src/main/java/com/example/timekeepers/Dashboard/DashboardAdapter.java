@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,9 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.timekeepers.Accounting;
 import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.R;
 import com.google.android.material.button.MaterialButton;
@@ -78,6 +81,18 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
             public void onClick(View v) {
                 Toast.makeText(context, "Clock In: " + entry.getJobTitle(),
                         Toast.LENGTH_LONG).show();
+
+                Bundle bundle = new Bundle();
+                bundle.putString(context.getString(R.string.idKey), entry.getGeneratedJobId());
+                bundle.putString(context.getString(R.string.jobTitleKey), entry.getJobTitle());
+
+                // TODO: Continue with this!
+                Fragment clockIn = ClockedIn.newInstance(bundle);
+                frag.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_fragment, clockIn)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
