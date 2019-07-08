@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,12 +79,25 @@ public class Dashboard extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) { // TODO: this one may not be the correct approach
+        super.onActivityCreated(savedInstanceState);
+        // declare variable
+        // set variable by getting the saved instance state
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setRetainInstance(true);
     }
 
     @Override
@@ -111,6 +125,9 @@ public class Dashboard extends Fragment {
         // Set Toolbar Title
         ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(dashboardTitle);
 
+        if (savedInstanceState == null) {
+
+        }
         fragmentView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         initRecyclerView();
@@ -145,6 +162,7 @@ public class Dashboard extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        Log.d(TAG, "onDetach: dashboard detached");
     }
 
     private void initRecyclerView() {

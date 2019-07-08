@@ -76,25 +76,36 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         } else {
             holder.address.setText(addressFormat(entry));
         }
+
+        // TODO: REMOVE Below
+        // Testing Save state when navigating away using navigation drawer
         holder.clockIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Clock In: " + entry.getJobTitle(),
-                        Toast.LENGTH_LONG).show();
-
-                Bundle bundle = new Bundle();
-                bundle.putString(context.getString(R.string.idKey), entry.getGeneratedJobId());
-                bundle.putString(context.getString(R.string.jobTitleKey), entry.getJobTitle());
-
-                // TODO: Continue with this!
-                Fragment clockIn = ClockedIn.newInstance(bundle);
-                frag.getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_fragment, clockIn)
-                        .addToBackStack(null)
-                        .commit();
+                holder.jobEntries.setText("TESTING");
             }
         });
+        // TODO: REMOVE Above
+
+//        holder.clockIn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(context, "Clock In: " + entry.getJobTitle(),
+//                        Toast.LENGTH_LONG).show();
+//
+//                Bundle bundle = new Bundle();
+//                bundle.putString(context.getString(R.string.idKey), entry.getGeneratedJobId());
+//                bundle.putString(context.getString(R.string.jobTitleKey), entry.getJobTitle());
+//
+//                // TODO: Continue with this!
+//                Fragment clockIn = ClockedIn.newInstance(bundle);
+//                frag.getSupportFragmentManager()
+//                        .beginTransaction()
+//                        .add(R.id.clocked_in_fragment, clockIn)
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+//        });
 
 
     }
@@ -108,6 +119,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         AppCompatTextView jobTitle;
         AppCompatTextView phoneNumber;
         AppCompatTextView address;
+        AppCompatTextView jobEntries;
         MaterialButton clockIn;
         CardView parentLayout;
 
@@ -116,6 +128,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
             jobTitle = itemView.findViewById(R.id.job_title);
             phoneNumber = itemView.findViewById(R.id.phone_number);
             address = itemView.findViewById(R.id.address);
+            jobEntries = itemView.findViewById(R.id.job_entries);
             clockIn = itemView.findViewById(R.id.clock_in);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
