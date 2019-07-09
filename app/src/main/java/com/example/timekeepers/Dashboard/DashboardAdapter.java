@@ -29,11 +29,14 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
     private ArrayList<JobObject> jobs;
     private Context context;
     private FragmentActivity frag;
+    ClockInListener listener;
 
-    DashboardAdapter(Context context, ArrayList<JobObject> jobs, FragmentActivity frag) {
+    DashboardAdapter(Context context, ArrayList<JobObject> jobs,
+                     FragmentActivity frag, ClockInListener listener) {
         this.jobs = jobs;
         this.context = context;
         this.frag = frag;
+        this.listener = listener;
     }
 
     @NonNull
@@ -82,32 +85,10 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         holder.clockIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.jobEntries.setText("TESTING");
+                listener.onClockIn(true, entry.getGeneratedJobId());
             }
         });
         // TODO: REMOVE Above
-
-//        holder.clockIn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(context, "Clock In: " + entry.getJobTitle(),
-//                        Toast.LENGTH_LONG).show();
-//
-//                Bundle bundle = new Bundle();
-//                bundle.putString(context.getString(R.string.idKey), entry.getGeneratedJobId());
-//                bundle.putString(context.getString(R.string.jobTitleKey), entry.getJobTitle());
-//
-//                // TODO: Continue with this!
-//                Fragment clockIn = ClockedIn.newInstance(bundle);
-//                frag.getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .add(R.id.clocked_in_fragment, clockIn)
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-//        });
-
-
     }
 
     @Override
@@ -132,6 +113,10 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
             clockIn = itemView.findViewById(R.id.clock_in);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }
+    }
+
+    public interface ClockInListener {
+        void onClockIn(boolean clockedIn, String job);
     }
 
     private String addressFormat(JobObject jobObject) {

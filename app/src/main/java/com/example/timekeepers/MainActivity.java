@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
-import com.example.timekeepers.Dashboard.ClockedIn;
 import com.example.timekeepers.Dashboard.Dashboard;
 import com.example.timekeepers.JobManagement.CalculateSalaryDialog;
 import com.example.timekeepers.Login.LoginActivity;
@@ -45,7 +44,6 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         Dashboard.OnFragmentInteractionListener,
-        ClockedIn.OnFragmentInteractionListener,
         Accounting.OnFragmentInteractionListener, Expenses.OnFragmentInteractionListener,
         Calendar.OnFragmentInteractionListener,
         Settings.OnFragmentInteractionListener,

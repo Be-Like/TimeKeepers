@@ -5,11 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +20,7 @@ import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -39,11 +40,14 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  * Use the {@link Dashboard#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Dashboard extends Fragment {
+public class Dashboard extends Fragment implements DashboardAdapter.ClockInListener,
+        View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String KEY_CLOCKED_IN = "keyClockedIn";
+    private static final String KEY_CLOCKED_IN_JOB = "keyClockedInJob";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -51,8 +55,13 @@ public class Dashboard extends Fragment {
     private String dashboardTitle = "Dashboard";
 
     private View fragmentView;
+    private RecyclerView recyclerView;
+    private ConstraintLayout clockedInView;
+    private MaterialButton clockOutButton;
 
     private ArrayList<JobObject> jobsArray;
+    private boolean clockedIn = false;
+    private String clockedInJob;
 
     private OnFragmentInteractionListener mListener;
 
@@ -79,15 +88,12 @@ public class Dashboard extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) { // TODO: this one may not be the correct approach
-        super.onActivityCreated(savedInstanceState);
-        // declare variable
-        // set variable by getting the saved instance state
-    }
-
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        if (clockedIn && clockedInJob != null) {
+            outState.putBoolean(KEY_CLOCKED_IN, clockedIn);
+            outState.putString(KEY_CLOCKED_IN_JOB, clockedInJob);
+        }
     }
 
     @Override
@@ -97,7 +103,6 @@ public class Dashboard extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        setRetainInstance(true);
     }
 
     @Override
@@ -125,13 +130,15 @@ public class Dashboard extends Fragment {
         // Set Toolbar Title
         ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(dashboardTitle);
 
-        if (savedInstanceState == null) {
-
-        }
         fragmentView = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
+        initViews();
         initRecyclerView();
 
+        if (savedInstanceState != null) {
+            clockedIn = savedInstanceState.getBoolean(KEY_CLOCKED_IN);
+            clockedInJob = savedInstanceState.getString(KEY_CLOCKED_IN_JOB);
+        }
 
         // Inflate the layout for this fragment
         return fragmentView;
@@ -139,6 +146,10 @@ public class Dashboard extends Fragment {
 
     public void onStart() {
         super.onStart();
+
+        // TODO: create logic for determining if a job is clocked in or not
+        //  and display the corresponding view correctly.
+        setClockedInStatus(clockedIn, clockedInJob);
     }
 
     public void onButtonPressed(Uri uri) {
@@ -211,15 +222,41 @@ public class Dashboard extends Fragment {
                                     doc.getId()
                             ));
                             Log.d(TAG, "onSuccess: jobsArray= " + jobsArray);
-                            RecyclerView recyclerView =
-                                    fragmentView.findViewById(R.id.recycler_view);
                             DashboardAdapter adapter =
-                                    new DashboardAdapter(getContext(), jobsArray, getActivity());
+                                    new DashboardAdapter(getContext(), jobsArray,
+                                            getActivity(), Dashboard.this);
                             recyclerView.setAdapter(adapter);
                             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                         }
                     }
                 });
+    }
+
+    private void initViews() {
+        recyclerView =
+                fragmentView.findViewById(R.id.recycler_view);
+        clockedInView = fragmentView.findViewById(R.id.clocked_in);
+        clockOutButton = fragmentView.findViewById(R.id.clock_out);
+        clockOutButton.setOnClickListener(this);
+    }
+
+    private void setClockedInStatus(boolean isClockedIn, String job) {
+        clockedIn = isClockedIn;
+        clockedInJob = job;
+
+        if (clockedIn && clockedInJob != null) {
+            recyclerView.setVisibility(View.GONE);
+            clockedInView.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            clockedInView.setVisibility(View.GONE);
+        }
+    }
+
+    public void onClick(View v) {
+        if (v == clockOutButton) {
+            onClockIn(false, null);
+        }
     }
 
     /**
@@ -234,5 +271,9 @@ public class Dashboard extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void onClockIn(boolean clockedIn, String job) {
+        setClockedInStatus(clockedIn, job);
     }
 }
