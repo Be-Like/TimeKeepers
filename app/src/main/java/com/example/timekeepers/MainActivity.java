@@ -69,6 +69,10 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
 
+    private final String STATE_SAVE_STATE = "stateSaveState";
+    private final String STATE_HELPER = "stateHelper";
+    private FragmentStateHelper stateHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,8 +94,13 @@ public class MainActivity extends AppCompatActivity
         usersEmailTextView = headerView.findViewById(R.id.users_email);
         usersProfilePicture = headerView.findViewById(R.id.users_profile_picture);
 
+        stateHelper = new FragmentStateHelper(getSupportFragmentManager());
+
         if (savedInstanceState == null) {
             initializeFirstFragment();
+        } else {
+            Bundle helperState = savedInstanceState.getBundle(STATE_HELPER);
+            stateHelper.restoreHelperState(helperState);
         }
     }
 
@@ -159,8 +168,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putBundle(STATE_HELPER, stateHelper.saveHelperState());
+
+        super.onSaveInstanceState(outState);
     }
 
     @Override
