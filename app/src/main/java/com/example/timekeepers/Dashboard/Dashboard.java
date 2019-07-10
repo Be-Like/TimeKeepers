@@ -60,7 +60,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     private MaterialButton clockOutButton;
 
     private ArrayList<JobObject> jobsArray;
-    private boolean clockedIn = false;
+    private boolean clockedIn;
     private String clockedInJob;
 
     private OnFragmentInteractionListener mListener;
@@ -91,6 +91,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (clockedIn && clockedInJob != null) {
+            Log.d(TAG, "onSaveInstanceState: saving clockedIn true status");
             outState.putBoolean(KEY_CLOCKED_IN, clockedIn);
             outState.putString(KEY_CLOCKED_IN_JOB, clockedInJob);
         }
@@ -136,8 +137,11 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         initRecyclerView();
 
         if (savedInstanceState != null) {
+            Log.d(TAG, "onCreateView: getting clockedIn true status");
             clockedIn = savedInstanceState.getBoolean(KEY_CLOCKED_IN);
             clockedInJob = savedInstanceState.getString(KEY_CLOCKED_IN_JOB);
+        } else {
+            clockedIn = false;
         }
 
         // Inflate the layout for this fragment
