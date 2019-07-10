@@ -69,10 +69,6 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
 
-    private final String STATE_SAVE_STATE = "stateSaveState";
-    private final String STATE_HELPER = "stateHelper";
-    private FragmentStateHelper stateHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,14 +90,14 @@ public class MainActivity extends AppCompatActivity
         usersEmailTextView = headerView.findViewById(R.id.users_email);
         usersProfilePicture = headerView.findViewById(R.id.users_profile_picture);
 
-        stateHelper = new FragmentStateHelper(getSupportFragmentManager());
 
         if (savedInstanceState == null) {
             initializeFirstFragment();
-        } else {
-            Bundle helperState = savedInstanceState.getBundle(STATE_HELPER);
-            stateHelper.restoreHelperState(helperState);
+            Log.d("TAG", "onCreate: savedInstanceState=null");
         }
+
+        Log.d("CurrentTAG", "onCreate: " + currentFragmentTag);
+        toolbar.setTitle(currentFragmentTag);
     }
 
     @Override
@@ -163,15 +159,25 @@ public class MainActivity extends AppCompatActivity
     private void initializeFirstFragment() {
         currentFragmentTag = dashboardTag;
         Fragment fragment = Dashboard.newInstance();
+        currentFragment = fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).commit();
     }
 
+    private final String KEY_CURRENT_FRAGMENT_TAG = "keyCurrentFragmentTag";
+    private Fragment currentFragment;
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putBundle(STATE_HELPER, stateHelper.saveHelperState());
-
         super.onSaveInstanceState(outState);
+
+        outState.putString(KEY_CURRENT_FRAGMENT_TAG, currentFragmentTag);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle restoreSaveState) {
+        super.onRestoreInstanceState(restoreSaveState);
+
+        currentFragmentTag = restoreSaveState.getString(KEY_CURRENT_FRAGMENT_TAG);
     }
 
     @Override
@@ -227,6 +233,7 @@ String currentFragmentTag;
                     .replace(R.id.main_fragment, fragment, fragmentTag)
                     .commit();
             currentFragmentTag = fragmentTag;
+            currentFragment = fragment;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
