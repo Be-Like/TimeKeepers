@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.core.view.GravityCompat;
@@ -25,6 +26,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -90,14 +93,15 @@ public class MainActivity extends AppCompatActivity
         usersEmailTextView = headerView.findViewById(R.id.users_email);
         usersProfilePicture = headerView.findViewById(R.id.users_profile_picture);
 
-
-        if (savedInstanceState == null) {
+        if (savedInstanceState != null) {
+            currentFragmentTag = savedInstanceState.getString(KEY_CURRENT_FRAGMENT_TAG);
+            Log.d("CurrentTAG", "onCreate: " + currentFragmentTag);
+            AppCompatTextView testState = findViewById(R.id.test_save_state);
+            testState.setText(currentFragmentTag);
+        } else {
             initializeFirstFragment();
             Log.d("TAG", "onCreate: savedInstanceState=null");
         }
-
-        Log.d("CurrentTAG", "onCreate: " + currentFragmentTag);
-        toolbar.setTitle(currentFragmentTag);
     }
 
     @Override
@@ -161,8 +165,12 @@ public class MainActivity extends AppCompatActivity
         Fragment fragment = Dashboard.newInstance();
         currentFragment = fragment;
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment).commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.main_fragment, fragment)
+                .addToBackStack(currentFragmentTag)
+                .commit();
     }
+
 
     private final String KEY_CURRENT_FRAGMENT_TAG = "keyCurrentFragmentTag";
     private Fragment currentFragment;
@@ -171,13 +179,7 @@ public class MainActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
 
         outState.putString(KEY_CURRENT_FRAGMENT_TAG, currentFragmentTag);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle restoreSaveState) {
-        super.onRestoreInstanceState(restoreSaveState);
-
-        currentFragmentTag = restoreSaveState.getString(KEY_CURRENT_FRAGMENT_TAG);
+        Log.d("SaveStateTag", "onSaveInstanceState: " + outState.getString(KEY_CURRENT_FRAGMENT_TAG));
     }
 
     @Override
@@ -225,12 +227,15 @@ String currentFragmentTag;
         }
         Log.d("TAG", "onNavigationItemSelected: " + id);
 
+//        replaceFragment(fragment, fragmentTag);
+
         assert fragmentTag != null;
         if (!fragmentTag.equals(currentFragmentTag)) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             assert fragment != null;
             fragmentManager.beginTransaction()
                     .replace(R.id.main_fragment, fragment, fragmentTag)
+                    .addToBackStack(fragmentTag)
                     .commit();
             currentFragmentTag = fragmentTag;
             currentFragment = fragment;
@@ -239,6 +244,23 @@ String currentFragmentTag;
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void replaceFragment(Fragment fragment, String tag) {
+        FragmentManager fm = getSupportFragmentManager();
+
+        // Check if Fragment is already in backstack
+        boolean fragmentPopped = fm.popBackStackImmediate(tag, 0);
+
+        if (!fragmentPopped) {
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.main_fragment, fragment, tag);
+            ft.addToBackStack(tag);
+            currentFragmentTag = tag;
+            currentFragment = fragment;
+        } else {
+
+        }
     }
 
     @Override

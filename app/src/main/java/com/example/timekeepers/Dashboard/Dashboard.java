@@ -48,6 +48,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     private static final String ARG_PARAM2 = "param2";
     private static final String KEY_CLOCKED_IN = "keyClockedIn";
     private static final String KEY_CLOCKED_IN_JOB = "keyClockedInJob";
+    Bundle navigationSaveState;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -136,6 +137,9 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         initViews();
         initRecyclerView();
 
+        if (navigationSaveState != null) {
+            savedInstanceState = navigationSaveState;
+        }
         if (savedInstanceState != null) {
             Log.d(TAG, "onCreateView: getting clockedIn true status");
             clockedIn = savedInstanceState.getBoolean(KEY_CLOCKED_IN);
@@ -174,10 +178,26 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        saveCurrentState();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
         Log.d(TAG, "onDetach: dashboard detached");
+    }
+
+    private void saveCurrentState() {
+        if (clockedIn && clockedInJob != null) {
+            Log.d(TAG, "saveCurrentState: onTransition to new fragment " +
+                    "saving clockedIn true status");
+            Bundle savedInstanceState = new Bundle();
+            savedInstanceState.putBoolean(KEY_CLOCKED_IN, clockedIn);
+            savedInstanceState.putString(KEY_CLOCKED_IN_JOB, clockedInJob);
+        }
     }
 
     private void initRecyclerView() {
@@ -247,6 +267,8 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     private void setClockedInStatus(boolean isClockedIn, String job) {
         clockedIn = isClockedIn;
         clockedInJob = job;
+
+        Log.d(TAG, "setClockedInStatus: " + clockedIn + "..." + clockedInJob);
 
         if (clockedIn && clockedInJob != null) {
             recyclerView.setVisibility(View.GONE);
