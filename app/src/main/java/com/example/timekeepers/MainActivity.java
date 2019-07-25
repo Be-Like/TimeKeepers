@@ -235,7 +235,6 @@ String currentFragmentTag;
             assert fragment != null;
             fragmentManager.beginTransaction()
                     .replace(R.id.main_fragment, fragment, fragmentTag)
-                    .addToBackStack(fragmentTag)
                     .commit();
             currentFragmentTag = fragmentTag;
             currentFragment = fragment;
@@ -244,23 +243,6 @@ String currentFragmentTag;
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void replaceFragment(Fragment fragment, String tag) {
-        FragmentManager fm = getSupportFragmentManager();
-
-        // Check if Fragment is already in backstack
-        boolean fragmentPopped = fm.popBackStackImmediate(tag, 0);
-
-        if (!fragmentPopped) {
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.main_fragment, fragment, tag);
-            ft.addToBackStack(tag);
-            currentFragmentTag = tag;
-            currentFragment = fragment;
-        } else {
-
-        }
     }
 
     @Override
