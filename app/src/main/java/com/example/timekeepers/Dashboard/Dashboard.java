@@ -51,7 +51,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     Bundle navigationSaveState;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private boolean mParam1;
     private String mParam2;
     private String dashboardTitle = "Dashboard";
 
@@ -74,16 +74,16 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
+     * @param isClockedIn Parameter 1.
+     * @param jobTitle Parameter 2.
      * @return A new instance of fragment Dashboard.
      */
     // TODO: Rename and change types and number of parameters
-    public static Dashboard newInstance() {
+    public static Dashboard newInstance(boolean isClockedIn, String jobTitle) {
         Dashboard fragment = new Dashboard();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
+        args.putBoolean(ARG_PARAM1, isClockedIn);
+        args.putString(ARG_PARAM2, jobTitle);
         fragment.setArguments(args);
         return fragment;
     }
@@ -102,8 +102,8 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            clockedIn = getArguments().getBoolean(ARG_PARAM1);
+            clockedInJob = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -136,17 +136,6 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
 
         initViews();
         initRecyclerView();
-
-        if (navigationSaveState != null) {
-            savedInstanceState = navigationSaveState;
-        }
-        if (savedInstanceState != null) {
-            Log.d(TAG, "onCreateView: getting clockedIn true status");
-            clockedIn = savedInstanceState.getBoolean(KEY_CLOCKED_IN);
-            clockedInJob = savedInstanceState.getString(KEY_CLOCKED_IN_JOB);
-        } else {
-            clockedIn = false;
-        }
 
         // Inflate the layout for this fragment
         return fragmentView;
@@ -277,6 +266,10 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
             recyclerView.setVisibility(View.VISIBLE);
             clockedInView.setVisibility(View.GONE);
         }
+
+        // Set the clocked in status in the MainActivity
+        ((MainActivity) getActivity()).setClockedInStatus(isClockedIn);
+        ((MainActivity) getActivity()).setClockedInJobTitle(job);
     }
 
     public void onClick(View v) {

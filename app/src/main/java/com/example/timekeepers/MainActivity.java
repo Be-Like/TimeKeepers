@@ -72,10 +72,14 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
 
+    private boolean clockedInStatus;
+    private String clockedInJobTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -93,12 +97,8 @@ public class MainActivity extends AppCompatActivity
         usersEmailTextView = headerView.findViewById(R.id.users_email);
         usersProfilePicture = headerView.findViewById(R.id.users_profile_picture);
 
-        if (savedInstanceState != null) {
-            currentFragmentTag = savedInstanceState.getString(KEY_CURRENT_FRAGMENT_TAG);
-            Log.d("CurrentTAG", "onCreate: " + currentFragmentTag);
-            AppCompatTextView testState = findViewById(R.id.test_save_state);
-            testState.setText(currentFragmentTag);
-        } else {
+        if (savedInstanceState == null) {
+            setClockedInStatus(false);
             initializeFirstFragment();
             Log.d("TAG", "onCreate: savedInstanceState=null");
         }
@@ -162,18 +162,17 @@ public class MainActivity extends AppCompatActivity
 
     private void initializeFirstFragment() {
         currentFragmentTag = dashboardTag;
-        Fragment fragment = Dashboard.newInstance();
-        currentFragment = fragment;
+        Log.d("INITIALIZED STATUS", "Clocked In Status is: " + getClockedInStatus());
+        Log.d("INITIALIZED STATUS", "Clocked In Job Title is: " + getClockedInJobTitle());
+        Fragment fragment = Dashboard.newInstance(getClockedInStatus(), getClockedInJobTitle());
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.main_fragment, fragment)
-                .addToBackStack(currentFragmentTag)
                 .commit();
     }
 
 
     private final String KEY_CURRENT_FRAGMENT_TAG = "keyCurrentFragmentTag";
-    private Fragment currentFragment;
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -202,8 +201,10 @@ String currentFragmentTag;
 
         switch (id) {
             case R.id.nav_dashboard:
-                fragment = Dashboard.newInstance();
+                fragment = Dashboard.newInstance(getClockedInStatus(), getClockedInJobTitle());
                 fragmentTag = dashboardTag;
+                Log.d("STATUS", "Clocked In Status is: " + getClockedInStatus());
+                Log.d("INITIALIZED STATUS", "Clocked In Job Title is: " + getClockedInJobTitle());
                 break;
             case R.id.nav_job_management:
                 fragment = JobManagement.newInstance();
@@ -237,7 +238,6 @@ String currentFragmentTag;
                     .replace(R.id.main_fragment, fragment, fragmentTag)
                     .commit();
             currentFragmentTag = fragmentTag;
-            currentFragment = fragment;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -303,4 +303,21 @@ String currentFragmentTag;
                     .FLAG_NOT_TOUCHABLE);
         }
     }
+
+    public void setClockedInStatus(boolean isClockedIn) {
+        this.clockedInStatus = isClockedIn;
+    }
+    public boolean getClockedInStatus() {
+        return clockedInStatus;
+    }
+    public void setClockedInJobTitle(String job) {
+        this.clockedInJobTitle = job;
+    }
+    public String getClockedInJobTitle() {
+        return clockedInJobTitle;
+    }
+
+    // TODO: need to set up the saved instance state to save the clocked in status and job title
+    //  when the user exits the application. Or setup a service that runs in the background like
+    //  what Hours Tracker does and leave a notification.
 }
