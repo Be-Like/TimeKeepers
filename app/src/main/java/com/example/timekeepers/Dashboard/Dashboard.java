@@ -42,17 +42,12 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  */
 public class Dashboard extends Fragment implements DashboardAdapter.ClockInListener,
         View.OnClickListener {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "PassedClockedInStatus";
+    private static final String ARG_PARAM2 = "PassedClockInJob";
     private static final String KEY_CLOCKED_IN = "keyClockedIn";
     private static final String KEY_CLOCKED_IN_JOB = "keyClockedInJob";
-    Bundle navigationSaveState;
 
-    // TODO: Rename and change types of parameters
-    private boolean mParam1;
-    private String mParam2;
     private String dashboardTitle = "Dashboard";
 
     private View fragmentView;

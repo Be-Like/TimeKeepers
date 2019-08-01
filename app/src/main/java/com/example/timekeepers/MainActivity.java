@@ -1,6 +1,8 @@
 package com.example.timekeepers;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -42,6 +44,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashSet;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
@@ -97,8 +100,12 @@ public class MainActivity extends AppCompatActivity
         usersEmailTextView = headerView.findViewById(R.id.users_email);
         usersProfilePicture = headerView.findViewById(R.id.users_profile_picture);
 
+        sharedPreferences = getApplicationContext()
+                .getSharedPreferences("com.example.timekeepers", Context.MODE_PRIVATE);
+        setClockedInStatus(sharedPreferences.getBoolean(STATE_CLOCKIN_STATUS, false));
+        setClockedInJobTitle(sharedPreferences.getString(STATE_CLOCKIN_JOB_TITLE, null));
+
         if (savedInstanceState == null) {
-            setClockedInStatus(false);
             initializeFirstFragment();
             Log.d("TAG", "onCreate: savedInstanceState=null");
         }
@@ -173,12 +180,15 @@ public class MainActivity extends AppCompatActivity
 
 
     private final String KEY_CURRENT_FRAGMENT_TAG = "keyCurrentFragmentTag";
+    private final String STATE_CLOCKIN_STATUS = "state_clockin_status";
+    private final String STATE_CLOCKIN_JOB_TITLE = "state_clockin_job_title";
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_CLOCKIN_STATUS, clockedInStatus);
+        outState.putString(STATE_CLOCKIN_JOB_TITLE, clockedInJobTitle);
+        Log.d("OutState", "onSaveInstanceState: " + clockedInStatus + "..." + clockedInJobTitle);
 
-        outState.putString(KEY_CURRENT_FRAGMENT_TAG, currentFragmentTag);
-        Log.d("SaveStateTag", "onSaveInstanceState: " + outState.getString(KEY_CURRENT_FRAGMENT_TAG));
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -304,14 +314,17 @@ String currentFragmentTag;
         }
     }
 
+    SharedPreferences sharedPreferences;
     public void setClockedInStatus(boolean isClockedIn) {
         this.clockedInStatus = isClockedIn;
+        sharedPreferences.edit().putBoolean(STATE_CLOCKIN_STATUS, isClockedIn).apply();
     }
     public boolean getClockedInStatus() {
         return clockedInStatus;
     }
     public void setClockedInJobTitle(String job) {
         this.clockedInJobTitle = job;
+        sharedPreferences.edit().putString(STATE_CLOCKIN_JOB_TITLE, job).apply();
     }
     public String getClockedInJobTitle() {
         return clockedInJobTitle;
