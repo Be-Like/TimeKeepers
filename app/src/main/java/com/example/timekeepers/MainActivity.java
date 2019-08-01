@@ -329,8 +329,4 @@ String currentFragmentTag;
     public String getClockedInJobTitle() {
         return clockedInJobTitle;
     }
-
-    // TODO: need to set up the saved instance state to save the clocked in status and job title
-    //  when the user exits the application. Or setup a service that runs in the background like
-    //  what Hours Tracker does and leave a notification.
 }

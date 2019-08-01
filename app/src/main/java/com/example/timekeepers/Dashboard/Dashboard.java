@@ -106,7 +106,6 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         /**
-         * TODO: Cards will be used to display all the active jobs.
          * Functions of the card include:
          *  - Title (Done)
          *  - Address (Done)
@@ -123,6 +122,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
 
 
 
+        // TODO: work on the clocked in view and the background timer service
 
         // Set Toolbar Title
         ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(dashboardTitle);
@@ -138,9 +138,6 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
 
     public void onStart() {
         super.onStart();
-
-        // TODO: create logic for determining if a job is clocked in or not
-        //  and display the corresponding view correctly.
         setClockedInStatus(clockedIn, clockedInJob);
     }
 
