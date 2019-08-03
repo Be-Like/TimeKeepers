@@ -48,8 +48,6 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     private static final String ARG_PARAM2 = "PassedClockInJobID";
     private static final String ARG_PARAM3 = "PassedClockInJobTitle";
 
-    private String dashboardTitle = "Dashboard";
-
     private View fragmentView;
     private RecyclerView recyclerView;
     private ConstraintLayout clockedInView;
@@ -96,29 +94,27 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         }
     }
 
+    /**
+     * Functions of the card include:
+     *  - Title (Done)
+     *  - Address (Done)
+     *  - Phone Number (Done)
+     *  - Clock-In Button (XML done)
+     *  - Add Job Entry Button
+     *  - Number of Job Entries (XML Layout done)
+     *  - Number of Expense Entries (XML Layout done)
+     *
+     * Cards fill full screen using a parent child relationship
+     *
+     * Potentially use swipes to clock in or to add job entries
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        /**
-         * Functions of the card include:
-         *  - Title (Done)
-         *  - Address (Done)
-         *  - Phone Number (Done)
-         *  - Clock-In Button (XML done)
-         *  - Add Job Entry Button
-         *  - Number of Job Entries (XML Layout done)
-         *  - Number of Expense Entries (XML Layout done)
-         *
-         * Cards fill full screen using a parent child relationship
-         *
-         * Potentially use swipes to clock in or to add job entries
-         */
-
-
-
         // TODO: work on the clocked in view and the background timer service
 
         // Set Toolbar Title
+        String dashboardTitle = "Dashboard";
         ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(dashboardTitle);
 
         fragmentView = inflater.inflate(R.layout.fragment_dashboard, container, false);
