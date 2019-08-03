@@ -81,21 +81,10 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         Bundle args = new Bundle();
         args.putBoolean(ARG_PARAM1, isClockedIn);
         args.putString(ARG_PARAM2, jobID);
-        args.putString(ARG_PARAM2, jobTitle);
+        args.putString(ARG_PARAM3, jobTitle);
         fragment.setArguments(args);
         return fragment;
     }
-
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        if (clockedIn && clockedInJob != null) {
-//            Log.d(TAG, "onSaveInstanceState: saving clockedIn true status");
-//            outState.putBoolean(KEY_CLOCKED_IN, clockedIn);
-//            outState.putString(KEY_CLOCKED_IN_JOB_ID, clockedInJobID);
-//            outState.putString(KEY_CLOCKED_IN_JOB_TITLE, clockedInJobTitle);
-//        }
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -175,16 +164,6 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         mListener = null;
         Log.d(TAG, "onDetach: dashboard detached");
     }
-
-//    private void saveCurrentState() {
-//        if (clockedIn && clockedInJob != null) {
-//            Log.d(TAG, "saveCurrentState: onTransition to new fragment " +
-//                    "saving clockedIn true status");
-//            Bundle savedInstanceState = new Bundle();
-//            savedInstanceState.putBoolean(KEY_CLOCKED_IN, clockedIn);
-//            savedInstanceState.putString(KEY_CLOCKED_IN_JOB, clockedInJob);
-//        }
-//    }
 
     private void initRecyclerView() {
         String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance()
@@ -272,10 +251,9 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         }
 
         // Set the clocked in status in the MainActivity
-        ((MainActivity) getActivity()).setClockedInStatus(isClockedIn);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setClockedInStatus(isClockedIn);
         ((MainActivity) getActivity()).setClockedInJobTitle(jobTitle);
         ((MainActivity) getActivity()).setClockedInJobID(jobID);
-        // TODO: figure out why it is no longer saving the clock in status...
     }
 
     public void onClick(View v) {

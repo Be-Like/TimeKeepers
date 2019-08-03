@@ -72,9 +72,12 @@ public class MainActivity extends AppCompatActivity
     public final String calendarTag = "CalendarTag";
     public final String settingsTag = "SettingsTag";
 
+    // Navigation Drawer Declarations
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
 
+    // Persistent clock in status info (survives application closure).
+    SharedPreferences sharedPreferences;
     private boolean clockedInStatus;
     private String clockedInJobTitle;
     private String clockedInJobID;
@@ -101,10 +104,12 @@ public class MainActivity extends AppCompatActivity
         usersEmailTextView = headerView.findViewById(R.id.users_email);
         usersProfilePicture = headerView.findViewById(R.id.users_profile_picture);
 
+        // Get the clock in status information or set default if not clocked in
         sharedPreferences = getApplicationContext()
                 .getSharedPreferences("com.example.timekeepers", Context.MODE_PRIVATE);
         setClockedInStatus(sharedPreferences.getBoolean(STATE_CLOCKIN_STATUS, false));
         setClockedInJobTitle(sharedPreferences.getString(STATE_CLOCKIN_JOB_TITLE, null));
+        setClockedInJobID(sharedPreferences.getString(STATE_CLOCKIN_JOB_ID, null));
 
         if (savedInstanceState == null) {
             initializeFirstFragment();
@@ -128,18 +133,23 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (acct != null) {
-            usersName = acct.getDisplayName();
-            usersEmail = acct.getEmail();
+//            usersName = acct.getDisplayName(); // TODO: remove this if there are no user authentication errors
+            setUsersName(acct.getDisplayName());
+//            usersEmail = acct.getEmail(); // TODO: remove this if there are not user authentication errors
+            setUsersEmail(acct.getEmail());
             Uri pic = acct.getPhotoUrl();
             Glide.with(this).load(pic).into(usersProfilePicture);
 
 //            initializeFirstFragment();
 
             // Update db
-            UserDBUpdate.updateUserInformation(usersName, usersEmail);
+//            UserDBUpdate.updateUserInformation(usersName, usersEmail); // TODO: remove this if there are not user authentication errors
+            UserDBUpdate.updateUserInformation(getUsersName(), getUsersEmail());
 
-            usersNameTextView.setText(usersName);
-            usersEmailTextView.setText(usersEmail);
+//            usersNameTextView.setText(usersName); // TODO: remove this if there are not user authentication errors
+            usersNameTextView.setText(getUsersName());
+//            usersEmailTextView.setText(usersEmail); // TODO: remove this if there are not user authentication errors
+            usersEmailTextView.setText(getUsersEmail());
 
         } else {
             // Get user info from db
@@ -153,11 +163,15 @@ public class MainActivity extends AppCompatActivity
                             DocumentSnapshot doc = task.getResult();
                             if (task.isSuccessful()) {
                                 assert doc != null;
-                                usersName = doc.getString("Users_Name");
-                                usersEmail = doc.getString("Email");
+//                                usersName = doc.getString("Users_Name"); // TODO: remove this if there are not user authentication errors
+                                setUsersName(doc.getString("Users_Name"));
+//                                usersEmail = doc.getString("Email");// TODO: remove this if there are not user authentication errors
+                                setUsersEmail(doc.getString("Email"));
 
-                                usersNameTextView.setText(usersName);
-                                usersEmailTextView.setText(usersEmail);
+//                                usersNameTextView.setText(usersName); // TODO: remove this if there are not user authentication errors
+                                usersNameTextView.setText(getUsersName());
+//                                usersEmailTextView.setText(usersEmail);// TODO: remove this if there are not user authentication errors
+                                usersEmailTextView.setText(getUsersEmail());
                             } else {
                                 Toast.makeText(getApplicationContext(),
                                         "Error getting user info",
@@ -172,6 +186,7 @@ public class MainActivity extends AppCompatActivity
         currentFragmentTag = dashboardTag;
         Log.d("INITIALIZED STATUS", "Clocked In Status is: " + getClockedInStatus());
         Log.d("INITIALIZED STATUS", "Clocked In Job Title is: " + getClockedInJobTitle());
+        Log.d("INITIALIZED STATUS", "Clocked In Job ID is: " + getClockedInJobID());
         Fragment fragment = Dashboard
                 .newInstance(getClockedInStatus(), getClockedInJobID(), getClockedInJobTitle());
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -188,7 +203,8 @@ public class MainActivity extends AppCompatActivity
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(STATE_CLOCKIN_STATUS, clockedInStatus);
         outState.putString(STATE_CLOCKIN_JOB_TITLE, clockedInJobTitle);
-        Log.d("OutState", "onSaveInstanceState: " + clockedInStatus + "..." + clockedInJobTitle);
+        outState.putString(STATE_CLOCKIN_JOB_ID, clockedInJobID);
+        Log.d("OutState", "onSaveInstanceState: " + clockedInStatus + "..." + clockedInJobTitle + "..." + clockedInJobID);
 
         super.onSaveInstanceState(outState);
     }
@@ -216,8 +232,6 @@ String currentFragmentTag;
                 fragment = Dashboard.newInstance(getClockedInStatus(),
                         getClockedInJobID(), getClockedInJobTitle());
                 fragmentTag = dashboardTag;
-                Log.d("STATUS", "Clocked In Status is: " + getClockedInStatus());
-                Log.d("INITIALIZED STATUS", "Clocked In Job Title is: " + getClockedInJobTitle());
                 break;
             case R.id.nav_job_management:
                 fragment = JobManagement.newInstance();
@@ -287,10 +301,16 @@ String currentFragmentTag;
         }
     }
 
+    public void setUsersName(String usersName) {
+        this.usersName = usersName;
+    }
     public String getUsersName() {
         return usersName;
     }
 
+    public void setUsersEmail(String usersEmail) {
+        this.usersEmail = usersEmail;
+    }
     public String getUsersEmail() {
         return usersEmail;
     }
@@ -317,7 +337,6 @@ String currentFragmentTag;
         }
     }
 
-    SharedPreferences sharedPreferences;
     public void setClockedInStatus(boolean isClockedIn) {
         this.clockedInStatus = isClockedIn;
         sharedPreferences.edit().putBoolean(STATE_CLOCKIN_STATUS, isClockedIn).apply();
