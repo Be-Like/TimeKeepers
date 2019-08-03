@@ -85,7 +85,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         holder.clockIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onClockIn(true, entry.getGeneratedJobId());
+                listener.onClockIn(true, entry.getGeneratedJobId(), entry.getJobTitle());
             }
         });
         // TODO: REMOVE Above
@@ -116,7 +116,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
     }
 
     public interface ClockInListener {
-        void onClockIn(boolean clockedIn, String job);
+        void onClockIn(boolean clockedIn, String job, String jobTitle);
     }
 
     private String addressFormat(JobObject jobObject) {

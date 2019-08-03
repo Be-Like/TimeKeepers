@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,9 +45,8 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         View.OnClickListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "PassedClockedInStatus";
-    private static final String ARG_PARAM2 = "PassedClockInJob";
-    private static final String KEY_CLOCKED_IN = "keyClockedIn";
-    private static final String KEY_CLOCKED_IN_JOB = "keyClockedInJob";
+    private static final String ARG_PARAM2 = "PassedClockInJobID";
+    private static final String ARG_PARAM3 = "PassedClockInJobTitle";
 
     private String dashboardTitle = "Dashboard";
 
@@ -57,7 +57,8 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
 
     private ArrayList<JobObject> jobsArray;
     private boolean clockedIn;
-    private String clockedInJob;
+    private String clockedInJobID;
+    private String clockedInJobTitle;
 
     private OnFragmentInteractionListener mListener;
 
@@ -70,35 +71,39 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
      * this fragment using the provided parameters.
      *
      * @param isClockedIn Parameter 1.
-     * @param jobTitle Parameter 2.
+     * @param jobID Parameter 2.
+     * @param jobTitle Parameter 3.
      * @return A new instance of fragment Dashboard.
      */
     // TODO: Rename and change types and number of parameters
-    public static Dashboard newInstance(boolean isClockedIn, String jobTitle) {
+    public static Dashboard newInstance(boolean isClockedIn, String jobID, String jobTitle) {
         Dashboard fragment = new Dashboard();
         Bundle args = new Bundle();
         args.putBoolean(ARG_PARAM1, isClockedIn);
+        args.putString(ARG_PARAM2, jobID);
         args.putString(ARG_PARAM2, jobTitle);
         fragment.setArguments(args);
         return fragment;
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (clockedIn && clockedInJob != null) {
-            Log.d(TAG, "onSaveInstanceState: saving clockedIn true status");
-            outState.putBoolean(KEY_CLOCKED_IN, clockedIn);
-            outState.putString(KEY_CLOCKED_IN_JOB, clockedInJob);
-        }
-    }
+//    @Override
+//    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        if (clockedIn && clockedInJob != null) {
+//            Log.d(TAG, "onSaveInstanceState: saving clockedIn true status");
+//            outState.putBoolean(KEY_CLOCKED_IN, clockedIn);
+//            outState.putString(KEY_CLOCKED_IN_JOB_ID, clockedInJobID);
+//            outState.putString(KEY_CLOCKED_IN_JOB_TITLE, clockedInJobTitle);
+//        }
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             clockedIn = getArguments().getBoolean(ARG_PARAM1);
-            clockedInJob = getArguments().getString(ARG_PARAM2);
+            clockedInJobID = getArguments().getString(ARG_PARAM2);
+            clockedInJobTitle = getArguments().getString(ARG_PARAM3);
         }
     }
 
@@ -138,7 +143,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
 
     public void onStart() {
         super.onStart();
-        setClockedInStatus(clockedIn, clockedInJob);
+        setClockedInStatus(clockedIn, clockedInJobID, clockedInJobTitle);
     }
 
     public void onButtonPressed(Uri uri) {
@@ -161,7 +166,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     @Override
     public void onPause() {
         super.onPause();
-        saveCurrentState();
+//        saveCurrentState();
     }
 
     @Override
@@ -171,15 +176,15 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         Log.d(TAG, "onDetach: dashboard detached");
     }
 
-    private void saveCurrentState() {
-        if (clockedIn && clockedInJob != null) {
-            Log.d(TAG, "saveCurrentState: onTransition to new fragment " +
-                    "saving clockedIn true status");
-            Bundle savedInstanceState = new Bundle();
-            savedInstanceState.putBoolean(KEY_CLOCKED_IN, clockedIn);
-            savedInstanceState.putString(KEY_CLOCKED_IN_JOB, clockedInJob);
-        }
-    }
+//    private void saveCurrentState() {
+//        if (clockedIn && clockedInJob != null) {
+//            Log.d(TAG, "saveCurrentState: onTransition to new fragment " +
+//                    "saving clockedIn true status");
+//            Bundle savedInstanceState = new Bundle();
+//            savedInstanceState.putBoolean(KEY_CLOCKED_IN, clockedIn);
+//            savedInstanceState.putString(KEY_CLOCKED_IN_JOB, clockedInJob);
+//        }
+//    }
 
     private void initRecyclerView() {
         String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance()
@@ -245,13 +250,20 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         clockOutButton.setOnClickListener(this);
     }
 
-    private void setClockedInStatus(boolean isClockedIn, String job) {
+    private void setClockInTextValues(String job) {
+        AppCompatTextView jobTitleLabel = fragmentView.findViewById(R.id.clock_in_job_title);
+        jobTitleLabel.setText(job);
+    }
+
+    private void setClockedInStatus(boolean isClockedIn, String jobID, String jobTitle) {
         clockedIn = isClockedIn;
-        clockedInJob = job;
+        clockedInJobID = jobID;
+        clockedInJobTitle = jobTitle;
 
-        Log.d(TAG, "setClockedInStatus: " + clockedIn + "..." + clockedInJob);
+        Log.d(TAG, "setClockedInStatus: " + clockedIn + "..." + clockedInJobID + "..." + clockedInJobTitle);
 
-        if (clockedIn && clockedInJob != null) {
+        if (clockedIn && clockedInJobID != null && clockedInJobTitle != null) {
+            setClockInTextValues(jobTitle);
             recyclerView.setVisibility(View.GONE);
             clockedInView.setVisibility(View.VISIBLE);
         } else {
@@ -261,12 +273,14 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
 
         // Set the clocked in status in the MainActivity
         ((MainActivity) getActivity()).setClockedInStatus(isClockedIn);
-        ((MainActivity) getActivity()).setClockedInJobTitle(job);
+        ((MainActivity) getActivity()).setClockedInJobTitle(jobTitle);
+        ((MainActivity) getActivity()).setClockedInJobID(jobID);
+        // TODO: figure out why it is no longer saving the clock in status...
     }
 
     public void onClick(View v) {
         if (v == clockOutButton) {
-            onClockIn(false, null);
+            onClockIn(false, null, null);
         }
     }
 
@@ -284,7 +298,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         void onFragmentInteraction(Uri uri);
     }
 
-    public void onClockIn(boolean clockedIn, String job) {
-        setClockedInStatus(clockedIn, job);
+    public void onClockIn(boolean clockedIn, String job, String jobTitle) {
+        setClockedInStatus(clockedIn, job, jobTitle);
     }
 }

@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity
 
     private boolean clockedInStatus;
     private String clockedInJobTitle;
+    private String clockedInJobID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +172,8 @@ public class MainActivity extends AppCompatActivity
         currentFragmentTag = dashboardTag;
         Log.d("INITIALIZED STATUS", "Clocked In Status is: " + getClockedInStatus());
         Log.d("INITIALIZED STATUS", "Clocked In Job Title is: " + getClockedInJobTitle());
-        Fragment fragment = Dashboard.newInstance(getClockedInStatus(), getClockedInJobTitle());
+        Fragment fragment = Dashboard
+                .newInstance(getClockedInStatus(), getClockedInJobID(), getClockedInJobTitle());
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.main_fragment, fragment)
@@ -179,9 +181,9 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    private final String KEY_CURRENT_FRAGMENT_TAG = "keyCurrentFragmentTag";
     private final String STATE_CLOCKIN_STATUS = "state_clockin_status";
     private final String STATE_CLOCKIN_JOB_TITLE = "state_clockin_job_title";
+    private final String STATE_CLOCKIN_JOB_ID = "state_clockin_job_id";
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(STATE_CLOCKIN_STATUS, clockedInStatus);
@@ -211,7 +213,8 @@ String currentFragmentTag;
 
         switch (id) {
             case R.id.nav_dashboard:
-                fragment = Dashboard.newInstance(getClockedInStatus(), getClockedInJobTitle());
+                fragment = Dashboard.newInstance(getClockedInStatus(),
+                        getClockedInJobID(), getClockedInJobTitle());
                 fragmentTag = dashboardTag;
                 Log.d("STATUS", "Clocked In Status is: " + getClockedInStatus());
                 Log.d("INITIALIZED STATUS", "Clocked In Job Title is: " + getClockedInJobTitle());
@@ -322,11 +325,18 @@ String currentFragmentTag;
     public boolean getClockedInStatus() {
         return clockedInStatus;
     }
-    public void setClockedInJobTitle(String job) {
-        this.clockedInJobTitle = job;
-        sharedPreferences.edit().putString(STATE_CLOCKIN_JOB_TITLE, job).apply();
+    public void setClockedInJobTitle(String jobTitle) {
+        this.clockedInJobTitle = jobTitle;
+        sharedPreferences.edit().putString(STATE_CLOCKIN_JOB_TITLE, jobTitle).apply();
     }
     public String getClockedInJobTitle() {
         return clockedInJobTitle;
+    }
+    public void setClockedInJobID(String jobID) {
+        this.clockedInJobID = jobID;
+        sharedPreferences.edit().putString(STATE_CLOCKIN_JOB_ID, jobID).apply();
+    }
+    public String getClockedInJobID() {
+        return clockedInJobID;
     }
 }
