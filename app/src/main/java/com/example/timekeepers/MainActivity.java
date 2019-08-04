@@ -27,7 +27,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.View;
 import android.view.WindowManager;
@@ -43,7 +42,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashSet;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
@@ -80,6 +78,13 @@ public class MainActivity extends AppCompatActivity
     private boolean clockedInStatus;
     private String clockedInJobTitle;
     private String clockedInJobID;
+    private long clockInTime;
+
+    // Shared Preferences Keys
+    private final String STATE_CLOCKIN_STATUS = "state_clockin_status";
+    private final String STATE_CLOCKIN_JOB_TITLE = "state_clockin_job_title";
+    private final String STATE_CLOCKIN_JOB_ID = "state_clockin_job_id";
+    private final String STATE_CLOCKIN_TIME = "state_clockin_time";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +114,7 @@ public class MainActivity extends AppCompatActivity
         setClockedInStatus(sharedPreferences.getBoolean(STATE_CLOCKIN_STATUS, false));
         setClockedInJobTitle(sharedPreferences.getString(STATE_CLOCKIN_JOB_TITLE, null));
         setClockedInJobID(sharedPreferences.getString(STATE_CLOCKIN_JOB_ID, null));
+        setClockInTime(sharedPreferences.getLong(STATE_CLOCKIN_TIME, 0));
 
         if (savedInstanceState == null) {
             initializeFirstFragment();
@@ -186,18 +192,16 @@ public class MainActivity extends AppCompatActivity
         Log.d("INITIALIZED STATUS", "Clocked In Status is: " + getClockedInStatus());
         Log.d("INITIALIZED STATUS", "Clocked In Job Title is: " + getClockedInJobTitle());
         Log.d("INITIALIZED STATUS", "Clocked In Job ID is: " + getClockedInJobID());
+        Log.d("INITIALIZED STATUS", "Clocked In Job Time is: " + getClockInTime());
         Fragment fragment = Dashboard
-                .newInstance(getClockedInStatus(), getClockedInJobID(), getClockedInJobTitle());
+                .newInstance(getClockedInStatus(), getClockedInJobID(),
+                        getClockedInJobTitle(), getClockInTime());
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.main_fragment, fragment)
                 .commit();
     }
 
-
-    private final String STATE_CLOCKIN_STATUS = "state_clockin_status";
-    private final String STATE_CLOCKIN_JOB_TITLE = "state_clockin_job_title";
-    private final String STATE_CLOCKIN_JOB_ID = "state_clockin_job_id";
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putBoolean(STATE_CLOCKIN_STATUS, clockedInStatus);
@@ -229,7 +233,7 @@ String currentFragmentTag;
         switch (id) {
             case R.id.nav_dashboard:
                 fragment = Dashboard.newInstance(getClockedInStatus(),
-                        getClockedInJobID(), getClockedInJobTitle());
+                        getClockedInJobID(), getClockedInJobTitle(), getClockInTime());
                 fragmentTag = dashboardTag;
                 break;
             case R.id.nav_job_management:
@@ -356,5 +360,12 @@ String currentFragmentTag;
     }
     public String getClockedInJobID() {
         return clockedInJobID;
+    }
+    public void setClockInTime(long clockInTime) {
+        this.clockInTime = clockInTime;
+        sharedPreferences.edit().putLong(STATE_CLOCKIN_TIME, clockInTime).apply();
+    }
+    public long getClockInTime() {
+        return clockInTime;
     }
 }

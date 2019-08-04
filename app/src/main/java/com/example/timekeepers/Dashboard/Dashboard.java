@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,16 +48,19 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     private static final String ARG_PARAM1 = "PassedClockedInStatus";
     private static final String ARG_PARAM2 = "PassedClockInJobID";
     private static final String ARG_PARAM3 = "PassedClockInJobTitle";
+    private static final String ARG_PARAM4 = "PassedClockInTime";
 
     private View fragmentView;
     private RecyclerView recyclerView;
     private ConstraintLayout clockedInView;
     private MaterialButton clockOutButton;
+    private AppCompatTextView timerView;
 
     private ArrayList<JobObject> jobsArray;
     private boolean clockedIn;
     private String clockedInJobID;
     private String clockedInJobTitle;
+    private long clockedInTime;
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,12 +78,14 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
      * @return A new instance of fragment Dashboard.
      */
     // TODO: Rename and change types and number of parameters
-    public static Dashboard newInstance(boolean isClockedIn, String jobID, String jobTitle) {
+    public static Dashboard newInstance(boolean isClockedIn, String jobID,
+                                        String jobTitle, long timeStarted) {
         Dashboard fragment = new Dashboard();
         Bundle args = new Bundle();
         args.putBoolean(ARG_PARAM1, isClockedIn);
         args.putString(ARG_PARAM2, jobID);
         args.putString(ARG_PARAM3, jobTitle);
+        args.putLong(ARG_PARAM4, timeStarted);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,9 +94,10 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            clockedIn = getArguments().getBoolean(ARG_PARAM1);
-            clockedInJobID = getArguments().getString(ARG_PARAM2);
-            clockedInJobTitle = getArguments().getString(ARG_PARAM3);
+            setClockedIn(getArguments().getBoolean(ARG_PARAM1));
+            setClockedInJobID(getArguments().getString(ARG_PARAM2));
+            setClockedInJobTitle(getArguments().getString(ARG_PARAM3));
+            setClockedInTime(getArguments().getLong(ARG_PARAM4));
         }
     }
 
@@ -151,6 +158,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     @Override
     public void onPause() {
         super.onPause();
+        timerHandler.removeCallbacks(timerRunnable);
 //        saveCurrentState();
     }
 
@@ -223,25 +231,26 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         clockedInView = fragmentView.findViewById(R.id.clocked_in);
         clockOutButton = fragmentView.findViewById(R.id.clock_out);
         clockOutButton.setOnClickListener(this);
-    }
-
-    private void setClockInTextValues(String job) {
-        AppCompatTextView jobTitleLabel = fragmentView.findViewById(R.id.clock_in_job_title);
-        jobTitleLabel.setText(job);
+        timerView = fragmentView.findViewById(R.id.clock_in_timer);
     }
 
     private void setClockedInStatus(boolean isClockedIn, String jobID, String jobTitle) {
-        clockedIn = isClockedIn;
-        clockedInJobID = jobID;
-        clockedInJobTitle = jobTitle;
+//        clockedIn = isClockedIn;
+//        clockedInJobID = jobID;
+//        clockedInJobTitle = jobTitle;
+        setClockedIn(isClockedIn);
+        setClockedInJobID(jobID);
+        setClockedInJobTitle(jobTitle);
 
         Log.d(TAG, "setClockedInStatus: " + clockedIn + "..." + clockedInJobID + "..." + clockedInJobTitle);
 
-        if (clockedIn && clockedInJobID != null && clockedInJobTitle != null) {
+        if (getClockedIn() && getClockedInJobID() != null && getClockedInJobTitle() != null) {
             setClockInTextValues(jobTitle);
             recyclerView.setVisibility(View.GONE);
             clockedInView.setVisibility(View.VISIBLE);
+            timerHandler.postDelayed(timerRunnable, 0);
         } else {
+            timerHandler.removeCallbacks(timerRunnable);
             recyclerView.setVisibility(View.VISIBLE);
             clockedInView.setVisibility(View.GONE);
         }
@@ -252,10 +261,63 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         ((MainActivity) getActivity()).setClockedInJobID(jobID);
     }
 
+    private void setClockInTextValues(String job) {
+        AppCompatTextView jobTitleLabel = fragmentView.findViewById(R.id.clock_in_job_title);
+        jobTitleLabel.setText(job);
+    }
+
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "run: " + System.currentTimeMillis() + "..." + getClockedInTime());
+            long millis = System.currentTimeMillis() - getClockedInTime(); // TODO: this will need to change according to time spent on break
+            int seconds = (int) (millis / 1000);
+            int minutes = seconds / 60;
+            seconds = seconds % 60;
+            int hours = minutes / 60;
+            minutes = minutes % 60;
+
+            // set timer text here
+            timerView.setText(String.format("%02d:%02d:%02d", hours, minutes, seconds));
+            timerHandler.postDelayed(this, 1000);
+        }
+    };
+
     public void onClick(View v) {
         if (v == clockOutButton) {
             onClockIn(false, null, null);
         }
+    }
+
+    // Getters and Setters for Clocked In Information
+    public void setClockedIn(boolean clockedIn) {
+        this.clockedIn = clockedIn;
+    }
+    public boolean getClockedIn() {
+        return clockedIn;
+    }
+    public void setClockedInJobID(String clockedInJobID) {
+        this.clockedInJobID = clockedInJobID;
+    }
+    public String getClockedInJobID() {
+        return clockedInJobID;
+    }
+    public void setClockedInJobTitle(String clockedInJobTitle) {
+        this.clockedInJobTitle = clockedInJobTitle;
+    }
+    public String getClockedInJobTitle() {
+        return clockedInJobTitle;
+    }
+    public void setClockedInTime(long clockedInTime) {
+        this.clockedInTime = clockedInTime;
+    }
+    public long getClockedInTime() {
+        return clockedInTime;
+    }
+
+    private void setMainClockedInTime(long time) {
+        ((MainActivity) Objects.requireNonNull(getActivity())).setClockInTime(time);
     }
 
     /**
@@ -274,5 +336,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
 
     public void onClockIn(boolean clockedIn, String job, String jobTitle) {
         setClockedInStatus(clockedIn, job, jobTitle);
+        setClockedInTime(System.currentTimeMillis());
+        setMainClockedInTime(System.currentTimeMillis());
     }
 }
