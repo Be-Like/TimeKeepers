@@ -16,13 +16,14 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clocked_in"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:paddingEnd="@dimen/activity_vertical_margin">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/clock_in_job_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TESTING TEXT"
             android:textAlignment="center"
             android:singleLine="true"
             android:ellipsize="middle"
@@ -45,11 +46,23 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/clock_out"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@string/clock_out"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/break_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/break_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Begin Break"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/clock_out"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

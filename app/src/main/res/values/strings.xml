@@ -22,6 +22,9 @@
 
     <!--Dashboard-->
     <string name="clock_in">Clock In</string>
+    <string name="clock_out">Clock Out</string>
+    <string name="begin_break">Begin Break</string>
+    <string name="end_break">End Break</string>
 
     <!--Job Management-->
     <string name="dialog_job_type_prompt">Select a job type:</string>
