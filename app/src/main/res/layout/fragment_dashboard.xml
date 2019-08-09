@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        />
     <!-- TODO: remove the visibility ^^^^ -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,11 +31,63 @@
             android:textAlignment="center"
             android:singleLine="true"
             android:ellipsize="middle"
-            style="@style/FormHeader"
+            style="@style/TimerHeader"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"
+            app:layout_constraintTop_toBottomOf="@id/clock_in_job_title"
+            app:layout_constraintBottom_toTopOf="@id/time_of_clock_in"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/time_of_clock_in"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Clocked In: "
+            android:maxLines="1"
+            style="@style/TimerLabels"
+            app:layout_constraintTop_toBottomOf="@id/clock_in_job_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/start_break_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            style="@style/TimerLabels"
+            app:layout_constraintTop_toBottomOf="@id/time_of_clock_in"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/end_break_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            style="@style/TimerLabels"
+            app:layout_constraintTop_toBottomOf="@id/start_break_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"
+            app:layout_constraintTop_toBottomOf="@id/end_break_time"
+            />
+
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/clock_in_timer"
@@ -43,7 +95,7 @@
             android:layout_height="wrap_content"
             android:text="00:00:00"
             android:textAlignment="center"
-            style="@style/Base.TextAppearance.AppCompat.Large"
+            style="@style/TimerAppearance"
             app:layout_constraintTop_toBottomOf="@id/clock_in_job_title"
             app:layout_constraintBottom_toTopOf="@id/clock_out"
             app:layout_constraintStart_toStartOf="parent"

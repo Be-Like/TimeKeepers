@@ -28,7 +28,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -49,11 +52,14 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     private static final String ARG_PARAM2 = "PassedClockInJobID";
     private static final String ARG_PARAM3 = "PassedClockInJobTitle";
     private static final String ARG_PARAM4 = "PassedClockInTime";
+    private static final String ARG_PARAM5 = "PassedBeginBreakTime";
+    private static final String ARG_PARAM6 = "PassedEndBreakTime";
 
     private View fragmentView;
     private RecyclerView recyclerView;
     private ConstraintLayout clockedInView;
     private MaterialButton clockOutButton;
+    private MaterialButton breakButton;
     private AppCompatTextView timerView;
 
     private ArrayList<JobObject> jobsArray;
@@ -61,6 +67,8 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     private String clockedInJobID;
     private String clockedInJobTitle;
     private long clockedInTime;
+    private long beginBreakTime;
+    private long endBreakTime;
 
     private OnFragmentInteractionListener mListener;
 
@@ -159,7 +167,6 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     public void onPause() {
         super.onPause();
         timerHandler.removeCallbacks(timerRunnable);
-//        saveCurrentState();
     }
 
     @Override
@@ -231,13 +238,12 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         clockedInView = fragmentView.findViewById(R.id.clocked_in);
         clockOutButton = fragmentView.findViewById(R.id.clock_out);
         clockOutButton.setOnClickListener(this);
+        breakButton = fragmentView.findViewById(R.id.break_button);
+        breakButton.setOnClickListener(this);
         timerView = fragmentView.findViewById(R.id.clock_in_timer);
     }
 
     private void setClockedInStatus(boolean isClockedIn, String jobID, String jobTitle) {
-//        clockedIn = isClockedIn;
-//        clockedInJobID = jobID;
-//        clockedInJobTitle = jobTitle;
         setClockedIn(isClockedIn);
         setClockedInJobID(jobID);
         setClockedInJobTitle(jobTitle);
@@ -264,6 +270,12 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     private void setClockInTextValues(String job) {
         AppCompatTextView jobTitleLabel = fragmentView.findViewById(R.id.clock_in_job_title);
         jobTitleLabel.setText(job);
+        AppCompatTextView clockedInTime = fragmentView.findViewById(R.id.time_of_clock_in);
+        Date date = new Date(getClockedInTime());
+        Format dateFormat = new SimpleDateFormat("MMM dd");
+        Format timeFormat = new SimpleDateFormat("hh:mm a");
+        clockedInTime.setText("Clocked In: " + dateFormat.format(date) + " at " +
+                timeFormat.format(date));
     }
 
     Handler timerHandler = new Handler();
@@ -287,6 +299,12 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     public void onClick(View v) {
         if (v == clockOutButton) {
             onClockIn(false, null, null);
+        }
+        if (v == breakButton) {  // TODO: continue working with the break functionality!
+            // Pause the timerHandler
+            // Set the begin break time
+            // Change button text
+            breakButton.setText("End Break");
         }
     }
 
