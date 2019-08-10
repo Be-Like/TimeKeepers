@@ -1,5 +1,6 @@
 package com.example.timekeepers.Dashboard;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -52,12 +53,17 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     private static final String ARG_PARAM2 = "PassedClockInJobID";
     private static final String ARG_PARAM3 = "PassedClockInJobTitle";
     private static final String ARG_PARAM4 = "PassedClockInTime";
-    private static final String ARG_PARAM5 = "PassedBeginBreakTime";
-    private static final String ARG_PARAM6 = "PassedEndBreakTime";
+    private static final String ARG_PARAM5 = "PassedIsOnBreak";
+    private static final String ARG_PARAM6 = "PassedBeginBreakTime";
+    private static final String ARG_PARAM7 = "PassedEndBreakTime";
+    private static final String ARG_PARAM8 = "PassedTotalBreakTime";
+    private static final String ARG_PARAM9 = "PassedTimerText";
 
     private View fragmentView;
     private RecyclerView recyclerView;
     private ConstraintLayout clockedInView;
+    private AppCompatTextView beginBreakView;
+    private AppCompatTextView endBreakView;
     private MaterialButton clockOutButton;
     private MaterialButton breakButton;
     private AppCompatTextView timerView;
@@ -67,8 +73,11 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     private String clockedInJobID;
     private String clockedInJobTitle;
     private long clockedInTime;
+    private boolean isOnBreak;
     private long beginBreakTime;
     private long endBreakTime;
+    private long totalBreakTime = 0L;
+    private String timerText;
 
     private OnFragmentInteractionListener mListener;
 
@@ -83,17 +92,30 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
      * @param isClockedIn Parameter 1.
      * @param jobID Parameter 2.
      * @param jobTitle Parameter 3.
+     * @param timeStarted Parameter 4.
+     * @param isOnBreak Parameter 5.
+     * @param beginBreakTime Parameter 6.
+     * @param endBreakTime Parameter 7.
+     * @param totalBreakTime Parameter 8.
+     * @param timerText Parameter 9.
      * @return A new instance of fragment Dashboard.
      */
-    // TODO: Rename and change types and number of parameters
     public static Dashboard newInstance(boolean isClockedIn, String jobID,
-                                        String jobTitle, long timeStarted) {
+                                        String jobTitle, long timeStarted,
+                                        boolean isOnBreak, long beginBreakTime,
+                                        long endBreakTime, long totalBreakTime,
+                                        String timerText) {
         Dashboard fragment = new Dashboard();
         Bundle args = new Bundle();
         args.putBoolean(ARG_PARAM1, isClockedIn);
         args.putString(ARG_PARAM2, jobID);
         args.putString(ARG_PARAM3, jobTitle);
         args.putLong(ARG_PARAM4, timeStarted);
+        args.putBoolean(ARG_PARAM5, isOnBreak);
+        args.putLong(ARG_PARAM6, beginBreakTime);
+        args.putLong(ARG_PARAM7, endBreakTime);
+        args.putLong(ARG_PARAM8, totalBreakTime);
+        args.putString(ARG_PARAM9, timerText);
         fragment.setArguments(args);
         return fragment;
     }
@@ -106,6 +128,11 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
             setClockedInJobID(getArguments().getString(ARG_PARAM2));
             setClockedInJobTitle(getArguments().getString(ARG_PARAM3));
             setClockedInTime(getArguments().getLong(ARG_PARAM4));
+            setIsOnBreak(getArguments().getBoolean(ARG_PARAM5));
+            setBeginBreakTime(getArguments().getLong(ARG_PARAM6));
+            setEndBreakTime(getArguments().getLong(ARG_PARAM7));
+            setTotalBreakTime(getArguments().getLong(ARG_PARAM8));
+            timerText = getArguments().getString(ARG_PARAM9);
         }
     }
 
@@ -126,8 +153,6 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // TODO: work on the clocked in view and the background timer service
-
         // Set Toolbar Title
         String dashboardTitle = "Dashboard";
         ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(dashboardTitle);
@@ -143,7 +168,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
 
     public void onStart() {
         super.onStart();
-        setClockedInStatus(clockedIn, clockedInJobID, clockedInJobTitle);
+        setClockedInStatus(getClockedIn(), getClockedInJobID(), getClockedInJobTitle());
     }
 
     public void onButtonPressed(Uri uri) {
@@ -167,6 +192,8 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     public void onPause() {
         super.onPause();
         timerHandler.removeCallbacks(timerRunnable);
+        ((MainActivity) Objects.requireNonNull(getActivity()))
+                .setTimerText(timerView.getText().toString());
     }
 
     @Override
@@ -236,6 +263,8 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         recyclerView =
                 fragmentView.findViewById(R.id.recycler_view);
         clockedInView = fragmentView.findViewById(R.id.clocked_in);
+        beginBreakView = fragmentView.findViewById(R.id.start_break_time);
+        endBreakView = fragmentView.findViewById(R.id.end_break_time);
         clockOutButton = fragmentView.findViewById(R.id.clock_out);
         clockOutButton.setOnClickListener(this);
         breakButton = fragmentView.findViewById(R.id.break_button);
@@ -251,10 +280,18 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         Log.d(TAG, "setClockedInStatus: " + clockedIn + "..." + clockedInJobID + "..." + clockedInJobTitle);
 
         if (getClockedIn() && getClockedInJobID() != null && getClockedInJobTitle() != null) {
+            if (!getIsOnBreak()) {
+                timerHandler.postDelayed(timerRunnable, 0);
+                breakButton.setText("Begin Break");
+            } else {
+                breakButton.setText("End Break");
+            }
             setClockInTextValues(jobTitle);
+            timerView.setText(timerText);
+            setBeginBreakTimeTextValues();
+            setEndBreakTimeTextValues();
             recyclerView.setVisibility(View.GONE);
             clockedInView.setVisibility(View.VISIBLE);
-            timerHandler.postDelayed(timerRunnable, 0);
         } else {
             timerHandler.removeCallbacks(timerRunnable);
             recyclerView.setVisibility(View.VISIBLE);
@@ -267,6 +304,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         ((MainActivity) getActivity()).setClockedInJobID(jobID);
     }
 
+    @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     private void setClockInTextValues(String job) {
         AppCompatTextView jobTitleLabel = fragmentView.findViewById(R.id.clock_in_job_title);
         jobTitleLabel.setText(job);
@@ -277,13 +315,36 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         clockedInTime.setText("Clocked In: " + dateFormat.format(date) + " at " +
                 timeFormat.format(date));
     }
+    @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
+    private void setBeginBreakTimeTextValues() {
+        Date date = new Date(getBeginBreakTime());
+        Format dateFormat = new SimpleDateFormat("MMM dd");
+        Format timeFormat = new SimpleDateFormat("hh:mm a");
+        beginBreakView.setText("Begin Break: " + dateFormat.format(date) + " at " +
+                timeFormat.format(date));
+        if (getBeginBreakTime() != 0) {
+            beginBreakView.setVisibility(View.VISIBLE);
+            endBreakView.setVisibility(View.GONE);
+        }
+    }
+    @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
+    private void setEndBreakTimeTextValues() {
+        Date date = new Date(getBeginBreakTime());
+        Format dateFormat = new SimpleDateFormat("MMM dd");
+        Format timeFormat = new SimpleDateFormat("hh:mm a");
+        endBreakView.setText("End Break: " + dateFormat.format(date) + " at " +
+                timeFormat.format(date));
+        if (getEndBreakTime() != 0 && getEndBreakTime() >= getBeginBreakTime()) {
+            endBreakView.setVisibility(View.VISIBLE);
+        }
+    }
 
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
             Log.d(TAG, "run: " + System.currentTimeMillis() + "..." + getClockedInTime());
-            long millis = System.currentTimeMillis() - getClockedInTime(); // TODO: this will need to change according to time spent on break
+            long millis = System.currentTimeMillis() - (getClockedInTime() + getTotalBreakTime());
             int seconds = (int) (millis / 1000);
             int minutes = seconds / 60;
             seconds = seconds % 60;
@@ -296,15 +357,39 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         }
     };
 
+    private void clearAllBreakData() {
+        setIsOnBreak(false);
+        setBeginBreakTime(0L);
+        setEndBreakTime(0L);
+        setTotalBreakTime(0L);
+        beginBreakView.setVisibility(View.GONE);
+        endBreakView.setVisibility(View.GONE);
+        breakButton.setText("Begin Break");
+    }
+
     public void onClick(View v) {
         if (v == clockOutButton) {
             onClockIn(false, null, null);
+            clearAllBreakData();
         }
-        if (v == breakButton) {  // TODO: continue working with the break functionality!
-            // Pause the timerHandler
-            // Set the begin break time
-            // Change button text
-            breakButton.setText("End Break");
+        if (v == breakButton) {
+            if (!getIsOnBreak()) {
+                // Pause the timerHandler
+                timerHandler.removeCallbacks(timerRunnable);
+                // Set the begin break time
+                setIsOnBreak(true);
+                setBeginBreakTime(System.currentTimeMillis());
+                setBeginBreakTimeTextValues();
+                // Change button text
+                breakButton.setText("End Break");
+            } else {
+                timerHandler.postDelayed(timerRunnable, 0);
+                setIsOnBreak(false);
+                setEndBreakTime(System.currentTimeMillis());
+                setEndBreakTimeTextValues();
+                setTotalBreakTime(calculateTotalBreakTime());
+                breakButton.setText("Begin Break");
+            }
         }
     }
 
@@ -332,6 +417,40 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     }
     public long getClockedInTime() {
         return clockedInTime;
+    }
+    public void setIsOnBreak(boolean isOnBreak) {
+        this.isOnBreak = isOnBreak;
+        ((MainActivity) Objects.requireNonNull(getActivity())).setIsOnBreak(isOnBreak);
+    }
+    public boolean getIsOnBreak() {
+        return isOnBreak;
+    }
+    public void setBeginBreakTime(long beginBreakTime) {
+        this.beginBreakTime = beginBreakTime;
+        ((MainActivity) Objects.requireNonNull(getActivity())).setBeginBreakTime(beginBreakTime);
+    }
+    public long getBeginBreakTime() {
+        return beginBreakTime;
+    }
+    public void setEndBreakTime(long endBreakTime) {
+        this.endBreakTime = endBreakTime;
+        ((MainActivity) Objects.requireNonNull(getActivity())).setEndBreakTime(endBreakTime);
+    }
+    public long getEndBreakTime() {
+        return endBreakTime;
+    }
+
+
+    public long calculateTotalBreakTime() {
+        long timeOnBreak = getTotalBreakTime() + (getEndBreakTime() - getBeginBreakTime());
+        return timeOnBreak;
+    }
+    public void setTotalBreakTime(long totalBreakTime) {
+        this.totalBreakTime = totalBreakTime;
+        ((MainActivity) Objects.requireNonNull(getActivity())).setTotalBreakTime(totalBreakTime);
+    }
+    public long getTotalBreakTime() {
+        return totalBreakTime;
     }
 
     private void setMainClockedInTime(long time) {

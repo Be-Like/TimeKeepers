@@ -79,12 +79,20 @@ public class MainActivity extends AppCompatActivity
     private String clockedInJobTitle;
     private String clockedInJobID;
     private long clockInTime;
+    private boolean isOnBreak;
+    private long beginBreakTime;
+    private long endBreakTime;
+    private long totalBreakTime;
 
     // Shared Preferences Keys
     private final String STATE_CLOCKIN_STATUS = "state_clockin_status";
     private final String STATE_CLOCKIN_JOB_TITLE = "state_clockin_job_title";
     private final String STATE_CLOCKIN_JOB_ID = "state_clockin_job_id";
     private final String STATE_CLOCKIN_TIME = "state_clockin_time";
+    private final String STATE_IS_ON_BREAK = "stateIsOnBreak";
+    private final String STATE_BEGIN_BREAK_TIME = "beginBreakTime";
+    private final String STATE_END_BREAK_TIME = "endBreakTime";
+    private final String STATE_TOTAL_BREAK_TIME = "totalBreakTime";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +123,11 @@ public class MainActivity extends AppCompatActivity
         setClockedInJobTitle(sharedPreferences.getString(STATE_CLOCKIN_JOB_TITLE, null));
         setClockedInJobID(sharedPreferences.getString(STATE_CLOCKIN_JOB_ID, null));
         setClockInTime(sharedPreferences.getLong(STATE_CLOCKIN_TIME, 0));
+        setIsOnBreak(sharedPreferences.getBoolean(STATE_IS_ON_BREAK, false));
+        setBeginBreakTime(sharedPreferences.getLong(STATE_BEGIN_BREAK_TIME, 0L));
+        setEndBreakTime(sharedPreferences.getLong(STATE_END_BREAK_TIME, 0L));
+        setTotalBreakTime(sharedPreferences.getLong(STATE_TOTAL_BREAK_TIME, 0L));
+        setTimerText(sharedPreferences.getString(STATE_TIMER_TEXT, null));
 
         if (savedInstanceState == null) {
             initializeFirstFragment();
@@ -138,9 +151,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         if (acct != null) {
-//            usersName = acct.getDisplayName(); // TODO: remove this if there are no user authentication errors
             setUsersName(acct.getDisplayName());
-//            usersEmail = acct.getEmail(); // TODO: remove this if there are not user authentication errors
             setUsersEmail(acct.getEmail());
             Uri pic = acct.getPhotoUrl();
             Glide.with(this).load(pic).into(usersProfilePicture);
@@ -148,12 +159,9 @@ public class MainActivity extends AppCompatActivity
 //            initializeFirstFragment();
 
             // Update db
-//            UserDBUpdate.updateUserInformation(usersName, usersEmail); // TODO: remove this if there are not user authentication errors
             UserDBUpdate.updateUserInformation(getUsersName(), getUsersEmail());
 
-//            usersNameTextView.setText(usersName); // TODO: remove this if there are not user authentication errors
             usersNameTextView.setText(getUsersName());
-//            usersEmailTextView.setText(usersEmail); // TODO: remove this if there are not user authentication errors
             usersEmailTextView.setText(getUsersEmail());
 
         } else {
@@ -168,14 +176,10 @@ public class MainActivity extends AppCompatActivity
                             DocumentSnapshot doc = task.getResult();
                             if (task.isSuccessful()) {
                                 assert doc != null;
-//                                usersName = doc.getString("Users_Name"); // TODO: remove this if there are not user authentication errors
                                 setUsersName(doc.getString("Users_Name"));
-//                                usersEmail = doc.getString("Email");// TODO: remove this if there are not user authentication errors
                                 setUsersEmail(doc.getString("Email"));
 
-//                                usersNameTextView.setText(usersName); // TODO: remove this if there are not user authentication errors
                                 usersNameTextView.setText(getUsersName());
-//                                usersEmailTextView.setText(usersEmail);// TODO: remove this if there are not user authentication errors
                                 usersEmailTextView.setText(getUsersEmail());
                             } else {
                                 Toast.makeText(getApplicationContext(),
@@ -195,7 +199,9 @@ public class MainActivity extends AppCompatActivity
         Log.d("INITIALIZED STATUS", "Clocked In Job Time is: " + getClockInTime());
         Fragment fragment = Dashboard
                 .newInstance(getClockedInStatus(), getClockedInJobID(),
-                        getClockedInJobTitle(), getClockInTime());
+                        getClockedInJobTitle(), getClockInTime(),
+                        getIsOnBreak(), getBeginBreakTime(),
+                        getEndBreakTime(), getTotalBreakTime(), getTimerText());
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.main_fragment, fragment)
@@ -233,7 +239,9 @@ String currentFragmentTag;
         switch (id) {
             case R.id.nav_dashboard:
                 fragment = Dashboard.newInstance(getClockedInStatus(),
-                        getClockedInJobID(), getClockedInJobTitle(), getClockInTime());
+                        getClockedInJobID(), getClockedInJobTitle(), getClockInTime(),
+                        getIsOnBreak(), getBeginBreakTime(), getEndBreakTime(),
+                        getTotalBreakTime(), getTimerText());
                 fragmentTag = dashboardTag;
                 break;
             case R.id.nav_job_management:
@@ -367,5 +375,44 @@ String currentFragmentTag;
     }
     public long getClockInTime() {
         return clockInTime;
+    }
+    public void setIsOnBreak(boolean isOnBreak) {
+        this.isOnBreak = isOnBreak;
+        sharedPreferences.edit().putBoolean(STATE_IS_ON_BREAK, isOnBreak).apply();
+    }
+    public boolean getIsOnBreak() {
+        return isOnBreak;
+    }
+    public void setBeginBreakTime(long beginBreakTime) {
+        this.beginBreakTime = beginBreakTime;
+        sharedPreferences.edit().putLong(STATE_BEGIN_BREAK_TIME, beginBreakTime).apply();
+    }
+    public long getBeginBreakTime() {
+        return beginBreakTime;
+    }
+    public void setEndBreakTime(long endBreakTime) {
+        this.endBreakTime = endBreakTime;
+        sharedPreferences.edit().putLong(STATE_END_BREAK_TIME, endBreakTime).apply();
+    }
+    public long getEndBreakTime() {
+        return endBreakTime;
+    }
+    public void setTotalBreakTime(long totalBreakTime) {
+        this.totalBreakTime = totalBreakTime;
+        sharedPreferences.edit().putLong(STATE_TOTAL_BREAK_TIME, totalBreakTime).apply();
+    }
+    public long getTotalBreakTime() {
+        return totalBreakTime;
+    }
+
+
+    private final String STATE_TIMER_TEXT = "stateTimerText";
+    private String timerText;
+    public void setTimerText(String timerText) {
+        this.timerText = timerText;
+        sharedPreferences.edit().putString(STATE_TIMER_TEXT, timerText).apply();
+    }
+    public String getTimerText() {
+        return timerText;
     }
 }
