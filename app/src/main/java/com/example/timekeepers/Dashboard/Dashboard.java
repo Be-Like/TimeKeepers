@@ -374,13 +374,10 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         }
         if (v == breakButton) {
             if (!getIsOnBreak()) {
-                // Pause the timerHandler
                 timerHandler.removeCallbacks(timerRunnable);
-                // Set the begin break time
                 setIsOnBreak(true);
                 setBeginBreakTime(System.currentTimeMillis());
                 setBeginBreakTimeTextValues();
-                // Change button text
                 breakButton.setText("End Break");
             } else {
                 timerHandler.postDelayed(timerRunnable, 0);

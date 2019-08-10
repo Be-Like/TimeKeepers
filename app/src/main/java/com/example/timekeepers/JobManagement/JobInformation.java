@@ -122,6 +122,8 @@ public class JobInformation extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    // TODO: prevent user from editing the job if user is clocked in to that job.
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
