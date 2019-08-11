@@ -367,8 +367,29 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         breakButton.setText("Begin Break");
     }
 
+    private void saveJobEntry() {
+        if (getIsOnBreak()) {
+            setEndBreakTime(System.currentTimeMillis());
+            setTotalBreakTime(calculateTotalBreakTime());
+        }
+        for (JobObject jobObject : jobsArray) {
+            if(jobObject.getGeneratedJobId().equals(getClockedInJobID())) {
+                // convert breakTime to double
+                long endTime = System.currentTimeMillis();
+                double breakTime = (double) getTotalBreakTime() / (60 * 60 * 1000);
+
+                DbWorkEntry workEntry = new DbWorkEntry(jobObject, getClockedInTime(), endTime,
+                        breakTime, null);
+
+                workEntry.saveWorkEntryToDb();
+                break;
+            }
+        }
+    }
+
     public void onClick(View v) {
         if (v == clockOutButton) {
+            saveJobEntry();
             onClockIn(false, null, null);
             clearAllBreakData();
         }
