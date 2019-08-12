@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity
     private long beginBreakTime;
     private long endBreakTime;
     private long totalBreakTime;
+    private String timerText;
 
     // Shared Preferences Keys
     private final String STATE_CLOCKIN_STATUS = "state_clockin_status";
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity
     private final String STATE_BEGIN_BREAK_TIME = "beginBreakTime";
     private final String STATE_END_BREAK_TIME = "endBreakTime";
     private final String STATE_TOTAL_BREAK_TIME = "totalBreakTime";
+    private final String STATE_TIMER_TEXT = "stateTimerText";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -405,9 +407,6 @@ String currentFragmentTag;
         return totalBreakTime;
     }
 
-
-    private final String STATE_TIMER_TEXT = "stateTimerText";
-    private String timerText;
     public void setTimerText(String timerText) {
         this.timerText = timerText;
         sharedPreferences.edit().putString(STATE_TIMER_TEXT, timerText).apply();

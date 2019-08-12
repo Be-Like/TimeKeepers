@@ -2,16 +2,10 @@ package com.example.timekeepers.Dashboard;
 
 import android.annotation.SuppressLint;
 
-import androidx.annotation.NonNull;
-
 import com.example.timekeepers.JobManagement.JobObject;
-import com.example.timekeepers.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
@@ -50,6 +44,10 @@ public class DbWorkEntry {
         this.notes = notes;
     }
 
+    private FirebaseUser getCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
+    }
+
     public void saveWorkEntryToDb() {
         double hoursWorked = calculateHoursWorked(startTime, endTime, breakTime);
         double pay;
@@ -57,12 +55,14 @@ public class DbWorkEntry {
             pay = 0.00;
         } else {
             pay = Math.floor((jobObject.getPayRate() * hoursWorked) * 100) / 100;
+            updateOverallValues(pay);
+            updateJobValues(hoursWorked, pay);
         }
 
         Map<String, Object> jobEntry = new HashMap<>();
         jobEntry.put("Job_Title", jobObject.getJobTitle());
-        jobEntry.put("Start_Time", timestampConversion(startTime));
-        jobEntry.put("End_Time", timestampConversion(endTime));
+        jobEntry.put("Start_Time", Objects.requireNonNull(timestampConversion(startTime)));
+        jobEntry.put("End_Time", Objects.requireNonNull(timestampConversion(endTime)));
         jobEntry.put("Break_Time", breakTime);
         jobEntry.put("Hours_Worked", calculateHoursWorked(startTime, endTime, breakTime));
         jobEntry.put("Pay", pay);
@@ -76,13 +76,10 @@ public class DbWorkEntry {
                 .collection("Job_Entries")
                 .document()
                 .set(jobEntry);
-        // TODO: Remember to update:
-        //  Job Hours and Gross Pay
-        //  Overall Hours and Gross Pay
     }
 
     @SuppressLint("SimpleDateFormat")
-    static final SimpleDateFormat dateFormat =
+    private static final SimpleDateFormat dateFormat =
             new SimpleDateFormat("EEE MMM d HH:mm:ss zzz yyyy");
     private Date timestampConversion(long value) {
         String tempString = dateFormat.format(value);
@@ -98,7 +95,19 @@ public class DbWorkEntry {
         return hours - breakTime;
     }
 
-    private FirebaseUser getCurrentUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
+    private void updateOverallValues(double pay) {
+        FirebaseFirestore.getInstance()
+                .collection("Jobs")
+                .document(Objects.requireNonNull(getCurrentUser().getEmail()))
+                .update("Gross_pay", FieldValue.increment(pay));
+    }
+    private void updateJobValues(double hoursWorked, double pay) {
+        FirebaseFirestore.getInstance()
+                .collection("Jobs")
+                .document(Objects.requireNonNull(getCurrentUser().getEmail()))
+                .collection("Users_Jobs")
+                .document(jobObject.getGeneratedJobId())
+                .update("Gross_Pay", FieldValue.increment(pay),
+                        "Hours_Worked", FieldValue.increment(hoursWorked));
     }
 }

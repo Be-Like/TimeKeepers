@@ -282,9 +282,9 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         if (getClockedIn() && getClockedInJobID() != null && getClockedInJobTitle() != null) {
             if (!getIsOnBreak()) {
                 timerHandler.postDelayed(timerRunnable, 0);
-                breakButton.setText("Begin Break");
+                breakButton.setText(getResources().getText(R.string.begin_break));
             } else {
-                breakButton.setText("End Break");
+                breakButton.setText(getResources().getText(R.string.end_break));
             }
             setClockInTextValues(jobTitle);
             timerView.setText(timerText);
@@ -339,8 +339,9 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         }
     }
 
-    Handler timerHandler = new Handler();
-    Runnable timerRunnable = new Runnable() {
+    private Handler timerHandler = new Handler();
+    private Runnable timerRunnable = new Runnable() {
+        @SuppressLint("DefaultLocale")
         @Override
         public void run() {
             Log.d(TAG, "run: " + System.currentTimeMillis() + "..." + getClockedInTime());
@@ -364,7 +365,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
         setTotalBreakTime(0L);
         beginBreakView.setVisibility(View.GONE);
         endBreakView.setVisibility(View.GONE);
-        breakButton.setText("Begin Break");
+        breakButton.setText(getResources().getText(R.string.begin_break));
     }
 
     private void saveJobEntry() {
@@ -399,75 +400,75 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
                 setIsOnBreak(true);
                 setBeginBreakTime(System.currentTimeMillis());
                 setBeginBreakTimeTextValues();
-                breakButton.setText("End Break");
+                breakButton.setText(getResources().getText(R.string.end_break));
             } else {
                 timerHandler.postDelayed(timerRunnable, 0);
                 setIsOnBreak(false);
                 setEndBreakTime(System.currentTimeMillis());
                 setEndBreakTimeTextValues();
                 setTotalBreakTime(calculateTotalBreakTime());
-                breakButton.setText("Begin Break");
+                breakButton.setText(getResources().getText(R.string.begin_break));
             }
         }
     }
 
     // Getters and Setters for Clocked In Information
-    public void setClockedIn(boolean clockedIn) {
+    private void setClockedIn(boolean clockedIn) {
         this.clockedIn = clockedIn;
     }
-    public boolean getClockedIn() {
+    private boolean getClockedIn() {
         return clockedIn;
     }
-    public void setClockedInJobID(String clockedInJobID) {
+    private void setClockedInJobID(String clockedInJobID) {
         this.clockedInJobID = clockedInJobID;
     }
-    public String getClockedInJobID() {
+    private String getClockedInJobID() {
         return clockedInJobID;
     }
-    public void setClockedInJobTitle(String clockedInJobTitle) {
+    private void setClockedInJobTitle(String clockedInJobTitle) {
         this.clockedInJobTitle = clockedInJobTitle;
     }
-    public String getClockedInJobTitle() {
+    private String getClockedInJobTitle() {
         return clockedInJobTitle;
     }
-    public void setClockedInTime(long clockedInTime) {
+    private void setClockedInTime(long clockedInTime) {
         this.clockedInTime = clockedInTime;
     }
-    public long getClockedInTime() {
+    private long getClockedInTime() {
         return clockedInTime;
     }
-    public void setIsOnBreak(boolean isOnBreak) {
+    private void setIsOnBreak(boolean isOnBreak) {
         this.isOnBreak = isOnBreak;
         ((MainActivity) Objects.requireNonNull(getActivity())).setIsOnBreak(isOnBreak);
     }
-    public boolean getIsOnBreak() {
+    private boolean getIsOnBreak() {
         return isOnBreak;
     }
-    public void setBeginBreakTime(long beginBreakTime) {
+    private void setBeginBreakTime(long beginBreakTime) {
         this.beginBreakTime = beginBreakTime;
         ((MainActivity) Objects.requireNonNull(getActivity())).setBeginBreakTime(beginBreakTime);
     }
-    public long getBeginBreakTime() {
+    private long getBeginBreakTime() {
         return beginBreakTime;
     }
-    public void setEndBreakTime(long endBreakTime) {
+    private void setEndBreakTime(long endBreakTime) {
         this.endBreakTime = endBreakTime;
         ((MainActivity) Objects.requireNonNull(getActivity())).setEndBreakTime(endBreakTime);
     }
-    public long getEndBreakTime() {
+    private long getEndBreakTime() {
         return endBreakTime;
     }
 
 
-    public long calculateTotalBreakTime() {
+    private long calculateTotalBreakTime() {
         long timeOnBreak = getTotalBreakTime() + (getEndBreakTime() - getBeginBreakTime());
         return timeOnBreak;
     }
-    public void setTotalBreakTime(long totalBreakTime) {
+    private void setTotalBreakTime(long totalBreakTime) {
         this.totalBreakTime = totalBreakTime;
         ((MainActivity) Objects.requireNonNull(getActivity())).setTotalBreakTime(totalBreakTime);
     }
-    public long getTotalBreakTime() {
+    private long getTotalBreakTime() {
         return totalBreakTime;
     }
 
