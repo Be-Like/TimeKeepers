@@ -21,6 +21,8 @@
     <string name="hello_blank_calendar">Hello blank calendar</string>
 
     <!--Dashboard-->
+    <string name="job_entries_label">Job Entries\n</string>
+    <string name="expense_entries_label">Expenses\n</string>
     <string name="clock_in">Clock In</string>
     <string name="clock_out">Clock Out</string>
     <string name="begin_break">Begin Break</string>

@@ -1,5 +1,6 @@
 package com.example.timekeepers.Dashboard;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -25,7 +26,7 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
-public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.ViewHolder> {
+public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.ViewHolder>  {
     private ArrayList<JobObject> jobs;
     private Context context;
     private FragmentActivity frag;
@@ -47,6 +48,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final JobObject entry = jobs.get(position);
@@ -80,6 +82,9 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
             holder.address.setText(addressFormat(entry));
         }
 
+        holder.jobEntries.setText("Job Entries\n" + entry.getJobEntries().intValue());
+        holder.expenseEntries.setText("Expenses\n" + entry.getExpenseEntries().intValue());
+
         // Testing Save state when navigating away using navigation drawer
         holder.clockIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +104,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         AppCompatTextView phoneNumber;
         AppCompatTextView address;
         AppCompatTextView jobEntries;
+        AppCompatTextView expenseEntries;
         MaterialButton clockIn;
         CardView parentLayout;
 
@@ -108,6 +114,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
             phoneNumber = itemView.findViewById(R.id.phone_number);
             address = itemView.findViewById(R.id.address);
             jobEntries = itemView.findViewById(R.id.job_entries);
+            expenseEntries = itemView.findViewById(R.id.expense_entries);
             clockIn = itemView.findViewById(R.id.clock_in);
             parentLayout = itemView.findViewById(R.id.parent_layout);
         }

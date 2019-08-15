@@ -6,8 +6,8 @@ public class JobObject {
     private final String jobTitle;
     private final String jobType;
     private final Double payRate;
-    private final Double jobEntries;
-    private final Double expenseEntries;
+    private Double jobEntries;
+    private Double expenseEntries;
     private final Double hoursWorked;
     private final Boolean completedJob;
     private final String jobEmail;
@@ -89,8 +89,16 @@ public class JobObject {
         return payRate;
     }
 
+    public void setJobEntries(double value) {
+        this.jobEntries = value;
+    }
+
     public Double getJobEntries() {
         return jobEntries;
+    }
+
+    public void setExpenseEntries(double value) {
+        this.expenseEntries = value;
     }
 
     public Double getExpenseEntries() {

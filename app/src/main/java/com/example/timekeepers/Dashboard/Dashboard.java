@@ -251,7 +251,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
                                     doc.getId()
                             ));
                             Log.d(TAG, "onSuccess: jobsArray= " + jobsArray);
-                            DashboardAdapter adapter =
+                            adapter =
                                     new DashboardAdapter(getContext(), jobsArray,
                                             getActivity(), Dashboard.this);
                             recyclerView.setAdapter(adapter);
@@ -260,6 +260,8 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
                     }
                 });
     }
+
+    DashboardAdapter adapter;
 
     private void initViews() {
         recyclerView =
@@ -375,6 +377,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
             setEndBreakTime(System.currentTimeMillis());
             setTotalBreakTime(calculateTotalBreakTime());
         }
+        int i = 0;
         for (JobObject jobObject : jobsArray) {
             if(jobObject.getGeneratedJobId().equals(getClockedInJobID())) {
                 // convert breakTime to double
@@ -386,8 +389,13 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
 
                 workEntry.saveWorkEntryToDb();
                 workEntry.updateJobEntryQuantity(1);
+
+                // Update the recycler view item
+                jobObject.setJobEntries(jobObject.getJobEntries() + 1);
+                adapter.notifyItemChanged(i, jobObject);
                 break;
             }
+            i++;
         }
     }
 
