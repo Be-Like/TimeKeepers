@@ -56,8 +56,8 @@ public class DbWorkEntry {
         } else {
             pay = Math.floor((jobObject.getPayRate() * hoursWorked) * 100) / 100;
             updateOverallValues(pay);
-            updateJobValues(hoursWorked, pay);
         }
+        updateJobValues(hoursWorked, pay);
 
         Map<String, Object> jobEntry = new HashMap<>();
         jobEntry.put("Job_Title", jobObject.getJobTitle());

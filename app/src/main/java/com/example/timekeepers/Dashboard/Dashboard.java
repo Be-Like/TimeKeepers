@@ -461,8 +461,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
 
 
     private long calculateTotalBreakTime() {
-        long timeOnBreak = getTotalBreakTime() + (getEndBreakTime() - getBeginBreakTime());
-        return timeOnBreak;
+        return getTotalBreakTime() + (getEndBreakTime() - getBeginBreakTime());
     }
     private void setTotalBreakTime(long totalBreakTime) {
         this.totalBreakTime = totalBreakTime;
