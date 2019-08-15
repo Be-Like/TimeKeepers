@@ -81,6 +81,8 @@
     <string name="payRateKey">payRateKey</string>
     <string name="grossPayKey">grossPayKey</string>
     <string name="hoursWorkedKey">hoursWorkedKey</string>
+    <string name="quantityJobEntriesKey">quantityJobEntriesKey</string>
+    <string name="quantityExpenseEntriesKey">quantityExpenseEntriesKey</string>
     <string name="completedJobKey">completedJobKey</string>
     <string name="jobPhoneKey">jobPhoneKey</string>
     <string name="jobEmailKey">jobEmailKey</string>

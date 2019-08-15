@@ -390,8 +390,14 @@ public class AddJob extends Fragment
         if (jobInformation != null) {
             newJob.put("Hours_Worked",
                     jobInformation.getDouble(getString(R.string.hoursWorkedKey)));
+            newJob.put("Quantity_Job_Entries",
+                    jobInformation.getDouble(getString(R.string.quantityJobEntriesKey)));
+            newJob.put("Quantity_Expense_Entries",
+                    jobInformation.getDouble(getString(R.string.quantityExpenseEntriesKey)));
         } else {
             newJob.put("Hours_Worked", 0);
+            newJob.put("Quantity_Job_Entries", 0);
+            newJob.put("Quantity_Expense_Entries", 0);
         }
         if (completed_checkbox && jobType.equals(getString(R.string.project))) {
             newJob.put("Gross_Pay", pay);

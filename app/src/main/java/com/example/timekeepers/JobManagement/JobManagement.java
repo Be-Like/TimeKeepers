@@ -141,6 +141,8 @@ public class JobManagement extends Fragment
                                     doc.getString("Job_Title"),
                                     doc.getString("Job_Type"),
                                     doc.getDouble("Pay_Rate"),
+                                    doc.getDouble("Quantity_Job_Entries"),
+                                    doc.getDouble("Quantity_Expense_Entries"),
                                     doc.getDouble("Hours_Worked"),
                                     doc.getBoolean("Completed"),
                                     doc.getString("Email"),

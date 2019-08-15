@@ -80,7 +80,6 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
             holder.address.setText(addressFormat(entry));
         }
 
-        // TODO: REMOVE Below
         // Testing Save state when navigating away using navigation drawer
         holder.clockIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +87,6 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
                 listener.onClockIn(true, entry.getGeneratedJobId(), entry.getJobTitle());
             }
         });
-        // TODO: REMOVE Above
     }
 
     @Override

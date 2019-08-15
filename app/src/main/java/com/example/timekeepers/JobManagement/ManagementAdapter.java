@@ -70,6 +70,10 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
                 bundle.putString(context.getString(R.string.jobTitleKey) , entry.getJobTitle());
                 bundle.putString(context.getString(R.string.jobTypeKey) , entry.getJobType());
                 bundle.putDouble(context.getString(R.string.payRateKey), entry.getPayRate());
+                bundle.putDouble(context.getString(R.string.quantityJobEntriesKey),
+                        entry.getJobEntries());
+                bundle.putDouble(context.getString(R.string.quantityExpenseEntriesKey),
+                        entry.getExpenseEntries());
                 bundle.putDouble(context.getString(R.string.hoursWorkedKey), entry.getHoursWorked());
                 bundle.putBoolean(context.getString(R.string.completedJobKey), entry.getCompletedJob());
                 bundle.putString(context.getString(R.string.jobEmailKey), entry.getJobEmail());

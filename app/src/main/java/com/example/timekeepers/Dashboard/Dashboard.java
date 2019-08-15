@@ -229,6 +229,8 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
                                     doc.getString("Job_Title"),
                                     doc.getString("Job_Type"),
                                     doc.getDouble("Pay_Rate"),
+                                    doc.getDouble("Quantity_Job_Entries"),
+                                    doc.getDouble("Quantity_Expense_Entries"),
                                     doc.getDouble("Hours_Worked"),
                                     doc.getBoolean("Completed"),
                                     doc.getString("Email"),
@@ -383,6 +385,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
                         breakTime, null);
 
                 workEntry.saveWorkEntryToDb();
+                workEntry.updateJobEntryQuantity(1);
                 break;
             }
         }

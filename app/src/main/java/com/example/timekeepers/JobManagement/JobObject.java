@@ -6,6 +6,8 @@ public class JobObject {
     private final String jobTitle;
     private final String jobType;
     private final Double payRate;
+    private final Double jobEntries;
+    private final Double expenseEntries;
     private final Double hoursWorked;
     private final Boolean completedJob;
     private final String jobEmail;
@@ -28,6 +30,8 @@ public class JobObject {
     public JobObject(String jobTitle,
               String jobType,
               Double pay,
+              Double jobEntries,
+              Double expenseEntries,
               Double hoursWorked,
               Boolean completedJob,
               String jobEmail,
@@ -51,6 +55,8 @@ public class JobObject {
         this.jobTitle = jobTitle;
         this.jobType = jobType;
         this.payRate = pay;
+        this.jobEntries = jobEntries;
+        this.expenseEntries = expenseEntries;
         this.hoursWorked = hoursWorked;
         this.completedJob = completedJob;
         this.jobEmail = jobEmail;
@@ -81,6 +87,14 @@ public class JobObject {
 
     public Double getPayRate() {
         return payRate;
+    }
+
+    public Double getJobEntries() {
+        return jobEntries;
+    }
+
+    public Double getExpenseEntries() {
+        return expenseEntries;
     }
 
     public Double getHoursWorked() {
