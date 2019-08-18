@@ -105,6 +105,9 @@
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
 
+    <!-- Calendar -->
+    <string name="calendar_view">View</string>
+
     <!--Login Activity-->
     <string name="logo_image_description">TimeKeepers Logo</string>
     <string name="prompt_email">Email</string>
