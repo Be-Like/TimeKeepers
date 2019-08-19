@@ -14,7 +14,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.Objects;
+
+import javax.annotation.Nullable;
 
 
 /**
@@ -78,6 +89,8 @@ public class Calendar extends Fragment {
         fragmentView = inflater.inflate(R.layout.fragment_calendar, container, false);
         setHasOptionsMenu(true);
 
+        initRecyclerView();
+
         // Inflate the layout for this fragment
         return fragmentView;
     }
@@ -115,6 +128,43 @@ public class Calendar extends Fragment {
             Toast.makeText(getContext(), "Will change views.", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initRecyclerView() {
+        String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance()
+                .getCurrentUser()).getEmail();
+
+        if (userEmail == null) {
+            Toast.makeText(getContext(), "Error getting user information.",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        final CollectionReference usersJobs = FirebaseFirestore.getInstance()
+                .collection("Jobs")
+                .document(userEmail)
+                .collection("Users_Jobs");
+
+        usersJobs.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot value) {
+                for (QueryDocumentSnapshot document : value) {
+                    final String jobId = document.getId();
+
+                    usersJobs.document(document.getId())
+                            .collection("Job_Entries")
+                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
+                                                    @Nullable FirebaseFirestoreException e) {
+                                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                        // TODO: Continue from here (getting the job entries
+                                        //  for each job
+                                    }
+                                }
+                            });
+                }
+            }
+        });
     }
 
     @Override
