@@ -78,15 +78,15 @@ public class JobObject {
     }
 
     public String getJobTitle() {
-        return jobTitle;
+        return this.jobTitle;
     }
 
     public String getJobType() {
-        return jobType;
+        return this.jobType;
     }
 
     public Double getPayRate() {
-        return payRate;
+        return this.payRate;
     }
 
     public void setJobEntries(double value) {
@@ -94,7 +94,7 @@ public class JobObject {
     }
 
     public Double getJobEntries() {
-        return jobEntries;
+        return this.jobEntries;
     }
 
     public void setExpenseEntries(double value) {
@@ -102,103 +102,103 @@ public class JobObject {
     }
 
     public Double getExpenseEntries() {
-        return expenseEntries;
+        return this.expenseEntries;
     }
 
     public Double getHoursWorked() {
-        return hoursWorked;
+        return this.hoursWorked;
     }
 
     public Boolean getCompletedJob() {
-        return completedJob;
+        return this.completedJob;
     }
 
     public String getJobEmail() {
-        return jobEmail;
+        return this.jobEmail;
     }
 
     public Double getJobFederal() {
-        return jobFederal;
+        return this.jobFederal;
     }
 
     public Double getGrossPay() {
-        return grossPay;
+        return this.grossPay;
     }
 
     public Double getMedicare() {
-        return medicare;
+        return this.medicare;
     }
 
     public Double getSocialSecurity() {
-        return socialSecurity;
+        return this.socialSecurity;
     }
 
     public Double getOtherWithholding() {
-        return otherWithholding;
+        return this.otherWithholding;
     }
 
     public String getJobPhone() {
-        return jobPhone;
+        return this.jobPhone;
     }
 
     public Double getRetirement() {
-        return retirement;
+        return this.retirement;
     }
 
     public Double getStateTax() {
-        return stateTax;
+        return this.stateTax;
     }
 
     public String getJobWebsite() {
-        return jobWebsite;
+        return this.jobWebsite;
     }
 
     public String getJobStreet1() {
-        return jobStreet1;
+        return this.jobStreet1;
     }
 
     public String getJobStreet2() {
-        return jobStreet2;
+        return this.jobStreet2;
     }
 
     public String getJobCity() {
-        return jobCity;
+        return this.jobCity;
     }
 
     public String getJobState() {
-        return jobState;
+        return this.jobState;
     }
 
     public String getJobZipCode() {
-        return jobZipCode;
+        return this.jobZipCode;
     }
 
     public String getGeneratedJobId() {
-        return generatedJobId;
+        return this.generatedJobId;
     }
 
     @NonNull
     public String toString() {
-        return "Job Title=" + jobTitle +
-                " Job Type=" + jobType +
-                " Completed Job=" + completedJob +
-                " Pay Rate=" + payRate +
-                " Gross Pay=" + grossPay +
-                " Hour Worked=" + hoursWorked +
-                " Job Phone=" + jobPhone +
-                " Job Email=" + jobEmail +
-                " Job Website=" + jobWebsite +
-                " Job Federal=" + jobFederal +
-                " State Tax=" + stateTax +
-                " Social Security=" + socialSecurity +
-                " Medicare=" + medicare +
-                " Retirement=" + retirement +
-                " Other Withholdings=" + otherWithholding +
-                " Job Street 1=" + jobStreet1 +
-                " Job Street 2=" + jobStreet2 +
-                " Job City=" + jobCity +
-                " Job State=" + jobState +
-                " Job Zip Code=" + jobZipCode +
-                " Job Generated Job Id=" + generatedJobId;
+        return "Job Title=" + this.jobTitle +
+                " Job Type=" + this.jobType +
+                " Completed Job=" + this.completedJob +
+                " Pay Rate=" + this.payRate +
+                " Gross Pay=" + this.grossPay +
+                " Hour Worked=" + this.hoursWorked +
+                " Job Phone=" + this.jobPhone +
+                " Job Email=" + this.jobEmail +
+                " Job Website=" + this.jobWebsite +
+                " Job Federal=" + this.jobFederal +
+                " State Tax=" + this.stateTax +
+                " Social Security=" + this.socialSecurity +
+                " Medicare=" + this.medicare +
+                " Retirement=" + this.retirement +
+                " Other Withholdings=" + this.otherWithholding +
+                " Job Street 1=" + this.jobStreet1 +
+                " Job Street 2=" + this.jobStreet2 +
+                " Job City=" + this.jobCity +
+                " Job State=" + this.jobState +
+                " Job Zip Code=" + this.jobZipCode +
+                " Job Generated Job Id=" + this.generatedJobId;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.timekeepers;
+package com.example.timekeepers.Calendar;
 
 import android.content.Context;
 import android.net.Uri;
@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.timekeepers.JobEntryObject;
+import com.example.timekeepers.MainActivity;
+import com.example.timekeepers.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -23,6 +26,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -47,6 +53,8 @@ public class Calendar extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private View fragmentView;
+
+    private HashMap<String, JobEntryObject> calendarEntry;
 
     public Calendar() {
         // Required empty public constructor
@@ -147,6 +155,7 @@ public class Calendar extends Fragment {
         usersJobs.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot value) {
+                calendarEntry = new HashMap<>();
                 for (QueryDocumentSnapshot document : value) {
                     final String jobId = document.getId();
 
@@ -157,14 +166,32 @@ public class Calendar extends Fragment {
                                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
                                                     @Nullable FirebaseFirestoreException e) {
                                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                        // TODO: Continue from here (getting the job entries
-                                        //  for each job
+                                        calendarEntry.put(doc.getId(), new JobEntryObject(
+                                                jobId,
+                                                doc.getId(),
+                                                doc.getDouble("Break_Time"),
+                                                doc.getDate("End_Time"),
+                                                doc.getDouble("Hours_Worked"),
+                                                doc.getString("Job_Title"),
+                                                doc.getString("Notes"),
+                                                doc.getDouble("Pay"),
+                                                doc.getDate("Start_Time")
+                                        ));
                                     }
                                 }
                             });
                 }
+                // TODO: Default = create a list of all values in the hashmap so I can sort by date.
+                //  Reason for not creating a list right away is because even to filter a list you
+                //  would need to create a new list. Filtering a hashmap costs less than filtering
+                //  an arraylist.
             }
         });
+    }
+    class SortByDate implements Comparator<JobEntryObject> {
+        public int compare(JobEntryObject a, JobEntryObject b) {
+            return (a.getStartTime().before(b.getStartTime()) ? 1 : -1);
+        }
     }
 
     @Override
