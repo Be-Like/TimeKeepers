@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Calendar.JobEntryInfo">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/view_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/job_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Temp Text"
+            style="@style/FormHeader"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/job_entry_pay_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pay_label"
+            style="@style/FormLabels"
+            app:layout_constraintTop_toBottomOf="@id/job_title"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/job_entry_pay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="$999.99"
+            style="@style/FormInfo"
+            app:layout_constraintTop_toTopOf="@id/job_entry_pay_label"
+            app:layout_constraintBottom_toBottomOf="@id/job_entry_pay_label"
+            app:layout_constraintStart_toEndOf="@id/job_entry_pay_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/hours_worked_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hours_worked_label"
+            style="@style/FormLabels"
+            app:layout_constraintTop_toBottomOf="@id/job_entry_pay_label"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/hours_worked"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="7.8 hrs"
+            style="@style/FormInfo"
+            app:layout_constraintTop_toTopOf="@id/hours_worked_label"
+            app:layout_constraintBottom_toBottomOf="@id/hours_worked_label"
+            app:layout_constraintStart_toEndOf="@id/hours_worked_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/break_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/break_time_label"
+            style="@style/FormLabels"
+            app:layout_constraintTop_toBottomOf="@id/hours_worked_label"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/break_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="3.5 hrs"
+            style="@style/FormInfo"
+            app:layout_constraintTop_toTopOf="@id/break_time_label"
+            app:layout_constraintBottom_toBottomOf="@id/break_time_label"
+            app:layout_constraintStart_toStartOf="@id/hours_worked"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/start_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/start_time_label"
+            style="@style/FormLabels"
+            app:layout_constraintTop_toBottomOf="@id/break_time_label"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/start_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="April 2, 1995"
+            style="@style/FormInfo"
+            app:layout_constraintTop_toTopOf="@id/start_time_label"
+            app:layout_constraintBottom_toBottomOf="@id/start_time_label"
+            app:layout_constraintStart_toEndOf="@id/start_time_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/end_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/end_time_label"
+            style="@style/FormLabels"
+            app:layout_constraintTop_toBottomOf="@id/start_time_label"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/end_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="April 3, 1995"
+            style="@style/FormInfo"
+            app:layout_constraintTop_toTopOf="@id/end_time_label"
+            app:layout_constraintBottom_toBottomOf="@id/end_time_label"
+            app:layout_constraintStart_toStartOf="@id/start_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
