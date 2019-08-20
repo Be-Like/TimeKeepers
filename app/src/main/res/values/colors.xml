@@ -12,4 +12,7 @@
 
     <!--Temp Colors for the Content Background of fragments-->
     <color name="content_background">#FFFFFF</color>
+
+    <!-- Text Colors -->
+    <color name="black">#000000</color>
 </resources>

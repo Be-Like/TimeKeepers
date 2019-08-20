@@ -1,23 +1,33 @@
 package com.example.timekeepers.Calendar;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.Toast;
 
 import com.example.timekeepers.JobEntryObject;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
@@ -26,12 +36,19 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 /**
@@ -42,7 +59,8 @@ import javax.annotation.Nullable;
  * Use the {@link Calendar#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Calendar extends Fragment {
+public class Calendar extends Fragment
+        implements View.OnClickListener, CalendarView.OnDateChangeListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -53,8 +71,13 @@ public class Calendar extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     private View fragmentView;
+    private CalendarView calendarView;
+    private RecyclerView calendarSelectionList;
+    private RecyclerView recyclerView;
+    private FloatingActionButton addJobEntry;
 
     private HashMap<String, JobEntryObject> calendarEntry;
+    private Date selectedDate;
 
     public Calendar() {
         // Required empty public constructor
@@ -97,6 +120,7 @@ public class Calendar extends Fragment {
         fragmentView = inflater.inflate(R.layout.fragment_calendar, container, false);
         setHasOptionsMenu(true);
 
+        initViews();
         initRecyclerView();
 
         // Inflate the layout for this fragment
@@ -130,12 +154,34 @@ public class Calendar extends Fragment {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO: add logic for switching views
         int id = item.getItemId();
         if (id == R.id.calendar_view) {
-            Toast.makeText(getContext(), "Will change views.", Toast.LENGTH_SHORT).show();
+            if (calendarView.getVisibility() == View.VISIBLE) {
+                calendarView.setVisibility(View.GONE);
+                calendarSelectionList.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            } else {
+                calendarView.setVisibility(View.VISIBLE);
+                calendarSelectionList.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onSelectedDayChange(CalendarView v, int year, int month, int day) {
+        selectedDate = new GregorianCalendar(year, month, day).getTime();
+        createDateRecycler(getJobEntriesForDate(selectedDate));
+    }
+
+    private void initViews() {
+        calendarView = fragmentView.findViewById(R.id.calendar_calendar);
+        calendarView.setOnDateChangeListener(this);
+        calendarSelectionList = fragmentView.findViewById(R.id.calendar_selection_list);
+        recyclerView = fragmentView.findViewById(R.id.calendar_list);
+        selectedDate = java.util.Calendar.getInstance().getTime();
+        addJobEntry = fragmentView.findViewById(R.id.add_job_entry);
+        addJobEntry.setOnClickListener(this);
     }
 
     private void initRecyclerView() {
@@ -147,6 +193,7 @@ public class Calendar extends Fragment {
                     Toast.LENGTH_LONG).show();
         }
 
+        assert userEmail != null;
         final CollectionReference usersJobs = FirebaseFirestore.getInstance()
                 .collection("Jobs")
                 .document(userEmail)
@@ -177,27 +224,63 @@ public class Calendar extends Fragment {
                                                 doc.getDouble("Pay"),
                                                 doc.getDate("Start_Time")
                                         ));
+                                        ArrayList<JobEntryObject> jobsList = new ArrayList<>(calendarEntry.values());
+                                        Collections.sort(jobsList, new SortByDate());
+                                        createRecycler(jobsList);
+                                        createDateRecycler(getJobEntriesForDate(selectedDate));
                                     }
                                 }
                             });
                 }
-                // TODO: Default = create a list of all values in the hashmap so I can sort by date.
-                //  Reason for not creating a list right away is because even to filter a list you
-                //  would need to create a new list. Filtering a hashmap costs less than filtering
-                //  an arraylist.
             }
         });
     }
     class SortByDate implements Comparator<JobEntryObject> {
         public int compare(JobEntryObject a, JobEntryObject b) {
-            return (a.getStartTime().before(b.getStartTime()) ? 1 : -1);
+            if (a.getStartTime() == b.getStartTime()) {
+                return 0;
+            } else {
+                return (a.getStartTime().before(b.getStartTime()) ? 1 : -1);
+            }
         }
+    }
+    private ArrayList<JobEntryObject> getJobEntriesForDate(Date date) {
+        ArrayList<JobEntryObject> list = new ArrayList<>();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat =
+                new SimpleDateFormat("dd-MMM-yyyy");
+        String dateString = dateFormat.format(date);
+        for (JobEntryObject jobEntry : calendarEntry.values()) {
+            if (dateFormat.format(jobEntry.getStartTime()).equals(dateString)
+                    || dateFormat.format(jobEntry.getEndTime()).equals(dateString)) {
+                list.add(jobEntry);
+            }
+        }
+        Collections.sort(list, new SortByDate());
+        return list;
+    }
+
+    private void createRecycler(ArrayList<JobEntryObject> list) {
+        CalendarAdapter calendarAdapter = new CalendarAdapter(getContext(), list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(calendarAdapter);
+    }
+    private void createDateRecycler(ArrayList<JobEntryObject> list) {
+        CalendarAdapter calendarAdapter = new CalendarAdapter(getContext(), list);
+        calendarSelectionList.setLayoutManager(new LinearLayoutManager(getContext()));
+        calendarSelectionList.setAdapter(calendarAdapter);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void onClick(View view) {
+        if (view == addJobEntry) {
+            // TODO: add the logic for adding job entries manually
+            Log.d(TAG, "Calendar Entry HashMap: " + calendarEntry.toString());
+        }
     }
 
     /**
