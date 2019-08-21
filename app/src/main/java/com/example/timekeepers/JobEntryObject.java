@@ -13,6 +13,11 @@ public class JobEntryObject {
     private String notes;
     private Double pay;
     private Date startTime;
+    private String street1;
+    private String street2;
+    private String city;
+    private String state;
+    private String zipcode;
 
     public JobEntryObject(String jobId,
                           String jobEntryId,
@@ -22,7 +27,12 @@ public class JobEntryObject {
                           String jobTitle,
                           String notes,
                           Double pay,
-                          Date startTime) {
+                          Date startTime,
+                          String street1,
+                          String street2,
+                          String city,
+                          String state,
+                          String zipcode) {
         this.jobId = jobId;
         this.jobEntryId = jobEntryId;
         this.breakTime = breakTime;
@@ -32,6 +42,11 @@ public class JobEntryObject {
         this.notes = notes;
         this.pay = pay;
         this.startTime = startTime;
+        this.street1 = street1;
+        this.street2 = street2;
+        this.city = city;
+        this.state = state;
+        this.zipcode = zipcode;
     }
 
     public String getJobId() {
@@ -61,6 +76,21 @@ public class JobEntryObject {
     public Date getStartTime() {
         return this.startTime;
     }
+    public String getStreet1() {
+        return this.street1;
+    }
+    public String getStreet2() {
+        return this.street2;
+    }
+    public String getCity() {
+        return this.city;
+    }
+    public String getState() {
+        return this.state;
+    }
+    public String getZipcode() {
+        return this.zipcode;
+    }
 
     public String toString() {
         return "Job Id: " + this.jobId +
@@ -71,6 +101,8 @@ public class JobEntryObject {
                 "; Job Title: " + this.jobTitle +
                 "; Notes: " + this.notes +
                 "; Pay: " + this.pay +
-                "; Start Time: " + this.startTime;
+                "; Start Time: " + this.startTime +
+                "; Address: " + this.street1 + " " + this.street2 + " " +
+                this.city + " " + this.state + " " + this.zipcode;
     }
 }

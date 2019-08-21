@@ -1,14 +1,17 @@
 package com.example.timekeepers.Calendar;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.timekeepers.JobEntryObject;
@@ -46,8 +49,30 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
         holder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "Will open " + entry.getJobTitle() + " entry.",
-                        Toast.LENGTH_LONG).show();
+                Bundle bundle = new Bundle();
+                bundle.putString(context.getString(R.string.idKey), entry.getJobId());
+                bundle.putString(context.getString(R.string.jobEntryIdKey), entry.getJobEntryId());
+                bundle.putDouble(context.getString(R.string.breakTimeKey), entry.getBreakTime());
+                bundle.putSerializable(context.getString(R.string.endTimeKey), entry.getEndTime());
+                bundle.putDouble(context.getString(R.string.hoursWorkedKey), entry.getHoursWorked());
+                bundle.putString(context.getString(R.string.jobTitleKey), entry.getJobTitle());
+                bundle.putString(context.getString(R.string.notesKey), entry.getNotes());
+                bundle.putDouble(context.getString(R.string.payKey), entry.getPay());
+                bundle.putSerializable(context.getString(R.string.startTimeKey),
+                        entry.getStartTime());
+                bundle.putString(context.getString(R.string.street1Key), entry.getStreet1());
+                bundle.putString(context.getString(R.string.street2Key), entry.getStreet2());
+                bundle.putString(context.getString(R.string.cityKey), entry.getCity());
+                bundle.putString(context.getString(R.string.stateKey), entry.getState());
+                bundle.putString(context.getString(R.string.zipCodeKey), entry.getZipcode());
+
+                Fragment viewJobEntry = JobEntryInfo.newInstance(bundle);
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                activity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_fragment, viewJobEntry)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
     }

@@ -9,7 +9,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        >
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/job_title"
@@ -124,6 +129,60 @@
             app:layout_constraintTop_toTopOf="@id/end_time_label"
             app:layout_constraintBottom_toBottomOf="@id/end_time_label"
             app:layout_constraintStart_toStartOf="@id/start_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"
+            app:layout_constraintTop_toTopOf="@id/notes_label"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/notes_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/notes_label"
+            style="@style/FormLabels"
+            app:layout_constraintTop_toBottomOf="@id/end_time_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Temp notes \n this will go here."
+            style="@style/FormInfo"
+            app:layout_constraintTop_toBottomOf="@id/notes_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0"
+            app:layout_constraintTop_toBottomOf="@id/notes"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/address_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/address_label"
+            style="@style/FormLabels"
+            app:layout_constraintTop_toBottomOf="@id/notes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is an \n Example of an address"
+            style="@style/FormInfo"
+            app:layout_constraintTop_toBottomOf="@id/address_label"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             />
 

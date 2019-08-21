@@ -291,6 +291,7 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
                 breakButton.setText(getResources().getText(R.string.end_break));
             }
             setClockInTextValues(jobTitle);
+            // TODO: keep an eye on whether or not the changes I made fixed the clock in time
             timerView.setText(timerText);
             setBeginBreakTimeTextValues();
             setEndBreakTimeTextValues();
@@ -501,8 +502,8 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
     }
 
     public void onClockIn(boolean clockedIn, String job, String jobTitle) {
-        setClockedInStatus(clockedIn, job, jobTitle);
         setClockedInTime(System.currentTimeMillis());
         setMainClockedInTime(System.currentTimeMillis());
+        setClockedInStatus(clockedIn, job, jobTitle);
     }
 }

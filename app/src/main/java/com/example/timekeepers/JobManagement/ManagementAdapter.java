@@ -62,9 +62,6 @@ public class ManagementAdapter extends RecyclerView.Adapter<ManagementAdapter.Vi
             @Override
             public void onClick(View view) {
 
-                String idKey = context.getString(R.string.idKey);
-                Log.d(TAG, "onClick: adapter class " + idKey);
-
                 Bundle bundle = new Bundle();
                 bundle.putString(context.getString(R.string.idKey), entry.getGeneratedJobId());
                 bundle.putString(context.getString(R.string.jobTitleKey) , entry.getJobTitle());

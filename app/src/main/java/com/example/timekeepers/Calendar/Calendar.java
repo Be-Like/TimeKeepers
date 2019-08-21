@@ -218,7 +218,12 @@ public class Calendar extends Fragment
                                                 doc.getString("Job_Title"),
                                                 doc.getString("Notes"),
                                                 doc.getDouble("Pay"),
-                                                doc.getDate("Start_Time")
+                                                doc.getDate("Start_Time"),
+                                                doc.getString("Address.Street_1"),
+                                                doc.getString("Address.Street_2"),
+                                                doc.getString("Address.City"),
+                                                doc.getString("Address.State"),
+                                                doc.getString("Address.Zip_Code")
                                         ));
                                         ArrayList<JobEntryObject> jobsList = new ArrayList<>(calendarEntry.values());
                                         Collections.sort(jobsList, new SortByDate());

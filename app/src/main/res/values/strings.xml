@@ -114,6 +114,13 @@
     <string name="start_time_label">Start Time: \t</string>
     <string name="end_time_label">End Time: </string>
     <string name="notes_label">Notes: </string>
+    <!--  Job Entry Bundle Key's (See also: Bundle Key's) -->
+    <string name="jobEntryIdKey">jobEntryIdKey</string>
+    <string name="startTimeKey">startTimeKey</string>
+    <string name="endTimeKey">endTimeKey</string>
+    <string name="breakTimeKey">breakTimeKey</string>
+    <string name="notesKey">notesKey</string>
+    <string name="payKey">payKey</string>
 
     <!--Login Activity-->
     <string name="logo_image_description">TimeKeepers Logo</string>

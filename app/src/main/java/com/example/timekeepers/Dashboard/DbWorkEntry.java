@@ -59,6 +59,13 @@ public class DbWorkEntry {
         }
         updateJobValues(hoursWorked, pay);
 
+        Map<String, Object> address = new HashMap<>();
+        address.put("Street_1", jobObject.getJobStreet1());
+        address.put("Street_2", jobObject.getJobStreet2());
+        address.put("City", jobObject.getJobCity());
+        address.put("State", jobObject.getJobState());
+        address.put("Zip_Code", jobObject.getJobZipCode());
+
         Map<String, Object> jobEntry = new HashMap<>();
         jobEntry.put("Job_Title", jobObject.getJobTitle());
         jobEntry.put("Start_Time", Objects.requireNonNull(timestampConversion(startTime)));
@@ -67,6 +74,7 @@ public class DbWorkEntry {
         jobEntry.put("Hours_Worked", calculateHoursWorked(startTime, endTime, breakTime));
         jobEntry.put("Pay", pay);
         jobEntry.put("Notes", notes);
+        jobEntry.put("Address", address);
 
         FirebaseFirestore.getInstance()
                 .collection("Jobs")
