@@ -3,6 +3,7 @@ package com.example.timekeepers.Calendar;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -17,13 +18,23 @@ import com.example.timekeepers.R;
  * create an instance of this fragment.
  */
 public class JobEntryInfo extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String JOB_ENTRY_INFO = "JobEntryInfo";
 
-    // TODO: Rename and change types of parameters
     private Bundle jobEntryInfo;
 
+    private View fragmentView;
+    private AppCompatTextView breakTimeView;
+    private AppCompatTextView endTimeView;
+    private AppCompatTextView hoursWorkedView;
+    private AppCompatTextView jobTitleView;
+    private AppCompatTextView notesView;
+    private AppCompatTextView payView;
+    private AppCompatTextView startTimeView;
+    private AppCompatTextView street1View;
+    private AppCompatTextView street2View;
+    private AppCompatTextView cityView;
+    private AppCompatTextView stateView;
+    private AppCompatTextView zipcodeView;
 
     public JobEntryInfo() {
         // Required empty public constructor
@@ -36,7 +47,6 @@ public class JobEntryInfo extends Fragment {
      * @param bundle Parameter 1.
      * @return A new instance of fragment JobEntryInfo.
      */
-    // TODO: Rename and change types and number of parameters
     public static JobEntryInfo newInstance(Bundle bundle) {
         JobEntryInfo fragment = new JobEntryInfo();
         Bundle args = new Bundle();
@@ -56,8 +66,22 @@ public class JobEntryInfo extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_job_entry_info, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_job_entry_info, container, false);
+
+        initViews();
+
+        return fragmentView;
+    }
+
+    private void initViews() {
+        jobTitleView = fragmentView.findViewById(R.id.job_title);
+        payView = fragmentView.findViewById(R.id.job_entry_pay);
+        hoursWorkedView = fragmentView.findViewById(R.id.hours_worked);
+        breakTimeView = fragmentView.findViewById(R.id.break_time);
+        startTimeView = fragmentView.findViewById(R.id.start_time);
+        endTimeView = fragmentView.findViewById(R.id.end_time);
+        notesView = fragmentView.findViewById(R.id.notes);
+        // TODO: work on creating a addressFormat class
     }
 
 }
