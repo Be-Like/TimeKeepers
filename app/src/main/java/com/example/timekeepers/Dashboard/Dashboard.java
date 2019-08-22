@@ -291,7 +291,6 @@ public class Dashboard extends Fragment implements DashboardAdapter.ClockInListe
                 breakButton.setText(getResources().getText(R.string.end_break));
             }
             setClockInTextValues(jobTitle);
-            // TODO: keep an eye on whether or not the changes I made fixed the clock in time
             timerView.setText(timerText);
             setBeginBreakTimeTextValues();
             setEndBreakTimeTextValues();

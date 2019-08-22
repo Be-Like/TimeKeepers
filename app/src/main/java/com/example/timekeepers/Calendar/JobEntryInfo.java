@@ -10,16 +10,22 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.timekeepers.AddressFormat;
+import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -31,6 +37,7 @@ public class JobEntryInfo extends Fragment {
     private static final String JOB_ENTRY_INFO = "JobEntryInfo";
 
     private Bundle jobEntryInfo;
+    private MainActivity mainActivity;
 
     private View fragmentView;
     private AppCompatTextView breakTimeView;
@@ -72,11 +79,17 @@ public class JobEntryInfo extends Fragment {
         if (getArguments() != null) {
             jobEntryInfo = getArguments().getBundle(JOB_ENTRY_INFO);
         }
+        mainActivity = (MainActivity) getActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mainActivity.toolbar.setTitle(jobEntryInfo.getString(getString(R.string.jobTitleKey)));
+        mainActivity.lockNavigationDrawer(true);
+        setHasOptionsMenu(true);
+
+        // Instantiate Fragment View
         fragmentView = inflater.inflate(R.layout.fragment_job_entry_info, container, false);
 
         initViews();
@@ -84,6 +97,29 @@ public class JobEntryInfo extends Fragment {
 
         return fragmentView;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.edit_entry, menu);
+        getActivity().getMenuInflater().inflate(R.menu.delete_entry, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.edit_entry) {
+            // TODO: call editJobEntry
+            Toast.makeText(getContext(), "Will edit job entry.", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if (id == R.id.delete_entry) {
+            // TODO: call deleteJobEntry;
+            Toast.makeText(getContext(), "Will delete job entry.", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     private void initViews() {
         jobTitleView = fragmentView.findViewById(R.id.job_title);
@@ -102,7 +138,8 @@ public class JobEntryInfo extends Fragment {
         double tmpHours = jobEntryInfo.getDouble(getString(R.string.hoursWorkedKey));
         double tmpBreak = jobEntryInfo.getDouble(getString(R.string.breakTimeKey));
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a MMM dd, yyyy");
+        SimpleDateFormat dateFormat =
+                new SimpleDateFormat("hh:mm a MMM dd, yyyy", Locale.US);
 
         AddressFormat addressFormat = new AddressFormat(
                 jobEntryInfo.getString(getString(R.string.street1Key)),
