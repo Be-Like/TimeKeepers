@@ -1,6 +1,9 @@
 package com.example.timekeepers.Calendar;
 
 
+import android.content.Intent;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatTextView;
@@ -10,7 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.timekeepers.AddressFormat;
 import com.example.timekeepers.R;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +40,7 @@ public class JobEntryInfo extends Fragment {
     private AppCompatTextView notesView;
     private AppCompatTextView payView;
     private AppCompatTextView startTimeView;
+    private AppCompatTextView addressView;
     private AppCompatTextView street1View;
     private AppCompatTextView street2View;
     private AppCompatTextView cityView;
@@ -69,6 +80,7 @@ public class JobEntryInfo extends Fragment {
         fragmentView = inflater.inflate(R.layout.fragment_job_entry_info, container, false);
 
         initViews();
+        setViews();
 
         return fragmentView;
     }
@@ -81,7 +93,42 @@ public class JobEntryInfo extends Fragment {
         startTimeView = fragmentView.findViewById(R.id.start_time);
         endTimeView = fragmentView.findViewById(R.id.end_time);
         notesView = fragmentView.findViewById(R.id.notes);
-        // TODO: work on creating a addressFormat class
+        addressView = fragmentView.findViewById(R.id.address);
+    }
+    private void setViews() {
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+        DecimalFormat df = new DecimalFormat("#.##");
+        double tmpPay = jobEntryInfo.getDouble(getString(R.string.payKey));
+        double tmpHours = jobEntryInfo.getDouble(getString(R.string.hoursWorkedKey));
+        double tmpBreak = jobEntryInfo.getDouble(getString(R.string.breakTimeKey));
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a MMM dd, yyyy");
+
+        AddressFormat addressFormat = new AddressFormat(
+                jobEntryInfo.getString(getString(R.string.street1Key)),
+                jobEntryInfo.getString(getString(R.string.street2Key)),
+                jobEntryInfo.getString(getString(R.string.cityKey)),
+                jobEntryInfo.getString(getString(R.string.stateKey)),
+                jobEntryInfo.getString(getString(R.string.zipCodeKey))
+        );
+
+        jobTitleView.setText(jobEntryInfo.getString(getString(R.string.jobTitleKey)));
+        payView.setText(currencyFormat.format(tmpPay));
+        hoursWorkedView.setText(df.format(tmpHours));
+        breakTimeView.setText(df.format(tmpBreak));
+        startTimeView.setText(
+                dateFormat.format(
+                        (Date) jobEntryInfo.getSerializable(getString(R.string.startTimeKey))
+                )
+        );
+        endTimeView.setText(
+                dateFormat.format(
+                        (Date) jobEntryInfo.getSerializable(getString(R.string.endTimeKey))
+                )
+        );
+        notesView.setText(jobEntryInfo.getString(getString(R.string.notesKey)));
+        addressView.setText(addressFormat.addressFormat());
+        addressFormat.createMapNavigation(addressView, getActivity());
     }
 
 }

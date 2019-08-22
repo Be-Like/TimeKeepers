@@ -66,6 +66,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.ViewHo
                 bundle.putString(context.getString(R.string.stateKey), entry.getState());
                 bundle.putString(context.getString(R.string.zipCodeKey), entry.getZipcode());
 
+
                 Fragment viewJobEntry = JobEntryInfo.newInstance(bundle);
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
                 activity.getSupportFragmentManager()

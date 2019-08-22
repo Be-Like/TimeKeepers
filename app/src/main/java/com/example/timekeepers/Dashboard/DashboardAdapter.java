@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.timekeepers.Accounting;
+import com.example.timekeepers.AddressFormat;
 import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.R;
 import com.google.android.material.button.MaterialButton;
@@ -60,27 +61,34 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         } else {
             holder.phoneNumber.setVisibility(View.GONE);
         }
-        if (!"No Address Entered".equals(addressFormat(entry))) {
-            holder.address.setText(addressFormat(entry));
-            holder.address.setPaintFlags(holder.address.getPaintFlags()
-                    | Paint.UNDERLINE_TEXT_FLAG);
-            holder.address.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri gmmIntentUri =
-                            Uri.parse("geo:0,0?q=" + holder.address.getText().toString());
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
+            AddressFormat addressFormat = new AddressFormat(
+                    entry.getJobStreet1(),
+                    entry.getJobStreet2(),
+                    entry.getJobCity(),
+                    entry.getJobState(),
+                    entry.getJobZipCode()
+            );
+            holder.address.setText(addressFormat.addressFormat());
 
-                    if (mapIntent.resolveActivity(frag.getPackageManager()) != null) {
-                        frag.startActivity(mapIntent);
+            if (!"No Address Entered".contentEquals(holder.address.getText())) {
+                holder.address.setPaintFlags(holder.address.getPaintFlags()
+                        | Paint.UNDERLINE_TEXT_FLAG);
+                holder.address.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Uri gmmIntentUri =
+                                Uri.parse("geo:0,0?q=" + holder.address.getText().toString());
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+
+                        if (mapIntent.resolveActivity(frag.getPackageManager()) != null) {
+                            frag.startActivity(mapIntent);
+                        }
+
                     }
+                });
+            }
 
-                }
-            });
-        } else {
-            holder.address.setText(addressFormat(entry));
-        }
 
         holder.jobEntries.setText("Job Entries\n" + entry.getJobEntries().intValue());
         holder.expenseEntries.setText("Expenses\n" + entry.getExpenseEntries().intValue());
@@ -122,48 +130,5 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
 
     public interface ClockInListener {
         void onClockIn(boolean clockedIn, String job, String jobTitle);
-    }
-
-    private String addressFormat(JobObject jobObject) {
-        String passedStreet1 = jobObject.getJobStreet1();
-        String passedStreet2 = jobObject.getJobStreet2();
-        String passedCity = jobObject.getJobCity();
-        String passedState = jobObject.getJobState();
-        String passedZipCode = jobObject.getJobZipCode();
-
-        // Assertions
-        assert passedStreet1 != null;
-        assert passedStreet2 != null;
-        assert passedCity != null;
-        assert passedState != null;
-        assert passedZipCode != null;
-
-        String jobAddress;
-
-        jobAddress = passedStreet1;
-        if (!passedStreet2.isEmpty()) {
-            if (!jobAddress.isEmpty()) {
-                jobAddress = jobAddress + "\n";
-            }
-            jobAddress = jobAddress + passedStreet2;
-        }
-        if (!passedCity.isEmpty()) {
-            if (!jobAddress.isEmpty()) {
-                jobAddress = jobAddress + "\n";
-            }
-            jobAddress = jobAddress + passedCity;
-        }
-        if (!passedState.isEmpty()) {
-            jobAddress = jobAddress + " " + passedState;
-        }
-        if (!passedZipCode.isEmpty()) {
-            jobAddress = jobAddress + " " + passedZipCode;
-        }
-
-        if (jobAddress.isEmpty()) {
-            jobAddress = "No Address Entered";
-        }
-
-        return jobAddress;
     }
 }

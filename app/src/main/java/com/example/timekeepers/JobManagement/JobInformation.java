@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.timekeepers.AddressFormat;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -194,7 +195,15 @@ public class JobInformation extends Fragment {
             payRate.append(" /hr");
         }
 
-        addressFormat();
+        AddressFormat addressFormat = new AddressFormat(
+                jobInformation.getString(getString(R.string.street1Key)),
+                jobInformation.getString(getString(R.string.street2Key)),
+                jobInformation.getString(getString(R.string.cityKey)),
+                jobInformation.getString(getString(R.string.stateKey)),
+                jobInformation.getString(getString(R.string.zipCodeKey))
+        );
+        jobAddress.setText(addressFormat.addressFormat());
+        addressFormat.createMapNavigation(jobAddress, getActivity());
 
         jobPhone.setText(jobInformation.getString(getString(R.string.jobPhoneKey)));
         Linkify.addLinks(jobPhone, Linkify.PHONE_NUMBERS);
@@ -216,64 +225,6 @@ public class JobInformation extends Fragment {
         medicare.setText(tmpMedicare + " %");
         retirement.setText(tmpRetirement + " %");
         otherWithholdings.setText(tmpOther + " %");
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void addressFormat() {
-        String passedStreet1 = jobInformation.getString(getString(R.string.street1Key));
-        String passedStreet2 = jobInformation.getString(getString(R.string.street2Key));
-        String passedCity = jobInformation.getString(getString(R.string.cityKey));
-        String passedState = jobInformation.getString(getString(R.string.stateKey));
-        String passedZipCode = jobInformation.getString(getString(R.string.zipCodeKey));
-
-        // Assertions
-        assert passedStreet1 != null;
-        assert passedStreet2 != null;
-        assert passedCity != null;
-        assert passedState != null;
-        assert passedZipCode != null;
-
-        jobAddress.setText(passedStreet1);
-        if (!passedStreet2.isEmpty()) {
-            if (!jobAddress.getText().toString().isEmpty()) {
-                jobAddress.append("\n");
-            }
-            jobAddress.append(passedStreet2);
-        }
-        if (!passedCity.isEmpty()) {
-            if (!jobAddress.getText().toString().isEmpty()) {
-                jobAddress.append("\n");
-            }
-            jobAddress.append(passedCity);
-        }
-        if (!passedState.isEmpty()) {
-            jobAddress.append(" " + passedState);
-        }
-        if (!passedZipCode.isEmpty()) {
-            jobAddress.append(" " + passedZipCode);
-        }
-
-        if (!jobAddress.getText().toString().isEmpty()) {
-            // Underline text
-            jobAddress.setPaintFlags(jobAddress.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
-            // Set up navigation to maps for directions or reference
-            jobAddress.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + jobAddress.getText().toString());
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-
-                    if (mapIntent.resolveActivity(Objects.requireNonNull(
-                            getActivity()).getPackageManager()) != null) {
-                        startActivity(mapIntent);
-                    }
-                }
-            });
-        } else {
-            jobAddress.setText("No Address Entered");
-        }
     }
 
     // Entry Manipulations
