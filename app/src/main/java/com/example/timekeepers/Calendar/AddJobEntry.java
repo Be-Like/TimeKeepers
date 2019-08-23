@@ -1,17 +1,21 @@
 package com.example.timekeepers.Calendar;
 
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,6 +24,7 @@ import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.Calendar;
 import java.util.Objects;
 
 /**
@@ -98,12 +103,21 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
         cancelButton = fragmentView.findViewById(R.id.cancel_button);
 
         jobTitleView.setText(jobObject.getJobTitle());
+        startTimeLayout.setOnClickListener(this);
+        endTimeLayout.setOnClickListener(this);
         saveButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
     }
 
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.start_time_layout:
+                dateAndTimeSelection();
+                break;
+
+            case R.id.end_time_layout:
+                break;
+
             case R.id.save_button:
                 break;
 
@@ -113,6 +127,28 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
                 imm.hideSoftInputFromWindow(breakTimeView.getWindowToken(), 0);
                 Objects.requireNonNull(getActivity()).onBackPressed();
                 break;
+        }
+    }
+
+    private void dateAndTimeSelection() {
+        DialogFragment df = new DatePicker();
+        df.show(getFragmentManager(), "datePicker");
+    }
+
+    public static class DatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            return new DatePickerDialog(Objects.requireNonNull(getActivity()), this, year, month, day);
+        }
+
+        @Override
+        public void onDateSet(android.widget.DatePicker datePicker, int i, int i1, int i2) {
+
         }
     }
 
