@@ -2,10 +2,12 @@ package com.example.timekeepers.Calendar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,13 +20,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
+import android.widget.ListAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.timekeepers.JobEntryObject;
+import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -66,6 +75,8 @@ public class Calendar extends Fragment
     private RecyclerView calendarSelectionList;
     private RecyclerView recyclerView;
     private FloatingActionButton addJobEntryButton;
+
+    private String userEmail;
 
     private HashMap<String, JobEntryObject> calendarEntry;
     private Date selectedDate;
@@ -165,7 +176,7 @@ public class Calendar extends Fragment
     }
 
     private void initRecyclerView() {
-        String userEmail = Objects.requireNonNull(FirebaseAuth.getInstance()
+        userEmail = Objects.requireNonNull(FirebaseAuth.getInstance()
                 .getCurrentUser()).getEmail();
 
         if (userEmail == null) {
@@ -268,12 +279,83 @@ public class Calendar extends Fragment
     }
 
     private void addJobEntry() {
-        AddJobEntry entry = AddJobEntry.newInstance();
-        FragmentManager fm = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-        fm.beginTransaction()
-                .replace(R.id.main_fragment, entry)
-                .addToBackStack(null)
-                .commit();
+        // Select Job to add an entry to
+        FirebaseFirestore.getInstance()
+                .collection("Jobs")
+                .document(userEmail)
+                .collection("Users_Jobs")
+                .whereEqualTo("Completed", false)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        final ArrayList<JobObject> activeJobs = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            activeJobs.add(new JobObject(
+                                    doc.getString("Job_Title"),
+                                    doc.getString("Job_Type"),
+                                    doc.getDouble("Pay_Rate"),
+                                    doc.getDouble("Quantity_Job_Entries"),
+                                    doc.getDouble("Quantity_Expense_Entries"),
+                                    doc.getDouble("Hours_Worked"),
+                                    doc.getBoolean("Completed"),
+                                    doc.getString("Email"),
+                                    doc.getDouble("Federal_Income_Tax"),
+                                    doc.getDouble("Gross_Pay"),
+                                    doc.getDouble("Medicare"),
+                                    doc.getDouble("OASDI"),
+                                    doc.getDouble("Other_Withholdings"),
+                                    doc.getString("Phone"),
+                                    doc.getDouble("Retirement_Contribution"),
+                                    doc.getDouble("State_Income_Tax"),
+                                    doc.getString("Website"),
+                                    doc.getString("Address.Street_1"),
+                                    doc.getString("Address.Street_2"),
+                                    doc.getString("Address.City"),
+                                    doc.getString("Address.State"),
+                                    doc.getString("Address.Zip_Code"),
+                                    doc.getId()
+                            ));
+                        }
+                        new AlertDialog.Builder(Objects.requireNonNull(getContext()))
+                                .setTitle("Select Job to Add Entry to:")
+                                .setAdapter(createListAdapter(activeJobs),
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface,
+                                                                int i) {
+                                                AddJobEntry entry =
+                                                        AddJobEntry
+                                                                .newInstance(activeJobs.get(i));
+
+                                                FragmentManager fm =
+                                                        Objects.requireNonNull(getActivity())
+                                                                .getSupportFragmentManager();
+
+                                                fm.beginTransaction()
+                                                        .replace(R.id.main_fragment, entry)
+                                                        .addToBackStack(null)
+                                                        .commit();
+                                            }
+                                        }).show();
+                    }
+                });
+    }
+
+    private ListAdapter createListAdapter(ArrayList<JobObject> list) {
+
+        ArrayList<String> jobTitles = new ArrayList<>();
+        for (JobObject o : list) {
+            jobTitles.add(o.getJobTitle());
+        }
+
+        return new ArrayAdapter<String>(Objects.requireNonNull(getContext()),
+                android.R.layout.select_dialog_item, android.R.id.text1, jobTitles) {
+            @NonNull
+            public View getView(int pos, View convertView, @NonNull ViewGroup parent) {
+                return super.getView(pos, convertView, parent);
+            }
+        };
     }
 
     /**

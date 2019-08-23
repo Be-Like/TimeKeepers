@@ -114,6 +114,12 @@
     <string name="start_time_label">Start Time: \t</string>
     <string name="end_time_label">End Time: </string>
     <string name="notes_label">Notes: </string>
+    <!--  Add/Edit Job Entry View  -->
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="break_time">Time on Beak (in hours)</string>
+    <string name="select_time">Select</string>
+    <string name="job_entry_note">Enter a Note Here…</string>
     <!--  Job Entry Bundle Key's (See also: Bundle Key's) -->
     <string name="jobEntryIdKey">jobEntryIdKey</string>
     <string name="startTimeKey">startTimeKey</string>

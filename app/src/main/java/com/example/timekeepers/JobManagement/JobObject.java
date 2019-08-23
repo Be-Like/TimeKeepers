@@ -2,7 +2,9 @@ package com.example.timekeepers.JobManagement;
 
 import androidx.annotation.NonNull;
 
-public class JobObject {
+import java.io.Serializable;
+
+public class JobObject implements Serializable {
     private final String jobTitle;
     private final String jobType;
     private final Double payRate;
