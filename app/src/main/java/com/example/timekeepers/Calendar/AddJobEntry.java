@@ -1,6 +1,7 @@
 package com.example.timekeepers.Calendar;
 
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -11,7 +12,11 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.timekeepers.DialogPagerAdapter;
 import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
@@ -116,7 +122,9 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.start_time_layout:
-                dateAndTimeSelection();
+                DateTimeAdapter dateTimeAdapter = new DateTimeAdapter(getContext());
+                ViewPager viewPager = fragmentView.findViewById(R.id.pager);
+                viewPager.setAdapter(dateTimeAdapter);
                 break;
 
             case R.id.end_time_layout:
@@ -133,44 +141,56 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-    String dateTimePickerString = "";
-    int mYear;
-    int mMonth;
-    int mDay;
-    int mHour;
-    int mMinute;
-    private void dateAndTimeSelection() {
-        final Calendar cal = Calendar.getInstance();
-        mYear = cal.get(Calendar.YEAR);
-        mMonth = cal.get(Calendar.MONTH);
-        mDay = cal.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog datePicker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                cal.set(year, month, dayOfMonth);
-                SimpleDateFormat df = new SimpleDateFormat("dd MMM, yyyy");
-                dateTimePickerString = df.format(cal.getTime());
-                startTimeView.setText(df.format(cal.getTime()));
-                callTimeSelection();
-            }
-        }, mYear, mMonth, mDay);
-        datePicker.show();
-    }
 
-    // TODO: Continue from here!
-    private void callTimeSelection() {
-        final Calendar cal = Calendar.getInstance();
-        mHour = cal.get(Calendar.HOUR_OF_DAY);
-        mMinute = cal.get(Calendar.MINUTE);
+    private class DateTimeAdapter extends DialogPagerAdapter {
+        DatePickerDialog datePicker;
+        TimePickerDialog timePicker;
 
-        TimePickerDialog timePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                cal.set(mYear, mMonth, mDay, hourOfDay, minute);
-                SimpleDateFormat df = new SimpleDateFormat("hh:mm a dd MMM, yyyy");
-                dateTimePickerString = df.format(cal.getTime());
-                startTimeView.setText(df.format(cal.getTime()));
+        final Calendar cal = Calendar.getInstance();
+        int mYear = cal.get(Calendar.YEAR);
+        int mMonth = cal.get(Calendar.MONTH);
+        int mDay = cal.get(Calendar.DAY_OF_MONTH);
+        int mHour = cal.get(Calendar.HOUR_OF_DAY);
+        int mMinute = cal.get(Calendar.MINUTE);
+
+        DateTimeAdapter(Context context) {
+            super(context);
+            datePicker = new DatePickerDialog(getContext(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                            cal.set(year, month, dayOfMonth);
+//                            SimpleDateFormat df = new SimpleDateFormat("dd MMM, yyyy");
+//                            dateTimePickerString = df.format(cal.getTime());
+//                            startTimeView.setText(df.format(cal.getTime()));
+                            Log.d("Testing Date Picker - ", "onDateSet: " + cal.getTime());
+                        }
+                    }, mYear, mMonth, mDay);
+
+            timePicker = new TimePickerDialog(getContext(),
+                    new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+                    cal.set(mYear, mMonth, mDay, hourOfDay, minute);
+                    Log.d("Testing Time Picker - ", "onDateSet: " + cal.getTime());
+                }
+            }, mHour, mMinute, true);
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public Dialog getItem(int pos) {
+            switch (pos) {
+                case 0:
+                    return datePicker;
+                case 1:
+                default:
+                    return timePicker;
             }
-        }, mHour, mMinute, true);
+        }
     }
 }

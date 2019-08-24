@@ -115,4 +115,10 @@
         app:layout_constraintLeft_toRightOf="@id/cancel_button"
         app:layout_constraintRight_toRightOf="parent"/>
 
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pager"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
