@@ -3,6 +3,7 @@ package com.example.timekeepers.Calendar;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -18,12 +19,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 import com.google.android.material.button.MaterialButton;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -129,27 +133,44 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
                 break;
         }
     }
-
+    String dateTimePickerString = "";
+    int mYear;
+    int mMonth;
+    int mDay;
+    int mHour;
+    int mMinute;
     private void dateAndTimeSelection() {
-        DialogFragment df = new DatePicker();
-        df.show(getFragmentManager(), "datePicker");
+        final Calendar cal = Calendar.getInstance();
+        mYear = cal.get(Calendar.YEAR);
+        mMonth = cal.get(Calendar.MONTH);
+        mDay = cal.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePicker = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                cal.set(year, month, dayOfMonth);
+                SimpleDateFormat df = new SimpleDateFormat("dd MMM, yyyy");
+                dateTimePickerString = df.format(cal.getTime());
+                startTimeView.setText(df.format(cal.getTime()));
+                callTimeSelection();
+            }
+        }, mYear, mMonth, mDay);
+        datePicker.show();
     }
 
-    public static class DatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
+    // TODO: Continue from here!
+    private void callTimeSelection() {
+        final Calendar cal = Calendar.getInstance();
+        mHour = cal.get(Calendar.HOUR_OF_DAY);
+        mMinute = cal.get(Calendar.MINUTE);
 
-            return new DatePickerDialog(Objects.requireNonNull(getActivity()), this, year, month, day);
-        }
-
-        @Override
-        public void onDateSet(android.widget.DatePicker datePicker, int i, int i1, int i2) {
-
-        }
+        TimePickerDialog timePicker = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                cal.set(mYear, mMonth, mDay, hourOfDay, minute);
+                SimpleDateFormat df = new SimpleDateFormat("hh:mm a dd MMM, yyyy");
+                dateTimePickerString = df.format(cal.getTime());
+                startTimeView.setText(df.format(cal.getTime()));
+            }
+        }, mHour, mMinute, true);
     }
-
 }
