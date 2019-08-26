@@ -32,6 +32,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.NumberFormat;
 import java.util.Objects;
@@ -262,8 +264,7 @@ public class JobInformation extends Fragment {
 //        deleteExpenseEntry(jobSelected);
 
         // Second, Delete Job_Entries where job = passedJobTitle
-        // TODO: Create delete job entries once implemented
-//        deleteJobEntries(jobSelected);
+        deleteJobEntries(jobSelected);
 
         // Third, Delete Job with jobId = passedJobId (passedJobId)
         jobSelected.document(jobId)
@@ -293,6 +294,19 @@ public class JobInformation extends Fragment {
                 .replace(R.id.main_fragment, editJob, "Some Tag")
                 .addToBackStack(editJob.getClass().getName())
                 .commit();
+    }
+    private void deleteJobEntries(CollectionReference jobReference) {
+        final CollectionReference jobEntries = jobReference.document(jobId)
+                .collection("Job_Entries");
+        jobEntries.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            jobEntries.document(doc.getId()).delete();
+                        }
+                    }
+                });
     }
 
     @Override
