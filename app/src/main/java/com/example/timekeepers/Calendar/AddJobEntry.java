@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatEditText;
@@ -20,7 +21,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.example.timekeepers.Dashboard.DbWorkEntry;
 import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
@@ -30,6 +33,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +47,7 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
 
     private MainActivity mainActivity;
     private View fragmentView;
+
     private AppCompatTextView jobTitleView;
     private RelativeLayout startTimeLayout;
     private AppCompatTextView startTimeView;
@@ -51,6 +57,9 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
     private AppCompatEditText entryNote;
     private MaterialButton saveButton;
     private MaterialButton cancelButton;
+
+    private final Calendar startCalendar = Calendar.getInstance();
+    private final Calendar endCalendar = Calendar.getInstance();
 
     public AddJobEntry() {
         // Required empty public constructor
@@ -116,14 +125,15 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.start_time_layout:
-                openDatePickerDialog(startTimeView).show();
+                openDatePickerDialog(startTimeView, startCalendar).show();
                 break;
 
             case R.id.end_time_layout:
-                openDatePickerDialog(endTimeView).show();
+                openDatePickerDialog(endTimeView, endCalendar).show();
                 break;
 
             case R.id.save_button:
+                saveEntry();
                 break;
 
             case R.id.cancel_button:
@@ -135,39 +145,90 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
         }
     }
 
-    private final Calendar cal = Calendar.getInstance();
-    private int mYear;
-    private int mMonth;
-    private int mDay;
-
-    private DatePickerDialog openDatePickerDialog(final AppCompatTextView textView) {
-        mYear = cal.get(Calendar.YEAR);
-        mMonth = cal.get(Calendar.MONTH);
-        mDay = cal.get(Calendar.DAY_OF_MONTH);
+    private DatePickerDialog openDatePickerDialog(final AppCompatTextView textView,
+                                                  final Calendar calendar) {
+        final int mYear = calendar.get(Calendar.YEAR);
+        final int mMonth = calendar.get(Calendar.MONTH);
+        final int mDay = calendar.get(Calendar.DAY_OF_MONTH);
 
         return new DatePickerDialog(Objects.requireNonNull(getContext()),
                 new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                cal.set(year, month, day);
-                openDatePickerDialog(textView).dismiss();
-                openTimePickerDialog(textView).show();
+                openDatePickerDialog(textView, calendar).dismiss();
+                openTimePickerDialog(textView, calendar, year, month, day).show();
             }
         }, mYear, mMonth, mDay);
     }
-
-    private TimePickerDialog openTimePickerDialog(final AppCompatTextView textView) {
-        int mHour = cal.get(Calendar.HOUR_OF_DAY);
-        int mMinute = cal.get(Calendar.MINUTE);
+    private TimePickerDialog openTimePickerDialog(final AppCompatTextView textView,
+                                                  final Calendar calendar, final int year,
+                                                  final int month, final int day) {
+        int mHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int mMinute = calendar.get(Calendar.MINUTE);
 
         return new TimePickerDialog(getContext(),
                 new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-                cal.set(mYear, mMonth, mDay, hour, minute);
                 SimpleDateFormat df = new SimpleDateFormat("hh:mm a dd MMM, yyyy", Locale.US);
-                textView.setText(df.format(cal.getTime()));
+                calendar.set(year, month, day, hour, minute);
+                textView.setText(df.format(calendar.getTime()));
+                validateDateAndTimeSelected();
             }
         }, mHour, mMinute, false);
+    }
+    private void validateDateAndTimeSelected() {
+        if (startCalendar.getTime().after(endCalendar.getTime())) {
+            endTimeView.setTextColor(Color.RED);
+        } else {
+            endTimeView.setTextColor(Color.BLACK);
+        }
+    }
+
+    private void saveEntry() {
+        // Check that the start and end time is not null
+        if ("".equals(startTimeView.getText().toString())
+                || "".equals(endTimeView.getText().toString())) {
+            Toast.makeText(getContext(),
+                    "Invalid Start or End Time",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (startCalendar.getTime().after(endCalendar.getTime())) {
+            Toast.makeText(getContext(),
+                    "Invalid Start or End Time",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that the break time is not greater than the hours worked
+        long startTime = startCalendar.getTimeInMillis();
+        long endTime = endCalendar.getTimeInMillis();
+        double breakTime = 0;
+        if (!Objects.requireNonNull(breakTimeView.getText()).toString().equals("")
+                && !breakTimeView.getText().toString().equals(".")
+                && !breakTimeView.getText().toString().equals(",")) {
+            breakTime = Double.valueOf(breakTimeView.getText().toString());
+        }
+
+        Log.d(TAG, "saveEntry: " + startTime + "..." + endTime + "..." + breakTime);
+        if (breakTime > ((float) (endTime - startTime) / (60 * 60 * 1000))) {
+            Toast.makeText(getContext(), "Adjust the break time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String notes = Objects.requireNonNull(entryNote.getText()).toString();
+
+        // Save the entry using the dbWorkEntry class
+        DbWorkEntry workEntry = new DbWorkEntry(jobObject, startTime, endTime, breakTime, notes);
+        workEntry.saveWorkEntryToDb();
+        workEntry.updateJobEntryQuantity(1);
+
+        // Return to Calendar
+
+        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(breakTimeView.getWindowToken(), 0);
+        Objects.requireNonNull(getActivity()).onBackPressed();
     }
 }

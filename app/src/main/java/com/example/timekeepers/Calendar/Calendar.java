@@ -13,18 +13,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.ListAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.timekeepers.JobEntryObject;
@@ -53,9 +50,6 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
-
-import static androidx.constraintlayout.widget.Constraints.TAG;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -233,7 +227,7 @@ public class Calendar extends Fragment
     }
     class SortByDate implements Comparator<JobEntryObject> {
         public int compare(JobEntryObject a, JobEntryObject b) {
-            if (a.getStartTime() == b.getStartTime()) {
+            if (a.getStartTime().equals(b.getStartTime())) {
                 return 0;
             } else {
                 return (a.getStartTime().before(b.getStartTime()) ? 1 : -1);
