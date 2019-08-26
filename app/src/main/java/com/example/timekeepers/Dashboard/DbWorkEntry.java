@@ -107,7 +107,7 @@ public class DbWorkEntry {
         FirebaseFirestore.getInstance()
                 .collection("Jobs")
                 .document(Objects.requireNonNull(getCurrentUser().getEmail()))
-                .update("Gross_pay", FieldValue.increment(pay));
+                .update("Gross_Pay", FieldValue.increment(pay));
     }
     private void updateJobValues(double hoursWorked, double pay) {
         FirebaseFirestore.getInstance()

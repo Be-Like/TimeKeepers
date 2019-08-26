@@ -1,9 +1,8 @@
 package com.example.timekeepers.Calendar;
 
 
-import android.content.Intent;
-import android.graphics.Paint;
-import android.net.Uri;
+import androidx.appcompat.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatTextView;
@@ -115,31 +114,48 @@ public class JobEntryInfo extends Fragment {
             return true;
         }
         if (id == R.id.delete_entry) {
-            Toast.makeText(getContext(), "Will delete job entry.", Toast.LENGTH_SHORT).show();
             deleteJobEntry();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-//17558.19
+//216.14999...5.85...17674.48
     private void deleteJobEntry() {
-        String jobId = jobEntryInfo.getString(getString(R.string.idKey));
-        String entryId = jobEntryInfo.getString(getString(R.string.jobEntryIdKey));
-        double pay = jobEntryInfo.getDouble(getString(R.string.payKey));
-        double hoursWorked = jobEntryInfo.getDouble(getString(R.string.hoursWorkedKey));
+        new AlertDialog.Builder(Objects.requireNonNull(getContext()))
+                .setTitle("Delete Job Entry?")
+                .setMessage("Are you sure you want to delete this job entry? " +
+                        "Delete will be permanent.")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String jobId = jobEntryInfo.getString(getString(R.string.idKey));
+                        String entryId = jobEntryInfo.getString(getString(R.string.jobEntryIdKey));
+                        double pay = jobEntryInfo.getDouble(getString(R.string.payKey));
+                        double hoursWorked = jobEntryInfo.getDouble(getString(R.string.hoursWorkedKey));
 
-        JobObject jobObject = new JobObject(
-                null, null, 0.0, 0.0, 0.0, 0.0,
-                null, null, 0.0, 0.0, 0.0, 0.0,
-                0.0, null, 0.0, 0.0, null, null,
-                null, null, null, null, jobId
-        );
+                        JobObject jobObject = new JobObject(
+                                null, null, 0.0, 0.0, 0.0, 0.0,
+                                null, null, 0.0, 0.0, 0.0, 0.0,
+                                0.0, null, 0.0, 0.0, null, null,
+                                null, null, null, null, jobId
+                        );
 
-        DbWorkEntry dbWorkEntry = new DbWorkEntry(jobObject, 0L, 0L,
-                0L, null);
-        dbWorkEntry.deleteJobEntry(entryId, pay, hoursWorked);
-        dbWorkEntry.updateJobEntryQuantity(-1);
-        Objects.requireNonNull(getActivity()).onBackPressed();
+                        DbWorkEntry dbWorkEntry = new DbWorkEntry(jobObject, 0L, 0L,
+                                0L, null);
+                        dbWorkEntry.deleteJobEntry(entryId, pay, hoursWorked);
+                        dbWorkEntry.updateJobEntryQuantity(-1);
+                        Objects.requireNonNull(getActivity()).onBackPressed();
+
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .show();
     }
 
     private void initViews() {

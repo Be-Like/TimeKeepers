@@ -24,6 +24,7 @@ import com.example.timekeepers.AddressFormat;
 import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.R;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 
@@ -114,7 +115,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.View
         AppCompatTextView jobEntries;
         AppCompatTextView expenseEntries;
         MaterialButton clockIn;
-        CardView parentLayout;
+        MaterialCardView parentLayout;
 
         ViewHolder(View itemView) {
             super(itemView);

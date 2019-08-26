@@ -2,12 +2,14 @@ package com.example.timekeepers.JobManagement;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -122,7 +124,7 @@ public class JobInformation extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    // TODO: prevent user from editing the job if user is clocked in to that job.
+    // TODO: prevent user from editing or deleting the job if user is clocked in to that job.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -132,7 +134,25 @@ public class JobInformation extends Fragment {
             return true;
         }
         if (id == R.id.delete_entry) {
-            deleteJob();
+            new AlertDialog.Builder(Objects.requireNonNull(getContext()))
+                    .setTitle("Delete Job?")
+                    .setMessage("Are you sure you want to delete this job? Deleting job " +
+                            "will remove all job entries and job expenses related to the job. " +
+                            "This is permanent.")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            deleteJob();
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .show();
             return true;
         }
         return super.onOptionsItemSelected(item);
