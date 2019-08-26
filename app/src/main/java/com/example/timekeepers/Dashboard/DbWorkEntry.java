@@ -139,7 +139,7 @@ public class DbWorkEntry {
         // Update Overall gross pay
         updateOverallValues(-1 * pay);
         // Update Job Details: Job Entries, Gross Pay, Hours Worked
-        // TODO: Continue from here!
+        updateJobValues(-1 * hoursWorked, -1 * pay);
 
         // Delete Job Entry
         FirebaseFirestore.getInstance()
