@@ -3,6 +3,7 @@ package com.example.timekeepers.Calendar;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -75,6 +76,10 @@ public class Calendar extends Fragment
     private HashMap<String, JobEntryObject> calendarEntry;
     private Date selectedDate;
 
+    private SharedPreferences sharedPreferences;
+    private boolean isCalendarView;
+    private final String CALENDAR_VIEW_STATE = "calendar_view_state";
+
     public Calendar() {
         // Required empty public constructor
     }
@@ -92,6 +97,9 @@ public class Calendar extends Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = Objects.requireNonNull(getActivity()).getApplicationContext()
+                .getSharedPreferences("com.example.timeKeepers.calendar", Context.MODE_PRIVATE);
+        setIsCalendarView(sharedPreferences.getBoolean(CALENDAR_VIEW_STATE, true));
     }
 
     @Override
@@ -106,6 +114,11 @@ public class Calendar extends Fragment
         setHasOptionsMenu(true);
 
         initViews();
+        if (!getIsCalendarView()) {
+            calendarView.setVisibility(View.GONE);
+            calendarSelectionList.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
         initRecyclerView();
 
         // Inflate the layout for this fragment
@@ -145,10 +158,12 @@ public class Calendar extends Fragment
                 calendarView.setVisibility(View.GONE);
                 calendarSelectionList.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+                setIsCalendarView(false);
             } else {
                 calendarView.setVisibility(View.VISIBLE);
                 calendarSelectionList.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
+                setIsCalendarView(true);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -350,6 +365,14 @@ public class Calendar extends Fragment
                 return super.getView(pos, convertView, parent);
             }
         };
+    }
+
+    public void setIsCalendarView(Boolean isCalendarView) {
+        this.isCalendarView = isCalendarView;
+        sharedPreferences.edit().putBoolean(CALENDAR_VIEW_STATE, isCalendarView).apply();
+    }
+    public boolean getIsCalendarView() {
+        return this.isCalendarView;
     }
 
     /**
