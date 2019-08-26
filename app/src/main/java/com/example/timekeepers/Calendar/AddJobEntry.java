@@ -2,7 +2,6 @@ package com.example.timekeepers.Calendar;
 
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,15 +46,10 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
     private MainActivity mainActivity;
     private View fragmentView;
 
-    private AppCompatTextView jobTitleView;
-    private RelativeLayout startTimeLayout;
     private AppCompatTextView startTimeView;
-    private RelativeLayout endTimeLayout;
     private AppCompatTextView endTimeView;
     private AppCompatEditText breakTimeView;
     private AppCompatEditText entryNote;
-    private MaterialButton saveButton;
-    private MaterialButton cancelButton;
 
     private final Calendar startCalendar = Calendar.getInstance();
     private final Calendar endCalendar = Calendar.getInstance();
@@ -69,6 +62,7 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
+     * @param object Job Object
      * @return A new instance of fragment AddJobEntry.
      */
     public static AddJobEntry newInstance(JobObject object) {
@@ -105,15 +99,15 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
     }
 
     private void initViews() {
-        jobTitleView = fragmentView.findViewById(R.id.job_title);
-        startTimeLayout = fragmentView.findViewById(R.id.start_time_layout);
+        AppCompatTextView jobTitleView = fragmentView.findViewById(R.id.job_title);
+        RelativeLayout startTimeLayout = fragmentView.findViewById(R.id.start_time_layout);
         startTimeView = fragmentView.findViewById(R.id.start_time);
-        endTimeLayout = fragmentView.findViewById(R.id.end_time_layout);
+        RelativeLayout endTimeLayout = fragmentView.findViewById(R.id.end_time_layout);
         endTimeView = fragmentView.findViewById(R.id.end_time);
         breakTimeView = fragmentView.findViewById(R.id.break_time);
         entryNote = fragmentView.findViewById(R.id.notes);
-        saveButton = fragmentView.findViewById(R.id.save_button);
-        cancelButton = fragmentView.findViewById(R.id.cancel_button);
+        MaterialButton saveButton = fragmentView.findViewById(R.id.save_button);
+        MaterialButton cancelButton = fragmentView.findViewById(R.id.cancel_button);
 
         jobTitleView.setText(jobObject.getJobTitle());
         startTimeLayout.setOnClickListener(this);
