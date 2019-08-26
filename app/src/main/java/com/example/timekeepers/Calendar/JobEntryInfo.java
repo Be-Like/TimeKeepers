@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.timekeepers.AddressFormat;
+import com.example.timekeepers.Dashboard.DbWorkEntry;
+import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 
@@ -113,13 +115,32 @@ public class JobEntryInfo extends Fragment {
             return true;
         }
         if (id == R.id.delete_entry) {
-            // TODO: call deleteJobEntry;
             Toast.makeText(getContext(), "Will delete job entry.", Toast.LENGTH_SHORT).show();
+            deleteJobEntry();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+//17558.19
+    private void deleteJobEntry() {
+        String jobId = jobEntryInfo.getString(getString(R.string.idKey));
+        String entryId = jobEntryInfo.getString(getString(R.string.jobEntryIdKey));
+        double pay = jobEntryInfo.getDouble(getString(R.string.payKey));
+        double hoursWorked = jobEntryInfo.getDouble(getString(R.string.hoursWorkedKey));
 
+        JobObject jobObject = new JobObject(
+                null, null, 0.0, 0.0, 0.0, 0.0,
+                null, null, 0.0, 0.0, 0.0, 0.0,
+                0.0, null, 0.0, 0.0, null, null,
+                null, null, null, null, jobId
+        );
+
+        DbWorkEntry dbWorkEntry = new DbWorkEntry(jobObject, 0L, 0L,
+                0L, null);
+        dbWorkEntry.deleteJobEntry(entryId, pay, hoursWorked);
+        dbWorkEntry.updateJobEntryQuantity(-1);
+        Objects.requireNonNull(getActivity()).onBackPressed();
+    }
 
     private void initViews() {
         jobTitleView = fragmentView.findViewById(R.id.job_title);

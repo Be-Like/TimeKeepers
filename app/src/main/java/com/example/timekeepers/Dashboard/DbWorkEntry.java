@@ -134,4 +134,21 @@ public class DbWorkEntry {
                 .document(jobObject.getGeneratedJobId())
                 .update("Quantity_Expense_Entries", FieldValue.increment(value));
     }
+
+    public void deleteJobEntry(String entryId, double pay, double hoursWorked) {
+        // Update Overall gross pay
+        updateOverallValues(-1 * pay);
+        // Update Job Details: Job Entries, Gross Pay, Hours Worked
+        // TODO: Continue from here!
+
+        // Delete Job Entry
+        FirebaseFirestore.getInstance()
+                .collection("Jobs")
+                .document(Objects.requireNonNull(getCurrentUser().getEmail()))
+                .collection("Users_Jobs")
+                .document(jobObject.getGeneratedJobId())
+                .collection("Job_Entries")
+                .document(entryId)
+                .delete();
+    }
 }
