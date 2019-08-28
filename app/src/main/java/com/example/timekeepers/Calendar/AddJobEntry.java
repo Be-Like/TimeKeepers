@@ -92,7 +92,7 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
         // Instantiate Fragment View
         fragmentView = inflater.inflate(R.layout.fragment_add_job_entry, container, false);
 
-        initViews();
+//        initViews();
 
         // Inflate the layout for this fragment
         return fragmentView;

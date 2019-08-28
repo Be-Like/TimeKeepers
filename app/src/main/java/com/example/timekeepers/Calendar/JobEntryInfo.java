@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,11 +50,6 @@ public class JobEntryInfo extends Fragment {
     private AppCompatTextView payView;
     private AppCompatTextView startTimeView;
     private AppCompatTextView addressView;
-    private AppCompatTextView street1View;
-    private AppCompatTextView street2View;
-    private AppCompatTextView cityView;
-    private AppCompatTextView stateView;
-    private AppCompatTextView zipcodeView;
 
     public JobEntryInfo() {
         // Required empty public constructor
@@ -110,6 +106,7 @@ public class JobEntryInfo extends Fragment {
         int id = item.getItemId();
         if (id == R.id.edit_entry) {
             // TODO: call editJobEntry
+            editJobEntry();
             Toast.makeText(getContext(), "Will edit job entry.", Toast.LENGTH_SHORT).show();
             return true;
         }
@@ -119,7 +116,16 @@ public class JobEntryInfo extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-//216.14999...5.85...17674.48
+
+    private void editJobEntry() {
+        EditJobEntry entry = EditJobEntry.newInstance(jobEntryInfo);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.beginTransaction()
+                .replace(R.id.main_fragment, entry)
+                .addToBackStack(null)
+                .commit();
+    }
+
     private void deleteJobEntry() {
         new AlertDialog.Builder(Objects.requireNonNull(getContext()))
                 .setTitle("Delete Job Entry?")
