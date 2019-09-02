@@ -9,6 +9,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,12 +31,14 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import static androidx.constraintlayout.widget.Constraints.TAG;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link JobEntryInfo#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class JobEntryInfo extends Fragment {
+public class JobEntryInfo extends Fragment implements EditJobEntry.SaveEditedEntryListener {
     private static final String JOB_ENTRY_INFO = "JobEntryInfo";
 
     private Bundle jobEntryInfo;
@@ -96,6 +99,12 @@ public class JobEntryInfo extends Fragment {
     }
 
     @Override
+    public void onResume() {
+
+        super.onResume();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Objects.requireNonNull(getActivity()).getMenuInflater().inflate(R.menu.edit_entry, menu);
         getActivity().getMenuInflater().inflate(R.menu.delete_entry, menu);
@@ -105,7 +114,6 @@ public class JobEntryInfo extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.edit_entry) {
-            // TODO: call editJobEntry
             editJobEntry();
             Toast.makeText(getContext(), "Will edit job entry.", Toast.LENGTH_SHORT).show();
             return true;
@@ -118,7 +126,7 @@ public class JobEntryInfo extends Fragment {
     }
 
     private void editJobEntry() {
-        EditJobEntry entry = EditJobEntry.newInstance(jobEntryInfo);
+        EditJobEntry entry = EditJobEntry.newInstance(jobEntryInfo, JobEntryInfo.this);
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.beginTransaction()
                 .replace(R.id.main_fragment, entry)
@@ -209,6 +217,19 @@ public class JobEntryInfo extends Fragment {
         notesView.setText(jobEntryInfo.getString(getString(R.string.notesKey)));
         addressView.setText(addressFormat.addressFormat());
         addressFormat.createMapNavigation(addressView, getActivity());
+    }
+
+    // TODO: continue from here.
+    public void onSaveEditedEntry(Date startTime, Date endTime, double breakTime,
+                                  double hoursWorked, double pay, String notes) {
+        jobEntryInfo.putSerializable(getString(R.string.startTimeKey), startTime);
+        jobEntryInfo.putSerializable(getString(R.string.endTimeKey), endTime);
+        jobEntryInfo.putDouble(getString(R.string.breakTimeKey), breakTime);
+        jobEntryInfo.putDouble(getString(R.string.hoursWorkedKey), hoursWorked);
+        jobEntryInfo.putDouble(getString(R.string.payKey), pay);
+        jobEntryInfo.putString(getString(R.string.notesKey), notes);
+
+        Log.d(TAG, "onSaveEditedEntry: " + jobEntryInfo.toString());
     }
 
 }

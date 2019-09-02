@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
+import com.example.timekeepers.Dashboard.DbWorkEntry;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
 import com.google.android.material.button.MaterialButton;
@@ -27,6 +31,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class AddEditJobParent extends Fragment implements View.OnClickListener {
 
@@ -46,7 +51,7 @@ public class AddEditJobParent extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragmentView = inflater.inflate(R.layout.fragment_add_job_entry, container, false);
         return fragmentView;
@@ -54,19 +59,27 @@ public class AddEditJobParent extends Fragment implements View.OnClickListener {
 
     public void initViews(String jobTitle) {
         AppCompatTextView jobTitleView = fragmentView.findViewById(R.id.job_title);
+
         RelativeLayout startTimeLayout = fragmentView.findViewById(R.id.start_time_layout);
-        startTimeView = fragmentView.findViewById(R.id.start_time);
+        setStartTimeView((AppCompatTextView) fragmentView.findViewById(R.id.start_time));
+//        startTimeView = fragmentView.findViewById(R.id.start_time);
+
         RelativeLayout endTimeLayout = fragmentView.findViewById(R.id.end_time_layout);
-        endTimeView = fragmentView.findViewById(R.id.end_time);
-        breakTimeView = fragmentView.findViewById(R.id.break_time);
-        entryNote = fragmentView.findViewById(R.id.notes);
+        setEndTimeView((AppCompatTextView) fragmentView.findViewById(R.id.end_time));
+//        endTimeView = fragmentView.findViewById(R.id.end_time);
+
+        setBreakTimeView((AppCompatEditText) fragmentView.findViewById(R.id.break_time));
+//        breakTimeView = fragmentView.findViewById(R.id.break_time);
+
+        setEntryNote((AppCompatEditText) fragmentView.findViewById(R.id.notes));
+//        entryNote = fragmentView.findViewById(R.id.notes);
 
         jobTitleView.setText(jobTitle);
         startTimeLayout.setOnClickListener(this);
         endTimeLayout.setOnClickListener(this);
     }
 
-    public void onClick(View view) {
+    public void onClick(@NonNull View view) {
         switch (view.getId()) {
             case R.id.start_time_layout:
                 openDatePickerDialog(startTimeView, startCalendar).show();
@@ -75,17 +88,6 @@ public class AddEditJobParent extends Fragment implements View.OnClickListener {
             case R.id.end_time_layout:
                 openDatePickerDialog(endTimeView, endCalendar).show();
                 break;
-
-//            case R.id.save_button:
-////                saveEntry();
-//                break;
-//
-//            case R.id.cancel_button:
-//                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
-//                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-//                imm.hideSoftInputFromWindow(breakTimeView.getWindowToken(), 0);
-//                Objects.requireNonNull(getActivity()).onBackPressed();
-//                break;
         }
     }
 
@@ -129,4 +131,62 @@ public class AddEditJobParent extends Fragment implements View.OnClickListener {
         }
     }
 
+    public boolean isValidStartAndEndTime() {
+        // Check that the start and end time is not null
+        if ("".equals(startTimeView.getText().toString())
+                || "".equals(endTimeView.getText().toString())) {
+            Toast.makeText(getContext(),
+                    "Invalid Start or End Time",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (startCalendar.getTime().after(endCalendar.getTime())) {
+            Toast.makeText(getContext(),
+                    "Invalid Start or End Time",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isValidBreakTime(long startTime, long endTime, double breakTime) {
+        Log.d(TAG, "saveEntry: " + startTime + "..." + endTime + "..." + breakTime);
+        if (breakTime > ((float) (endTime - startTime) / (60 * 60 * 1000))) {
+            Toast.makeText(getContext(), "Adjust the break time", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    // View Getters and Setters
+    public void setStartTimeView(AppCompatTextView startTimeView) {
+        this.startTimeView = startTimeView;
+    }
+    public AppCompatTextView getStartTimeView() {
+        return this.startTimeView;
+    }
+    public void setEndTimeView(AppCompatTextView endTimeView) {
+        this.endTimeView = endTimeView;
+    }
+    public AppCompatTextView getEndTimeView() {
+        return this.endTimeView;
+    }
+    public void setBreakTimeView(AppCompatEditText breakTimeView) {
+        this.breakTimeView = breakTimeView;
+    }
+    public AppCompatEditText getBreakTimeView() {
+        return this.breakTimeView;
+    }
+    public void setEntryNote(AppCompatEditText entryNote) {
+        this.entryNote = entryNote;
+    }
+    public AppCompatEditText getEntryNote() {
+        return this.entryNote;
+    }
+    public Calendar getStartCalendar() {
+        return this.startCalendar;
+    }
+    public Calendar getEndCalendar() {
+        return this.endCalendar;
+    }
 }
