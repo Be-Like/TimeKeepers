@@ -35,7 +35,6 @@ public class EditJobEntry extends AddEditJobParent {
     private SaveEditedEntryListener listener;
 
     public EditJobEntry(SaveEditedEntryListener listener) {
-        //
         this.listener = listener;
     }
 
@@ -94,7 +93,7 @@ public class EditJobEntry extends AddEditJobParent {
         cancelButton.setOnClickListener(this);
     }
 
-    public void onClick(View view) {
+    public void onClick(@NonNull View view) {
         super.onClick(view);
         int id = view.getId();
         if (id == R.id.save_button) {

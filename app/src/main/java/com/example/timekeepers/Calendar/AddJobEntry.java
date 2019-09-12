@@ -39,7 +39,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  * Use the {@link AddJobEntry#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddJobEntry extends Fragment implements View.OnClickListener {
+public class AddJobEntry extends AddEditJobParent implements View.OnClickListener {
     private static final String JOB_OBJECT_KEY = "Job_Object_Key";
     private JobObject jobObject;
 
@@ -90,41 +90,45 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
         mainActivity.lockNavigationDrawer(true);
 
         // Instantiate Fragment View
-        fragmentView = inflater.inflate(R.layout.fragment_add_job_entry, container, false);
+        fragmentView = super.onCreateView(inflater, container, savedInstanceState);
+//        fragmentView = inflater.inflate(R.layout.fragment_add_job_entry, container, false);
 
+//        initViews();
+        initViews(jobObject.getJobTitle());
         initViews();
-
         // Inflate the layout for this fragment
         return fragmentView;
     }
 
     private void initViews() {
-        AppCompatTextView jobTitleView = fragmentView.findViewById(R.id.job_title);
-        RelativeLayout startTimeLayout = fragmentView.findViewById(R.id.start_time_layout);
-        startTimeView = fragmentView.findViewById(R.id.start_time);
-        RelativeLayout endTimeLayout = fragmentView.findViewById(R.id.end_time_layout);
-        endTimeView = fragmentView.findViewById(R.id.end_time);
-        breakTimeView = fragmentView.findViewById(R.id.break_time);
-        entryNote = fragmentView.findViewById(R.id.notes);
+//        AppCompatTextView jobTitleView = fragmentView.findViewById(R.id.job_title);
+//        RelativeLayout startTimeLayout = fragmentView.findViewById(R.id.start_time_layout);
+//        startTimeView = fragmentView.findViewById(R.id.start_time);
+//        RelativeLayout endTimeLayout = fragmentView.findViewById(R.id.end_time_layout);
+//        endTimeView = fragmentView.findViewById(R.id.end_time);
+//        breakTimeView = fragmentView.findViewById(R.id.break_time);
+//        entryNote = fragmentView.findViewById(R.id.notes);
         MaterialButton saveButton = fragmentView.findViewById(R.id.save_button);
         MaterialButton cancelButton = fragmentView.findViewById(R.id.cancel_button);
 
-        jobTitleView.setText(jobObject.getJobTitle());
-        startTimeLayout.setOnClickListener(this);
-        endTimeLayout.setOnClickListener(this);
+//        jobTitleView.setText(jobObject.getJobTitle());
+//        startTimeLayout.setOnClickListener(this);
+//        endTimeLayout.setOnClickListener(this);
         saveButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
     }
 
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.start_time_layout:
-                openDatePickerDialog(startTimeView, startCalendar).show();
-                break;
+        super.onClick(view);
 
-            case R.id.end_time_layout:
-                openDatePickerDialog(endTimeView, endCalendar).show();
-                break;
+        switch (view.getId()) {
+//            case R.id.start_time_layout:
+//                openDatePickerDialog(startTimeView, startCalendar).show();
+//                break;
+//
+//            case R.id.end_time_layout:
+//                openDatePickerDialog(endTimeView, endCalendar).show();
+//                break;
 
             case R.id.save_button:
                 saveEntry();
@@ -133,7 +137,8 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
             case R.id.cancel_button:
                 InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(breakTimeView.getWindowToken(), 0);
+                // TODO: validate that this doesn't crash the application
+                imm.hideSoftInputFromWindow(getBreakTimeView().getWindowToken(), 0);
                 Objects.requireNonNull(getActivity()).onBackPressed();
                 break;
         }
@@ -180,49 +185,80 @@ public class AddJobEntry extends Fragment implements View.OnClickListener {
     }
 
     private void saveEntry() {
-        // Check that the start and end time is not null
-        if ("".equals(startTimeView.getText().toString())
-                || "".equals(endTimeView.getText().toString())) {
-            Toast.makeText(getContext(),
-                    "Invalid Start or End Time",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (startCalendar.getTime().after(endCalendar.getTime())) {
-            Toast.makeText(getContext(),
-                    "Invalid Start or End Time",
-                    Toast.LENGTH_SHORT).show();
+        if (!isValidStartAndEndTime()) {
             return;
         }
 
-        // Check that the break time is not greater than the hours worked
-        long startTime = startCalendar.getTimeInMillis();
-        long endTime = endCalendar.getTimeInMillis();
+        long startTime = getStartCalendar().getTimeInMillis();
+        long endTime = getEndCalendar().getTimeInMillis();
         double breakTime = 0;
-        if (!Objects.requireNonNull(breakTimeView.getText()).toString().equals("")
-                && !breakTimeView.getText().toString().equals(".")
-                && !breakTimeView.getText().toString().equals(",")) {
-            breakTime = Double.valueOf(breakTimeView.getText().toString());
+        if (!Objects.requireNonNull(getBreakTimeView().getText()).toString().equals("")
+                && !getBreakTimeView().getText().toString().equals(".")
+                && !getBreakTimeView().getText().toString().equals(",")) {
+            breakTime = Double.valueOf(getBreakTimeView().getText().toString());
         }
 
-        Log.d(TAG, "saveEntry: " + startTime + "..." + endTime + "..." + breakTime);
-        if (breakTime > ((float) (endTime - startTime) / (60 * 60 * 1000))) {
-            Toast.makeText(getContext(), "Adjust the break time", Toast.LENGTH_SHORT).show();
+        if (!isValidBreakTime(startTime, endTime, breakTime)) {
             return;
         }
 
-        String notes = Objects.requireNonNull(entryNote.getText()).toString();
-
-        // Save the entry using the dbWorkEntry class
+        String notes = Objects.requireNonNull(getEntryNote().getText()).toString();
         DbWorkEntry workEntry = new DbWorkEntry(jobObject, startTime, endTime, breakTime, notes);
         workEntry.saveWorkEntryToDb();
         workEntry.updateJobEntryQuantity(1);
 
         // Return to Calendar
-
         InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(breakTimeView.getWindowToken(), 0);
+        // TODO: validate that this does not crash the application
+        imm.hideSoftInputFromWindow(getBreakTimeView().getWindowToken(), 0);
         Objects.requireNonNull(getActivity()).onBackPressed();
     }
+
+//    private void saveEntry() {
+//        // Check that the start and end time is not null
+//        if ("".equals(startTimeView.getText().toString())
+//                || "".equals(endTimeView.getText().toString())) {
+//            Toast.makeText(getContext(),
+//                    "Invalid Start or End Time",
+//                    Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        if (startCalendar.getTime().after(endCalendar.getTime())) {
+//            Toast.makeText(getContext(),
+//                    "Invalid Start or End Time",
+//                    Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        // Check that the break time is not greater than the hours worked
+//        long startTime = startCalendar.getTimeInMillis();
+//        long endTime = endCalendar.getTimeInMillis();
+//        double breakTime = 0;
+//        if (!Objects.requireNonNull(breakTimeView.getText()).toString().equals("")
+//                && !breakTimeView.getText().toString().equals(".")
+//                && !breakTimeView.getText().toString().equals(",")) {
+//            breakTime = Double.valueOf(breakTimeView.getText().toString());
+//        }
+//
+//        Log.d(TAG, "saveEntry: " + startTime + "..." + endTime + "..." + breakTime);
+//        if (breakTime > ((float) (endTime - startTime) / (60 * 60 * 1000))) {
+//            Toast.makeText(getContext(), "Adjust the break time", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        String notes = Objects.requireNonNull(entryNote.getText()).toString();
+//
+//        // Save the entry using the dbWorkEntry class
+//        DbWorkEntry workEntry = new DbWorkEntry(jobObject, startTime, endTime, breakTime, notes);
+//        workEntry.saveWorkEntryToDb();
+//        workEntry.updateJobEntryQuantity(1);
+//
+//        // Return to Calendar
+//
+//        InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+//                .getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.hideSoftInputFromWindow(breakTimeView.getWindowToken(), 0);
+//        Objects.requireNonNull(getActivity()).onBackPressed();
+//    }
 }

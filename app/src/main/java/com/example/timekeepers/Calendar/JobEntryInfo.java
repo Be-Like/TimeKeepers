@@ -219,7 +219,6 @@ public class JobEntryInfo extends Fragment implements EditJobEntry.SaveEditedEnt
         addressFormat.createMapNavigation(addressView, getActivity());
     }
 
-    // TODO: continue from here.
     public void onSaveEditedEntry(Date startTime, Date endTime, double breakTime,
                                   double hoursWorked, double pay, String notes) {
         jobEntryInfo.putSerializable(getString(R.string.startTimeKey), startTime);
