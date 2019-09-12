@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.timekeepers.Dashboard.DbWorkEntry;
 import com.example.timekeepers.R;
 import com.google.android.material.button.MaterialButton;
@@ -54,11 +56,10 @@ public class EditJobEntry extends AddEditJobParent {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         fragmentView = super.onCreateView(inflater, container, savedInstanceState);
 
-        // TODO: set the startCalendar and endCalendar values
         initViews(jobEntryInfo.getString(getString(R.string.jobTitleKey)));
         setViews();
         initButtons();
@@ -69,16 +70,14 @@ public class EditJobEntry extends AddEditJobParent {
     private void setViews() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a dd MMM, yyyy", Locale.US);
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        getStartTimeView().setText(
-                dateFormat.format(
-                        (Date) jobEntryInfo.getSerializable(getString(R.string.startTimeKey))
-                )
-        );
-        getEndTimeView().setText(
-                dateFormat.format(
-                        (Date) jobEntryInfo.getSerializable(getString(R.string.endTimeKey))
-                )
-        );
+        Date startTime = (Date) jobEntryInfo.getSerializable(getString(R.string.startTimeKey));
+        Date endTime = (Date) jobEntryInfo.getSerializable(getString(R.string.endTimeKey));
+
+        getStartTimeView().setText(dateFormat.format(startTime));
+        getStartCalendar().setTime(startTime);
+        getEndTimeView().setText(dateFormat.format(endTime));
+        getEndCalendar().setTime(endTime);
+
         getBreakTimeView().setText(
                 decimalFormat.format(
                         jobEntryInfo.getDouble(getString(R.string.breakTimeKey))
