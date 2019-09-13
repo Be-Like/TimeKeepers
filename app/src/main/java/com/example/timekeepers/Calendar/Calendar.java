@@ -54,16 +54,11 @@ import javax.annotation.Nullable;
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Calendar.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link Calendar#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class Calendar extends Fragment
         implements View.OnClickListener, CalendarView.OnDateChangeListener {
-
-    private OnFragmentInteractionListener mListener;
 
     private View fragmentView;
     private CalendarView calendarView;
@@ -125,21 +120,9 @@ public class Calendar extends Fragment
         return fragmentView;
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -278,7 +261,6 @@ public class Calendar extends Fragment
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     public void onClick(View view) {
@@ -373,19 +355,5 @@ public class Calendar extends Fragment
     }
     public boolean getIsCalendarView() {
         return this.isCalendarView;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

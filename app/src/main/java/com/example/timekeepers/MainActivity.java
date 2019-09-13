@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import com.bumptech.glide.Glide;
 import com.example.timekeepers.Calendar.Calendar;
 import com.example.timekeepers.Dashboard.Dashboard;
+import com.example.timekeepers.Expenses.Expenses;
 import com.example.timekeepers.JobManagement.CalculateSalaryDialog;
 import com.example.timekeepers.Login.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -48,8 +49,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         Dashboard.OnFragmentInteractionListener,
-        Accounting.OnFragmentInteractionListener, Expenses.OnFragmentInteractionListener,
-        Calendar.OnFragmentInteractionListener,
+        Accounting.OnFragmentInteractionListener,
         Settings.OnFragmentInteractionListener,
         CalculateSalaryDialog.JobCompensationListener {
 
