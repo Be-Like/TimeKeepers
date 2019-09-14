@@ -55,6 +55,7 @@ public class AddEditExpenseParent extends Fragment implements View.OnClickListen
         return fragmentView;
     }
 
+    // TODO: Continue with Add and Edit expense functionality -> Expense page
     public void initViews() {
         setVendorNameView((AppCompatEditText) fragmentView.findViewById(R.id.vendor_name));
         setCategoryView((AppCompatEditText) fragmentView.findViewById(R.id.expense_category));
