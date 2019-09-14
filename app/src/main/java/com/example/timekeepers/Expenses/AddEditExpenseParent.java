@@ -17,7 +17,9 @@ import android.widget.RelativeLayout;
 
 import com.example.timekeepers.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -74,7 +76,7 @@ public class AddEditExpenseParent extends Fragment implements View.OnClickListen
 
     public void onClick(View view) {
         if (view.getId() == R.id.date_layout) {
-            openDatePickerDialog();
+            openDatePickerDialog().show();
         }
     }
 
@@ -88,7 +90,9 @@ public class AddEditExpenseParent extends Fragment implements View.OnClickListen
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 calendar.set(year, month, day);
-                setDateView();
+                SimpleDateFormat df = new SimpleDateFormat("dd MMM, yyyy", Locale.US);
+                getDateView().setText(df.format(calendar.getTime()));
+                openDatePickerDialog().dismiss();
             }
         }, mYear, mMonth, mDay);
     }
@@ -101,6 +105,9 @@ public class AddEditExpenseParent extends Fragment implements View.OnClickListen
     }
     public void setDateView(AppCompatTextView dateView) {
         this.dateView = dateView;
+    }
+    public AppCompatTextView getDateView() {
+        return this.dateView;
     }
     public void setTotalCostView(AppCompatEditText totalCostView) {
         this.totalCostView = totalCostView;

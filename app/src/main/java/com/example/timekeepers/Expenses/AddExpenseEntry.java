@@ -50,4 +50,8 @@ public class AddExpenseEntry extends AddEditExpenseParent {
         return fragmentView;
     }
 
+    public void onClick(View view) {
+        super.onClick(view);
+    }
+
 }
