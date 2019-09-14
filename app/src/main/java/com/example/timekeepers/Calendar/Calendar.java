@@ -174,9 +174,9 @@ public class Calendar extends Fragment
         if (userEmail == null) {
             Toast.makeText(getContext(), "Error getting user information.",
                     Toast.LENGTH_LONG).show();
+            return;
         }
 
-        assert userEmail != null;
         final CollectionReference usersJobs = FirebaseFirestore.getInstance()
                 .collection("Jobs")
                 .document(userEmail)

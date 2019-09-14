@@ -13,9 +13,20 @@ import android.widget.Toast;
 
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
 import java.util.Objects;
+
+import javax.annotation.Nullable;
 
 
 /**
@@ -87,5 +98,48 @@ public class Expenses extends Fragment implements View.OnClickListener {
         recyclerView = fragmentView.findViewById(R.id.expense_list);
         addExpenseEntryButton = fragmentView.findViewById(R.id.add_expense_entry);
         addExpenseEntryButton.setOnClickListener(this);
+    }
+
+    private String userEmail;
+    private HashMap<String, ExpenseEntryObject> expenseEntry;
+    private void initRecyclerView() {
+        userEmail = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail();
+
+        if (userEmail == null) {
+            Toast.makeText(getContext(), "Error getting user information.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        final CollectionReference usersJobs = FirebaseFirestore.getInstance()
+                .collection("Jobs")
+                .document(userEmail)
+                .collection("Users_Jobs");
+
+        usersJobs.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot value) {
+                expenseEntry = new HashMap<>();
+                for (QueryDocumentSnapshot document : value) {
+                    final String jobId = document.getId();
+
+                    usersJobs.document(document.getId())
+                            .collection("Expense_Entries")
+                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
+                                                    @Nullable FirebaseFirestoreException e) {
+                                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                        // TODO: Continue here once the add expense functionality is completed
+//                                        expenseEntry.put(doc.getId(), new ExpenseEntryObject(
+//                                                jobId,
+//                                                doc.getId(),
+//                                        ));
+                                    }
+                                }
+                            });
+                }
+            }
+        });
     }
 }
