@@ -105,6 +105,15 @@
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
 
+    <!--  Expenses  -->
+    <!--  Add/Edit Expenses  -->
+    <string name="expense_details_label">Expense Details</string>
+    <string name="vendor_name">Vendor Name</string>
+    <string name="expense_category">Expense Category</string>
+    <string name="date_label">Date</string>
+    <string name="total_cost">Total Cost</string>
+    <string name="receipt_label">Receipt</string>
+
     <!-- Calendar -->
     <string name="calendar_view">View</string>
     <!-- Job Entry View -->

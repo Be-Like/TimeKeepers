@@ -1,19 +1,30 @@
 package com.example.timekeepers.Expenses;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
+import com.example.timekeepers.Calendar.AddJobEntry;
+import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -23,6 +34,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -72,6 +84,7 @@ public class Expenses extends Fragment implements View.OnClickListener {
         fragmentView = inflater.inflate(R.layout.fragment_expenses, container, false);
 
         initViews();
+        initRecyclerView();
 
         // Inflate the layout for this fragment
         return fragmentView;
@@ -89,8 +102,7 @@ public class Expenses extends Fragment implements View.OnClickListener {
 
     public void onClick (View view) {
         if (view == addExpenseEntryButton) {
-            // TODO: addExpenseEntryButton
-            Toast.makeText(getContext(), "Will add expense.", Toast.LENGTH_SHORT).show();
+            addExpenseEntry();
         }
     }
 
@@ -141,5 +153,84 @@ public class Expenses extends Fragment implements View.OnClickListener {
                 }
             }
         });
+    }
+
+    private void addExpenseEntry() {
+        // Select Job to add an entry to
+        FirebaseFirestore.getInstance()
+                .collection("Jobs")
+                .document(userEmail)
+                .collection("Users_Jobs")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        final ArrayList<JobObject> activeJobs = new ArrayList<>();
+                        for (QueryDocumentSnapshot doc : task.getResult()) {
+                            activeJobs.add(new JobObject(
+                                    doc.getString("Job_Title"),
+                                    doc.getString("Job_Type"),
+                                    doc.getDouble("Pay_Rate"),
+                                    doc.getDouble("Quantity_Job_Entries"),
+                                    doc.getDouble("Quantity_Expense_Entries"),
+                                    doc.getDouble("Hours_Worked"),
+                                    doc.getBoolean("Completed"),
+                                    doc.getString("Email"),
+                                    doc.getDouble("Federal_Income_Tax"),
+                                    doc.getDouble("Gross_Pay"),
+                                    doc.getDouble("Medicare"),
+                                    doc.getDouble("OASDI"),
+                                    doc.getDouble("Other_Withholdings"),
+                                    doc.getString("Phone"),
+                                    doc.getDouble("Retirement_Contribution"),
+                                    doc.getDouble("State_Income_Tax"),
+                                    doc.getString("Website"),
+                                    doc.getString("Address.Street_1"),
+                                    doc.getString("Address.Street_2"),
+                                    doc.getString("Address.City"),
+                                    doc.getString("Address.State"),
+                                    doc.getString("Address.Zip_Code"),
+                                    doc.getId()
+                            ));
+                        }
+                        // TODO:
+                        new AlertDialog.Builder(Objects.requireNonNull(getContext()))
+                                .setTitle("Select Job to Add Entry to:")
+                                .setAdapter(createListAdapter(activeJobs),
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface,
+                                                                int i) {
+                                                AddExpenseEntry entry =
+                                                        AddExpenseEntry
+                                                                .newInstance(activeJobs.get(i));
+
+                                                FragmentManager fm =
+                                                        Objects.requireNonNull(getActivity())
+                                                                .getSupportFragmentManager();
+
+                                                fm.beginTransaction()
+                                                        .replace(R.id.main_fragment, entry)
+                                                        .addToBackStack(null)
+                                                        .commit();
+                                            }
+                                        }).show();
+                    }
+                });
+    }
+
+    private ListAdapter createListAdapter(ArrayList<JobObject> list) {
+        ArrayList<String> jobTitles = new ArrayList<>();
+        for (JobObject o : list) {
+            jobTitles.add(o.getJobTitle());
+        }
+
+        return new ArrayAdapter<String>(Objects.requireNonNull(getContext()),
+                android.R.layout.select_dialog_item, android.R.id.text1, jobTitles) {
+            @NonNull
+            public View getView(int pos, View convertView, @NonNull ViewGroup parent) {
+                return super.getView(pos, convertView, parent);
+            }
+        };
     }
 }

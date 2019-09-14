@@ -62,17 +62,13 @@ public class AddEditJobParent extends Fragment implements View.OnClickListener {
 
         RelativeLayout startTimeLayout = fragmentView.findViewById(R.id.start_time_layout);
         setStartTimeView((AppCompatTextView) fragmentView.findViewById(R.id.start_time));
-//        startTimeView = fragmentView.findViewById(R.id.start_time);
 
         RelativeLayout endTimeLayout = fragmentView.findViewById(R.id.end_time_layout);
         setEndTimeView((AppCompatTextView) fragmentView.findViewById(R.id.end_time));
-//        endTimeView = fragmentView.findViewById(R.id.end_time);
 
         setBreakTimeView((AppCompatEditText) fragmentView.findViewById(R.id.break_time));
-//        breakTimeView = fragmentView.findViewById(R.id.break_time);
 
         setEntryNote((AppCompatEditText) fragmentView.findViewById(R.id.notes));
-//        entryNote = fragmentView.findViewById(R.id.notes);
 
         jobTitleView.setText(jobTitle);
         startTimeLayout.setOnClickListener(this);
