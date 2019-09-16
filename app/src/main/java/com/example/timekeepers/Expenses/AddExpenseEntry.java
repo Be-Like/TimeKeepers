@@ -1,12 +1,19 @@
 package com.example.timekeepers.Expenses;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.MainActivity;
+import com.example.timekeepers.R;
+import com.google.android.material.button.MaterialButton;
+
+import java.util.Objects;
 
 public class AddExpenseEntry extends AddEditExpenseParent {
     private static final String JOB_OBJECT_KEY = "Job_Object_Key";
@@ -46,12 +53,36 @@ public class AddExpenseEntry extends AddEditExpenseParent {
         // Instantiate Fragment View
         fragmentView = super.onCreateView(inflater, container, savedInstanceState);
         initViews();
+        initButtons();
 
         return fragmentView;
     }
 
-    public void onClick(View view) {
-        super.onClick(view);
+    private MaterialButton saveButton;
+    private MaterialButton cancelButton;
+    private void initButtons() {
+//        View buttonsLayout = fragmentView.findViewById(R.id.buttons_layout); TODO: this may be necesary
+        saveButton = fragmentView.findViewById(R.id.save_button);
+        cancelButton = fragmentView.findViewById(R.id.cancel_button);
+        saveButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
     }
 
+    public void onClick(View view) {
+        super.onClick(view);
+
+        switch (view.getId()) {
+            case R.id.save_button:
+                Toast.makeText(getContext(), "Test Save", Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.cancel_button:
+                // TODO: continue from here!
+//                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+//                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.hideSoftInputFromWindow(.getWindowToken(), 0);
+                Objects.requireNonNull(getActivity()).onBackPressed();
+                break;
+        }
+    }
 }

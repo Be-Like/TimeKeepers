@@ -15,7 +15,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 
+import com.example.timekeepers.Misc.CurrencyTextListener;
 import com.example.timekeepers.R;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -33,7 +35,7 @@ public class AddEditExpenseParent extends Fragment implements View.OnClickListen
     private AppCompatEditText vendorNameView;
     private AppCompatEditText categoryView;
     private AppCompatTextView dateView;
-    private AppCompatEditText totalCostView;
+    private TextInputEditText totalCostView;
     private AutoCompleteTextView street1View;
     private AutoCompleteTextView street2View;
     private AutoCompleteTextView cityView;
@@ -63,7 +65,10 @@ public class AddEditExpenseParent extends Fragment implements View.OnClickListen
         RelativeLayout dateLayout = fragmentView.findViewById(R.id.date_layout);
         setDateView((AppCompatTextView) fragmentView.findViewById(R.id.expense_date));
 
-        setTotalCostView((AppCompatEditText) fragmentView.findViewById(R.id.total_cost));
+        setTotalCostView((TextInputEditText) fragmentView.findViewById(R.id.total_cost));
+        CurrencyTextListener currencyTextListener =
+                new CurrencyTextListener(getTotalCostView());
+        getTotalCostView().addTextChangedListener(currencyTextListener);
 
 //        View addressLayout = fragmentView.findViewById(R.id.address_layout); TODO: This may be needed if there are errors with getting and setting values
         setStreet1View((AutoCompleteTextView) fragmentView.findViewById(R.id.address_first_line));
@@ -110,8 +115,11 @@ public class AddEditExpenseParent extends Fragment implements View.OnClickListen
     public AppCompatTextView getDateView() {
         return this.dateView;
     }
-    public void setTotalCostView(AppCompatEditText totalCostView) {
+    public void setTotalCostView(TextInputEditText totalCostView) {
         this.totalCostView = totalCostView;
+    }
+    public TextInputEditText getTotalCostView() {
+        return this.totalCostView;
     }
     public void setStreet1View(AutoCompleteTextView street1View) {
         this.street1View = street1View;

@@ -80,6 +80,7 @@ public class Expenses extends Fragment implements View.OnClickListener {
         // Set Toolbar Title
         String expensesTitle = "Expenses";
         ((MainActivity) Objects.requireNonNull(getActivity())).toolbar.setTitle(expensesTitle);
+        ((MainActivity) getActivity()).lockNavigationDrawer(false);
 
         fragmentView = inflater.inflate(R.layout.fragment_expenses, container, false);
 
