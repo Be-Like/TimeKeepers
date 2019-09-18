@@ -9,8 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,10 +37,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 /**
@@ -143,17 +149,45 @@ public class Expenses extends Fragment implements View.OnClickListener {
                                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
                                                     @Nullable FirebaseFirestoreException e) {
                                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                                        // TODO: Continue here once the add expense functionality is completed
-//                                        expenseEntry.put(doc.getId(), new ExpenseEntryObject(
-//                                                jobId,
-//                                                doc.getId(),
-//                                        ));
+                                        expenseEntry.put(doc.getId(), new ExpenseEntryObject(
+                                                jobId,
+                                                doc.getId(),
+                                                doc.getString("Job_Title"),
+                                                doc.getString("Vendor"),
+                                                doc.getString("Category"),
+                                                doc.getDate("Date"),
+                                                doc.getDouble("Total_Cost"),
+                                                doc.getString("Address.Street_1"),
+                                                doc.getString("Address.Street_2"),
+                                                doc.getString("Address.City"),
+                                                doc.getString("Address.State"),
+                                                doc.getString("Address.Zip_Code")
+                                        ));
+                                        ArrayList<ExpenseEntryObject> expensesList =
+                                                new ArrayList<>(expenseEntry.values());
+                                        Collections.sort(expensesList, new SortByDate());
+                                        createRecycler(expensesList);
                                     }
                                 }
                             });
                 }
             }
         });
+    }
+
+    class SortByDate implements Comparator<ExpenseEntryObject> {
+        public int compare(ExpenseEntryObject a, ExpenseEntryObject b) {
+            if (a.getExpenseDate().equals(b.getExpenseDate())) {
+                return 0;
+            } else {
+                return (a.getExpenseDate().before(b.getExpenseDate()) ? 1 : -1);
+            }
+        }
+    }
+    private void createRecycler(ArrayList<ExpenseEntryObject> list) {
+        ExpensesAdapter expensesAdapter = new ExpensesAdapter(getContext(), list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(expensesAdapter);
     }
 
     private void addExpenseEntry() {

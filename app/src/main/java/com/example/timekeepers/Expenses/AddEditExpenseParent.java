@@ -8,12 +8,14 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.Fragment;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.timekeepers.Misc.CurrencyTextListener;
 import com.example.timekeepers.R;
@@ -21,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -103,17 +106,51 @@ public class AddEditExpenseParent extends Fragment implements View.OnClickListen
         }, mYear, mMonth, mDay);
     }
 
+    public boolean isValidVendorInfo() {
+        String vendorName = Objects.requireNonNull(getVendorNameView()
+                .getText()).toString().trim();
+        String category = Objects.requireNonNull(getCategoryView()
+                .getText()).toString().trim();
+        if (TextUtils.isEmpty(vendorName)) {
+            Toast.makeText(getContext(), "Vendor name cannot be empty",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        } else if (TextUtils.isEmpty(category)) {
+            Toast.makeText(getContext(), "Expense Category cannot be empty",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+    public boolean isValidDate() {
+        if ("".equals(getDateView().getText().toString())) {
+            Toast.makeText(getContext(), "Invalid date.", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    // Getters and Setters for form fields
     public void setVendorNameView(AppCompatEditText vendorNameView) {
         this.vendorNameView = vendorNameView;
     }
+    public AppCompatEditText getVendorNameView() {
+        return this.vendorNameView;
+    }
     public void setCategoryView(AppCompatEditText categoryView) {
         this.categoryView = categoryView;
+    }
+    public AppCompatEditText getCategoryView() {
+        return this.categoryView;
     }
     public void setDateView(AppCompatTextView dateView) {
         this.dateView = dateView;
     }
     public AppCompatTextView getDateView() {
         return this.dateView;
+    }
+    public Date getCalendar() {
+        return this.calendar.getTime();
     }
     public void setTotalCostView(TextInputEditText totalCostView) {
         this.totalCostView = totalCostView;
@@ -124,16 +161,31 @@ public class AddEditExpenseParent extends Fragment implements View.OnClickListen
     public void setStreet1View(AutoCompleteTextView street1View) {
         this.street1View = street1View;
     }
+    public AutoCompleteTextView getStreet1View() {
+        return this.street1View;
+    }
     public void setStreet2View(AutoCompleteTextView street2View) {
         this.street2View = street2View;
+    }
+    public AutoCompleteTextView getStreet2View() {
+        return this.street2View;
     }
     public void setCityView(AutoCompleteTextView cityView) {
         this.cityView = cityView;
     }
+    public AutoCompleteTextView getCityView() {
+        return this.cityView;
+    }
     public void setStateView(AutoCompleteTextView stateView) {
         this.stateView = stateView;
     }
+    public AutoCompleteTextView getStateView() {
+        return this.stateView;
+    }
     public void setZipcodeView(AutoCompleteTextView zipcodeView) {
         this.zipcodeView = zipcodeView;
+    }
+    public AutoCompleteTextView getZipcodeView() {
+        return this.zipcodeView;
     }
 }

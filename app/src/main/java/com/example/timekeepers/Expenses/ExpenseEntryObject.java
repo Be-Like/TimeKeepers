@@ -83,13 +83,13 @@ public class ExpenseEntryObject {
 
     public String toString() {
         return "Job ID: " + this.jobId +
-                "Expense Entry Id: " + this.expenseEntryId +
-                "Job Title: " + this.jobTitle +
-                "Expense Name: " + this.expenseName +
-                "Category: " + this.category +
-                "Date: " + this.expenseDate +
-                "Price: " + this.price +
-                "Address: " + this.street1 + this.street2 +
+                " Expense Entry Id: " + this.expenseEntryId +
+                " Job Title: " + this.jobTitle +
+                " Expense Name: " + this.expenseName +
+                " Category: " + this.category +
+                " Date: " + this.expenseDate +
+                " Price: " + this.price +
+                " Address: " + this.street1 + this.street2 +
                 this.city + this.expenseState + this.zipcode;
     }
 

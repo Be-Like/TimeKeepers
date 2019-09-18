@@ -1,14 +1,12 @@
 package com.example.timekeepers.Expenses;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
+import com.example.timekeepers.DBExpenseEntry;
 import com.example.timekeepers.JobManagement.JobObject;
 import com.example.timekeepers.MainActivity;
 import com.example.timekeepers.R;
@@ -31,6 +29,7 @@ public class AddExpenseEntry extends AddEditExpenseParent {
         AddExpenseEntry fragment = new AddExpenseEntry();
         Bundle args = new Bundle();
         args.putSerializable(JOB_OBJECT_KEY, object);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -59,12 +58,10 @@ public class AddExpenseEntry extends AddEditExpenseParent {
         return fragmentView;
     }
 
-    private MaterialButton saveButton;
-    private MaterialButton cancelButton;
     private void initButtons() {
 //        View buttonsLayout = fragmentView.findViewById(R.id.buttons_layout); TODO: this may be necesary
-        saveButton = fragmentView.findViewById(R.id.save_button);
-        cancelButton = fragmentView.findViewById(R.id.cancel_button);
+        MaterialButton saveButton = fragmentView.findViewById(R.id.save_button);
+        MaterialButton cancelButton = fragmentView.findViewById(R.id.cancel_button);
         saveButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
     }
@@ -80,17 +77,47 @@ public class AddExpenseEntry extends AddEditExpenseParent {
             case R.id.cancel_button:
                 Objects.requireNonNull(getActivity()).getWindow()
                         .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-                Objects.requireNonNull(getActivity()).onBackPressed();
+                getActivity().onBackPressed();
                 break;
         }
     }
 
     private void saveExpenseEntry() {
-        Toast.makeText(getContext(), "Test Save", Toast.LENGTH_SHORT).show();
-        // TODO: continue here
-        // Validate Fields
+        if (!isValidVendorInfo()) {
+            return;
+        }
+        if (!isValidDate()) {
+            return;
+        }
+
+        String totalCostString =
+                Objects.requireNonNull(getTotalCostView().getText()).toString().trim();
+        double totalCost =
+                Double.valueOf(totalCostString.replaceAll("[$, ',']", ""));
+
+        // Create Expense Object
+        ExpenseEntryObject expenseObject =
+                new ExpenseEntryObject(jobObject.getGeneratedJobId(),
+                        null,
+                        jobObject.getJobTitle(),
+                        Objects.requireNonNull(getVendorNameView().getText()).toString().trim(),
+                        Objects.requireNonNull(getCategoryView().getText()).toString().trim(),
+                        getCalendar(),
+                        totalCost,
+                        getStreet1View().getText().toString().trim(),
+                        getStreet2View().getText().toString().trim(),
+                        getCityView().getText().toString().trim(),
+                        getStateView().getText().toString().trim(),
+                        getZipcodeView().getText().toString().trim());
+
         // Save entry
+        DBExpenseEntry dbExpenseEntry = new DBExpenseEntry(expenseObject);
+        dbExpenseEntry.saveNewExpenseEntry();
+
         // Dismiss Keyboard
+        Objects.requireNonNull(getActivity()).getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         // Navigate back to expense page
+        getActivity().onBackPressed();
     }
 }
