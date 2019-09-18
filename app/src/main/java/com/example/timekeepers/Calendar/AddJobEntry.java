@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.example.timekeepers.Dashboard.DbWorkEntry;
@@ -94,9 +95,11 @@ public class AddJobEntry extends AddEditJobParent implements View.OnClickListene
                 break;
 
             case R.id.cancel_button:
-                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getBreakTimeView().getWindowToken(), 0);
+//                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
+//                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+//                imm.hideSoftInputFromWindow(getBreakTimeView().getWindowToken(), 0);
+                Objects.requireNonNull(getActivity()).getWindow()
+                        .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
                 Objects.requireNonNull(getActivity()).onBackPressed();
                 break;
         }

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -100,6 +101,8 @@ public class EditJobEntry extends AddEditJobParent {
             saveEntry();
         }
         if (id == R.id.cancel_button) {
+            Objects.requireNonNull(getActivity()).getWindow()
+                    .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
             Objects.requireNonNull(getActivity()).onBackPressed();
         }
     }

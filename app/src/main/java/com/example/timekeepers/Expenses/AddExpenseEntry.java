@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -73,16 +74,23 @@ public class AddExpenseEntry extends AddEditExpenseParent {
 
         switch (view.getId()) {
             case R.id.save_button:
-                Toast.makeText(getContext(), "Test Save", Toast.LENGTH_SHORT).show();
+                saveExpenseEntry();
                 break;
 
             case R.id.cancel_button:
-                // TODO: continue from here!
-//                InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity())
-//                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-//                imm.hideSoftInputFromWindow(.getWindowToken(), 0);
+                Objects.requireNonNull(getActivity()).getWindow()
+                        .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
                 Objects.requireNonNull(getActivity()).onBackPressed();
                 break;
         }
+    }
+
+    private void saveExpenseEntry() {
+        Toast.makeText(getContext(), "Test Save", Toast.LENGTH_SHORT).show();
+        // TODO: continue here
+        // Validate Fields
+        // Save entry
+        // Dismiss Keyboard
+        // Navigate back to expense page
     }
 }
