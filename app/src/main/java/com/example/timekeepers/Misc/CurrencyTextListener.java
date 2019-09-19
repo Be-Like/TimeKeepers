@@ -14,6 +14,8 @@ public class CurrencyTextListener implements TextWatcher {
     private TextInputEditText currencyInput;
     private boolean isDeleting;
     private String pay_rate = "";
+    private String lastValue = "";
+    private int cursorEnd;
 
     public CurrencyTextListener(TextInputEditText currencyInput) {
         this.currencyInput = currencyInput;
@@ -40,7 +42,10 @@ public class CurrencyTextListener implements TextWatcher {
             String formatted = NumberFormat.getCurrencyInstance().format(parsed/100);
             pay_rate = formatted;
             currencyInput.setText(pay_rate);
-            currencyInput.setSelection(formatted.length());
+
+            int newCursorPosition = pay_rate.length() - Math.abs(cursorEnd - lastValue.length());
+            currencyInput.setSelection(Math.min(Math.max(0, newCursorPosition), pay_rate.length()));
+
             currencyInput.addTextChangedListener(this);
         }
     }
@@ -52,6 +57,8 @@ public class CurrencyTextListener implements TextWatcher {
         else {
             isDeleting = false;
         }
+        cursorEnd = currencyInput.getSelectionEnd();
+        lastValue = s.toString();
         if (!s.toString().equals(pay_rate)) {
             currencyInput.removeTextChangedListener(this);
             String cleanString = s.toString().replaceAll("[^\\d]", "");

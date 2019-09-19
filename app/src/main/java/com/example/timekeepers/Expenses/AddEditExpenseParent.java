@@ -72,6 +72,7 @@ public class AddEditExpenseParent extends Fragment implements View.OnClickListen
         CurrencyTextListener currencyTextListener =
                 new CurrencyTextListener(getTotalCostView());
         getTotalCostView().addTextChangedListener(currencyTextListener);
+        getTotalCostView().setText("0");
 
 //        View addressLayout = fragmentView.findViewById(R.id.address_layout); TODO: This may be needed if there are errors with getting and setting values
         setStreet1View((AutoCompleteTextView) fragmentView.findViewById(R.id.address_first_line));
