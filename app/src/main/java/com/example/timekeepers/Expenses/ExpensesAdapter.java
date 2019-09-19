@@ -1,6 +1,5 @@
 package com.example.timekeepers.Expenses;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import com.example.timekeepers.R;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -45,9 +45,10 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesAdapter.ViewHo
 
         holder.vendor.setText(entry.getExpenseName());
 
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat df = new SimpleDateFormat("MMM dd, yyyy");
+        SimpleDateFormat df =
+                new SimpleDateFormat("MMM dd, yyyy", Locale.US);
         holder.date.setText(df.format(entry.getExpenseDate()));
+        Log.d(TAG, "onBindViewHolder: " + holder.date.getTextSize());
 
         NumberFormat currency = NumberFormat.getCurrencyInstance();
         holder.cost.setText(currency.format(entry.getPrice()));
